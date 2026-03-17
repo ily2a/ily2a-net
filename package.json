@@ -1,0 +1,31 @@
+{
+  "name": "ily2a-net",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@calcom/embed-react": "^1.5.3",
+    "@portabletext/react": "^6.0.3",
+    "@sanity/image-url": "^1.2.0",
+    "@sanity/vision": "^4.22.0",
+    "framer-motion": "^12.36.0",
+    "next": "16.1.6",
+    "next-sanity": "^11.6.12",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "resend": "^6.9.3",
+    "sanity": "^4.22.0",
+    "styled-components": "^6.3.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4"
+  }
+}

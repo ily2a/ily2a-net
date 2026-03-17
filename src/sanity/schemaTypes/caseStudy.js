@@ -1,0 +1,183 @@
+export default {
+  name: 'caseStudy',
+  title: 'Case Study',
+  type: 'document',
+  groups: [
+    { name: 'meta', title: '① Meta' },
+    { name: 'context', title: '② Context' },
+    { name: 'content', title: '③ Content' },
+    { name: 'settings', title: '⚙ Settings' },
+  ],
+  fields: [
+
+    // ── META ──
+    {
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      group: 'meta',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      group: 'meta',
+      options: { source: 'title' },
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'client',
+      title: 'Client',
+      type: 'string',
+      group: 'meta',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'role',
+      title: 'Role',
+      type: 'string',
+      group: 'meta',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'timeline',
+      title: 'Timeline',
+      type: 'string',
+      group: 'meta',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'platform',
+      title: 'Platform',
+      type: 'string',
+      group: 'meta',
+      description: 'e.g. iOS, Web, Cross-platform — leave empty if not relevant',
+    },
+    {
+      name: 'industry',
+      title: 'Industry',
+      type: 'string',
+      group: 'meta',
+    },
+    {
+      name: 'coverImage',
+      title: 'Cover Image',
+      type: 'image',
+      group: 'meta',
+      options: { hotspot: true },
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'cardImageDefault',
+      title: 'Card Image — Default',
+      type: 'image',
+      group: 'meta',
+      options: { hotspot: true },
+      description: 'Shown on the project card by default',
+    },
+    {
+      name: 'cardImageHover',
+      title: 'Card Image — Hover / Press',
+      type: 'image',
+      group: 'meta',
+      options: { hotspot: true },
+      description: 'Shown on hover (desktop) or press (mobile)',
+    },
+    {
+      name: 'description',
+      title: 'Short Description',
+      type: 'string',
+      group: 'meta',
+      description: 'One line — shown on the project card on homepage',
+      validation: Rule => Rule.required().max(120),
+    },
+    {
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      group: 'meta',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      group: 'meta',
+    },
+
+    // ── CONTEXT (required on every project) ──
+    {
+      name: 'brief',
+      title: 'Business Need / Brief',
+      type: 'text',
+      group: 'context',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'problem',
+      title: 'Problem Statement',
+      type: 'text',
+      group: 'context',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'goals',
+      title: 'Project Goals',
+      type: 'text',
+      group: 'context',
+      validation: Rule => Rule.required(),
+    },
+    {
+      name: 'uxStrategy',
+      title: 'UX Strategy',
+      type: 'text',
+      group: 'context',
+      validation: Rule => Rule.required(),
+    },
+
+    // ── CONTENT (flexible — images + rich text mixed freely) ──
+    {
+      name: 'body',
+      title: 'Case Study Body',
+      description: 'Build freely — mix text sections and images in any order',
+      type: 'array',
+      group: 'content',
+      of: [
+        { type: 'block' },
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            },
+            {
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+            },
+          ],
+        },
+      ],
+    },
+
+    // ── SETTINGS ──
+    {
+      name: 'isPasswordProtected',
+      title: 'Password Protected?',
+      type: 'boolean',
+      group: 'settings',
+      initialValue: false,
+    },
+    {
+      name: 'password',
+      title: 'Password',
+      type: 'string',
+      group: 'settings',
+      hidden: ({ document }) => !document?.isPasswordProtected,
+    },
+  ],
+}
