@@ -1,18 +1,22 @@
 import HeroSection from '@/components/HeroSection'
 import ProjectCard from '@/components/ProjectCard'
-import { client } from '@/sanity/lib/client'
+import { sanityFetch } from '@/sanity/lib/live'
 import Link from 'next/link'
 
 export default async function Home() {
-  const projects = await client.fetch(
-    `*[_type == "caseStudy"] | order(order asc) [0...4] {
-      _id, title, slug, description, tags, cardImageDefault, cardImageHover
-    }`
-  )
+  const { data: projects } = await sanityFetch({
+    query: `*[_type == "caseStudy"] | order(order asc) [0...4] {
+      _id, title, slug, description, tags,
+      cardImageDefault { ..., "lqip": asset->metadata.lqip },
+      cardImageHover   { ..., "lqip": asset->metadata.lqip }
+    }`,
+  })
 
   return (
     <main>
-      <HeroSection />
+      <HeroSection>
+        <h1 className="hero-heading">Ily Ameur</h1>
+      </HeroSection>
 
       {/* ── WORK ── */}
       <section className="work-section">

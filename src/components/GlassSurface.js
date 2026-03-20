@@ -30,6 +30,7 @@ const GlassSurface = ({
   const blueGradId = `blue-grad-${uniqueId}`
 
   const [svgSupported, setSvgSupported] = useState(false)
+  const [backdropSupported, setBackdropSupported] = useState(true)
   const [mounted, setMounted] = useState(false)
 
   const containerRef = useRef(null)
@@ -38,6 +39,11 @@ const GlassSurface = ({
   const greenChannelRef = useRef(null)
   const blueChannelRef = useRef(null)
   const gaussianBlurRef = useRef(null)
+
+  // Always-current ref so ResizeObserver never holds a stale closure
+  const updateRef  = useRef(null)
+  // Cache last rendered dimensions — skip SVG regen when size hasn't changed
+  const lastSizeRef = useRef({ w: 0, h: 0 })
 
   const generateDisplacementMap = () => {
     const rect = containerRef.current?.getBoundingClientRect()
@@ -68,8 +74,17 @@ const GlassSurface = ({
   }
 
   const updateDisplacementMap = () => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    const w = rect?.width  || 0
+    const h = rect?.height || 0
+    // Skip SVG regeneration if dimensions haven't changed (avoids redundant work during resize)
+    if (w === lastSizeRef.current.w && h === lastSizeRef.current.h) return
+    lastSizeRef.current = { w, h }
     feImageRef.current?.setAttribute('href', generateDisplacementMap())
   }
+
+  // Keep the ref pointing at the latest version — avoids stale closure in ResizeObserver
+  updateRef.current = updateDisplacementMap
 
   const supportsSVGFilters = () => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return false
@@ -83,16 +98,14 @@ const GlassSurface = ({
     return div.style.backdropFilter !== ''
   }
 
-  const supportsBackdropFilter = () => {
-    if (typeof window === 'undefined') return false
-    return CSS.supports('backdrop-filter', 'blur(10px)')
-  }
-
+  // Compute support flags once on mount
   useEffect(() => {
     setMounted(true)
     setSvgSupported(supportsSVGFilters())
+    setBackdropSupported(CSS.supports('backdrop-filter', 'blur(10px)'))
   }, [])
 
+  // Update SVG filter attributes when relevant props change
   useEffect(() => {
     if (!mounted) return
     updateDisplacementMap()
@@ -110,18 +123,21 @@ const GlassSurface = ({
     gaussianBlurRef.current?.setAttribute('stdDeviation', displace.toString())
   }, [mounted, borderRadius, borderWidth, brightness, opacity, blur, displace, distortionScale, redOffset, greenOffset, blueOffset, xChannel, yChannel, mixBlendMode])
 
+  // ResizeObserver — uses ref so it always calls the latest updateDisplacementMap.
+  // setTimeout(fn, 0) is intentional: avoids "ResizeObserver loop" browser warnings.
   useEffect(() => {
     if (!containerRef.current) return
     const resizeObserver = new ResizeObserver(() => {
-      setTimeout(updateDisplacementMap, 0)
+      setTimeout(() => updateRef.current?.(), 0)
     })
     resizeObserver.observe(containerRef.current)
     return () => resizeObserver.disconnect()
   }, [])
 
+  // React to explicit width/height prop changes — no setTimeout needed here
   useEffect(() => {
-    setTimeout(updateDisplacementMap, 0)
-  }, [width, height])
+    if (mounted) updateRef.current?.()
+  }, [width, height, mounted])
 
   const getContainerStyles = () => {
     const baseStyles = {
@@ -155,7 +171,7 @@ const GlassSurface = ({
       }
     }
 
-    if (!supportsBackdropFilter()) {
+    if (!backdropSupported) {
       return {
         ...baseStyles,
         background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.4)})`,

@@ -6,10 +6,10 @@ import ContactButton from '@/components/ContactButton'
 import MobileContactButton from '@/components/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
 
-export default function Navbar({ mobile = false }) {
+export default function Navbar({ isMobile = false }) {
   return (
     <GlassSurface
-      width={mobile ? 'calc(100vw - 32px)' : '472px'}
+      width={isMobile ? 'calc(100vw - 32px)' : '472px'}
       height={64}
       borderRadius={12}
       distortionScale={-40}
@@ -19,26 +19,29 @@ export default function Navbar({ mobile = false }) {
       displace={4}
       backgroundOpacity={0.4}
       style={{
-        maxWidth: mobile ? '440px' : 'none',
-        minWidth: mobile ? 'auto' : '472px',
+        maxWidth: isMobile ? '440px' : 'none',
+        minWidth: isMobile ? 'auto' : '472px',
         flexShrink: 0,
         boxSizing: 'border-box',
       }}
     >
-      <nav style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '16px',
-        width: '100%',
-        height: '100%',
-        padding: '8px 24px',
-        boxSizing: 'border-box',
-      }}>
-        <Logo mobile={mobile} />
-        <NavbarButton icon="craft" label="Craft" mobile={mobile} />
-        <NavbarButton icon="skills" label="Skills" mobile={mobile} />
-        {mobile ? (
+      <nav
+        aria-label="Main navigation"
+        style={{
+          display:        'inline-flex',
+          alignItems:     'center',
+          justifyContent: 'center',
+          gap:            '16px',
+          width:          '100%',
+          height:         '100%',
+          padding:        '8px 24px',
+          boxSizing:      'border-box',
+        }}
+      >
+        <Logo isMobile={isMobile} />
+        <NavbarButton icon="craft"  label="Craft"  isMobile={isMobile} />
+        <NavbarButton icon="skills" label="Skills" isMobile={isMobile} />
+        {isMobile ? (
           <div style={{ flex: 1, minWidth: 0 }}>
             <MobileContactButton />
           </div>

@@ -52,9 +52,9 @@ html {
 }
 
 body {
-  background-color: #0D1012;
-  color: #F3F5F6;
-  font-family: 'Satoshi', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
@@ -64,6 +64,27 @@ input, textarea, select {
 
 button, a, [role="button"] {
   cursor: none !important;
+}
+
+/* ─── Focus Visible ───────────────────────────────────────────── */
+/* Keyboard users get a clear focus ring; mouse/touch users see nothing */
+:focus-visible {
+  outline: 2px solid var(--color-amethyst-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Booking Modal Spinner ───────────────────────────────────── */
+@keyframes booking-spin {
+  to { transform: rotate(360deg); }
+}
+.booking-spinner {
+  width:  32px;
+  height: 32px;
+  border: 2px solid var(--color-text-subtle);
+  border-top-color: var(--color-brand);
+  border-radius: 50%;
+  animation: booking-spin 0.75s linear infinite;
 }
 
 /* ══════════════════════════════════════════════════════════════

@@ -1,36 +1,49 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { useButtonState } from '@/hooks/useButtonState'
 
-export default function Logo({ mobile = false, onClick }) {
-  const [state, setState] = useState('default')
+const STATES = ['default', 'hover', 'pressed']
 
-  const src = {
-    default: '/assets/logo-default.svg',
-    hover: '/assets/logo-hover.svg',
-    pressed: '/assets/logo-pressed.svg',
-  }
+export default function Logo({ isMobile = false, onClick }) {
+  const { state, handlers } = useButtonState({ isMobile })
 
   return (
-    <motion.div
+    <motion.button
       onClick={onClick}
-      onHoverStart={() => !mobile && setState('hover')}
-      onHoverEnd={() => setState('default')}
-      onTapStart={() => setState('pressed')}
-      onTap={() => setState(mobile ? 'default' : 'hover')}
-      onTapCancel={() => setState('default')}
-      style={{ cursor: 'pointer', display: 'inline-flex', flexShrink: 0 }}
+      {...handlers}
+      aria-label="ily2a home"
+      style={{
+        cursor:   'pointer',
+        display:  'inline-flex',
+        flexShrink: 0,
+        position: 'relative',
+        width:    64,
+        height:   32,
+        background: 'none',
+        border:   'none',
+        padding:  0,
+      }}
     >
-      <Image
-        src={src[state]}
-        alt="ily2a"
-        width={64}
-        height={32}
-        unoptimized
-        style={{ display: 'block' }}
-      />
-    </motion.div>
+      {STATES.map((s) => (
+        <Image
+          key={s}
+          src={`/assets/logo-${s}.svg`}
+          alt={s === 'default' ? 'ily2a' : ''}
+          width={64}
+          height={32}
+          unoptimized
+          style={{
+            display:  'block',
+            position: s === 'default' ? 'relative' : 'absolute',
+            inset:    0,
+            opacity:  state === s ? 1 : 0,
+            transition: 'opacity 0.08s ease',
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+    </motion.button>
   )
 }

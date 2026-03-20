@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useButtonState } from '@/hooks/useButtonState'
+import { SPRING_SNAP } from '@/constants/animations'
 
 const CraftIcon = ({ color }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -18,51 +19,48 @@ const SkillsIcon = ({ color }) => (
 )
 
 const webStates = {
-  default: { borderColor: 'transparent', background: 'transparent', iconColor: '#b2adc7', textColor: '#b2adc7', boxShadow: 'none' },
-  hover:   { borderColor: '#cbc9da',     background: 'transparent', iconColor: '#dedee8', textColor: '#dedee8', boxShadow: 'none' },
-  pressed: { borderColor: '#f6f6f9',     background: '#151A1E',     iconColor: '#f6f6f9', textColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
+  default: { borderColor: 'transparent',               background: 'transparent', iconColor: '#b2adc7', textColor: '#b2adc7', boxShadow: 'none' },
+  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'transparent', iconColor: '#dedee8', textColor: '#dedee8', boxShadow: 'none' },
+  pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: '#f6f6f9', textColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
 }
 
 const mobileStates = {
-  default: { borderColor: 'transparent', background: 'transparent', iconColor: '#b2adc7', boxShadow: 'none' },
-  pressed: { borderColor: '#f6f6f9',     background: '#151A1E',     iconColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
+  default: { borderColor: 'transparent',              background: 'transparent',     iconColor: '#b2adc7', boxShadow: 'none' },
+  pressed: { borderColor: 'var(--color-amethyst-50)', background: 'var(--color-surface)', iconColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
 }
 
-export default function NavbarButton({ icon = 'craft', label = 'Craft', mobile = false, onClick }) {
-  const [state, setState] = useState('default')
-  const Icon = icon === 'craft' ? CraftIcon : SkillsIcon
-  const styles = mobile ? mobileStates : webStates
+export default function NavbarButton({ icon = 'craft', label = 'Craft', isMobile = false, onClick }) {
+  const { state, handlers } = useButtonState({ isMobile })
+  const Icon   = icon === 'craft' ? CraftIcon : SkillsIcon
+  const styles = isMobile ? mobileStates : webStates
 
   return (
     <motion.button
       onClick={onClick}
-      onHoverStart={() => !mobile && setState('hover')}
-      onHoverEnd={() => setState('default')}
-      onTapStart={() => setState('pressed')}
-      onTap={() => setState(mobile ? 'default' : 'hover')}
-      onTapCancel={() => setState('default')}
+      {...handlers}
+      aria-label={isMobile ? label : undefined}
       animate={{
         borderColor: styles[state].borderColor,
-        background: styles[state].background,
-        boxShadow: styles[state].boxShadow,
+        background:  styles[state].background,
+        boxShadow:   styles[state].boxShadow,
       }}
-      transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
+      transition={SPRING_SNAP}
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
+        display:        'inline-flex',
+        alignItems:     'center',
         justifyContent: 'center',
-        gap: mobile ? 0 : '8px',
-        width: mobile ? '44px' : '104px',
-        height: '44px',
-        padding: mobile ? 0 : '15px 19px',
+        gap:      isMobile ? 0 : '8px',
+        width:    isMobile ? '44px' : '104px',
+        height:   '44px',
+        padding:  isMobile ? 0 : '15px 19px',
         borderRadius: '8px',
-        border: '1px solid transparent',
-        cursor: 'pointer',
+        border:   '1px solid transparent',
+        cursor:   'pointer',
         flexShrink: 0,
       }}
     >
       <Icon color={styles[state].iconColor} />
-      {!mobile && (
+      {!isMobile && (
         <span className="nav-link" style={{ color: styles[state].textColor, transition: 'color 0.15s ease', whiteSpace: 'nowrap' }}>
           {label}
         </span>
