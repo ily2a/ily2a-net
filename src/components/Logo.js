@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 export default function Logo({ mobile = false, onClick }) {
   const [state, setState] = useState('default')
@@ -22,11 +23,12 @@ export default function Logo({ mobile = false, onClick }) {
       onTapCancel={() => setState('default')}
       style={{ cursor: 'pointer', display: 'inline-flex', flexShrink: 0 }}
     >
-      <img
+      <Image
         src={src[state]}
         alt="ily2a"
         width={64}
         height={32}
+        unoptimized
         style={{ display: 'block' }}
       />
     </motion.div>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 export default function CloseButton({ onClick }) {
@@ -24,7 +25,7 @@ export default function CloseButton({ onClick }) {
     },
   }
 
-  const [state, setState] = require('react').useState('default')
+  const [state, setState] = useState('default')
 
   return (
     <motion.button

@@ -5,43 +5,42 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import CloseButton from '@/components/CloseButton'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 
 export default function BookingButton() {
   const [open, setOpen] = useState(false)
   const [state, setState] = useState('default')
   const [mounted, setMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [isTablet, setIsTablet] = useState(false)
+
+  const width = useWindowWidth()
+  const isMobile = width > 0 && width < 810
+  const isTablet = width >= 810 && width < 1200
 
   useEffect(() => {
     setMounted(true)
-    const check = () => {
-      const w = window.innerWidth
-      setIsMobile(w < 810)
-      setIsTablet(w >= 810 && w < 1200)
-    }
-    check()
-    window.addEventListener('resize', check)
     ;(async function () {
-      const cal = await getCalApi()
-      cal('ui', {
-        theme: 'dark',
-        cssVarsPerTheme: {
-          dark: {
-            'cal-brand':          '#b2adc7',
-            'cal-brand-emphasis': '#cbc9da',
-            'cal-bg':             '#151A1E',
-            'cal-bg-subtle':      '#0D1012',
-            'cal-border':         '#36414A',
-            'cal-text':           '#F3F5F6',
-            'cal-text-subtle':    '#6B8494',
-          }
-        },
-        hideEventTypeDetails: false,
-        layout: 'month_view',
-      })
+      try {
+        const cal = await getCalApi()
+        cal('ui', {
+          theme: 'dark',
+          cssVarsPerTheme: {
+            dark: {
+              'cal-brand':          '#b2adc7',
+              'cal-brand-emphasis': '#cbc9da',
+              'cal-bg':             '#151A1E',
+              'cal-bg-subtle':      '#0D1012',
+              'cal-border':         '#36414A',
+              'cal-text':           '#F3F5F6',
+              'cal-text-subtle':    '#6B8494',
+            }
+          },
+          hideEventTypeDetails: false,
+          layout: 'month_view',
+        })
+      } catch {
+        // Cal.com failed to load — button still renders, modal just won't work
+      }
     })()
-    return () => window.removeEventListener('resize', check)
   }, [])
 
   const innerStyles = {
@@ -135,8 +134,7 @@ export default function BookingButton() {
               src="https://cal.com/ily2a/intro?embed=true"
               width="100%"
               height="100%"
-              style={{ marginBottom: '-60px', height: 'calc(100% + 80px)' }}
-              frameBorder="0"
+              style={{ marginBottom: '-60px', height: 'calc(100% + 80px)', border: 'none' }}
             />
           </motion.div>
         </motion.div>

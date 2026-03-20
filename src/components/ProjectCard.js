@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -30,7 +31,7 @@ const imgVariants = {
   hover: { scale: 1.04, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
-export default function ProjectCard({ project }) {
+const ProjectCard = memo(function ProjectCard({ project }) {
   return (
     <motion.div initial="rest" whileHover="hover" whileTap="hover">
       <Link href={`/work/${project.slug.current}`} className="project-card">
@@ -77,4 +78,6 @@ export default function ProjectCard({ project }) {
       </Link>
     </motion.div>
   )
-}
+})
+
+export default ProjectCard

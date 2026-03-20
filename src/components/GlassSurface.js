@@ -73,9 +73,11 @@ const GlassSurface = ({
 
   const supportsSVGFilters = () => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return false
-    const isWebkit = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
-    const isFirefox = /Firefox/.test(navigator.userAgent)
-    if (isWebkit || isFirefox) return false
+    // Firefox accepts the style string but doesn't render SVG backdrop-filter correctly
+    if (CSS.supports('-moz-appearance', 'none')) return false
+    // Safari accepts the style string but doesn't render SVG backdrop-filter correctly
+    // hanging-punctuation is a CSS property only Safari supports among major browsers
+    if (CSS.supports('hanging-punctuation', 'first')) return false
     const div = document.createElement('div')
     div.style.backdropFilter = `url(#${filterId})`
     return div.style.backdropFilter !== ''

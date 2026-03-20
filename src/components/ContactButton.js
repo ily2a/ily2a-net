@@ -1,32 +1,28 @@
 'use client'
 
-import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, animate } from "framer-motion";
 
 export default function ContactButton({ label = "Contact", onClick }) {
   const [hovered, setHovered] = useState(false);
   const [angle, setAngle] = useState(62);
-  const rafRef = useRef(null);
-  const startTimeRef = useRef(null);
+  const animRef = useRef(null);
 
-  const animateTo = (targetAngle) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const from = angle;
-    const duration = 400;
-    startTimeRef.current = performance.now();
-    const tick = (now) => {
-      const elapsed = now - startTimeRef.current;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = from + (targetAngle - from) * eased;
-      setAngle(current);
-      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
+  useEffect(() => {
+    return () => { animRef.current?.stop() };
+  }, []);
+
+  const animateTo = (from, targetAngle) => {
+    animRef.current?.stop();
+    animRef.current = animate(from, targetAngle, {
+      duration: 0.4,
+      ease: 'easeOut',
+      onUpdate: setAngle,
+    });
   };
 
-  const handleMouseEnter = () => { setHovered(true); animateTo(224); };
-  const handleMouseLeave = () => { setHovered(false); animateTo(62); };
+  const handleMouseEnter = () => { setHovered(true); animateTo(angle, 224); };
+  const handleMouseLeave = () => { setHovered(false); animateTo(angle, 62); };
 
   const conicGradient = `conic-gradient(from ${angle}deg, rgba(255,255,255,0) 249deg, #b2adc7 249.6deg)`;
 

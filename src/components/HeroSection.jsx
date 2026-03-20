@@ -1,48 +1,46 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import Script from 'next/script'
 import BookingButton from '@/components/BookingButton'
 import TestimonialsButton from '@/components/TestimonialsButton'
 import Navbar from '@/components/Navbar'
 import TextReveal from '@/components/TextReveal'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 
 function UnicornBackground() {
   const ref = useRef(null)
 
   useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://cdn.unicorn.studio/v1.2.7/unicornStudio.umd.js'
-    script.onload = () => {
-      if (ref.current) {
-        ref.current.setAttribute('data-us-project', 'jPCt1BfDdfev5JLLP1hd')
-        window.UnicornStudio?.init()
-      }
-    }
-    document.head.appendChild(script)
-
     return () => {
       window.UnicornStudio?.destroy()
     }
   }, [])
 
   return (
-    <div
-      ref={ref}
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.65 }}
-    />
+    <>
+      <Script
+        src="https://cdn.unicorn.studio/v1.2.7/unicornStudio.umd.js"
+        strategy="lazyOnload"
+        onLoad={() => {
+          if (ref.current) {
+            ref.current.setAttribute('data-us-project', 'jPCt1BfDdfev5JLLP1hd')
+            window.UnicornStudio?.init()
+          }
+        }}
+      />
+      <div
+        ref={ref}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.65 }}
+      />
+    </>
   )
 }
 
 export default function HeroSection() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 600)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  const width = useWindowWidth()
+  const isMobile = width > 0 && width <= 600
 
   return (
     <>

@@ -1,15 +1,16 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 
-export default function TextReveal({ text, className, scale = 1, initialDelay = 0 }) {
-  const words = text.split(' ')
+const TextReveal = memo(function TextReveal({ text, className, scale = 1, initialDelay = 0 }) {
+  const words = useMemo(() => text.split(' ').map(w => w.split('')), [text])
 
   return (
     <p className={className} style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {words.map((word, wi) => (
+      {words.map((chars, wi) => (
         <span key={wi} style={{ display: 'inline-flex' }}>
-          {word.split('').map((char, ci) => (
+          {chars.map((char, ci) => (
             <motion.span
               key={`${wi}-${ci}`}
               initial={{ opacity: 0, filter: 'blur(10px)', y: 10, scale }}
@@ -30,4 +31,6 @@ export default function TextReveal({ text, className, scale = 1, initialDelay = 
       ))}
     </p>
   )
-}
+})
+
+export default TextReveal
