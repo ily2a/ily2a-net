@@ -2,39 +2,45 @@
 
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import Script from 'next/script'
 import BookingButton from '@/components/BookingButton'
 import TestimonialsButton from '@/components/TestimonialsButton'
 import Navbar from '@/components/Navbar'
 import TextReveal from '@/components/TextReveal'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 
+const UNICORN_SRC = 'https://cdn.unicorn.studio/v1.2.7/unicornStudio.umd.js'
+
 function UnicornBackground() {
   const ref = useRef(null)
 
   useEffect(() => {
+    const init = () => {
+      if (ref.current) {
+        ref.current.setAttribute('data-us-project', 'jPCt1BfDdfev5JLLP1hd')
+        window.UnicornStudio?.init()
+      }
+    }
+
+    // Don't add a second script tag if already loaded
+    if (document.querySelector(`script[src="${UNICORN_SRC}"]`)) {
+      init()
+    } else {
+      const script = document.createElement('script')
+      script.src = UNICORN_SRC
+      script.onload = init
+      document.head.appendChild(script)
+    }
+
     return () => {
       window.UnicornStudio?.destroy()
     }
   }, [])
 
   return (
-    <>
-      <Script
-        src="https://cdn.unicorn.studio/v1.2.7/unicornStudio.umd.js"
-        strategy="lazyOnload"
-        onLoad={() => {
-          if (ref.current) {
-            ref.current.setAttribute('data-us-project', 'jPCt1BfDdfev5JLLP1hd')
-            window.UnicornStudio?.init()
-          }
-        }}
-      />
-      <div
-        ref={ref}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.65 }}
-      />
-    </>
+    <div
+      ref={ref}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.65 }}
+    />
   )
 }
 

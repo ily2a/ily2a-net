@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 
 const BLUR_LAYERS = [
   { blur: 0.5, mask: 'linear-gradient(rgba(0,0,0,0) 0%,#000 12.5%,#000 25%,rgba(0,0,0,0) 37.5%)' },
@@ -31,7 +32,50 @@ const imgVariants = {
   hover: { scale: 1.04, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
+const mobileImgVariants = {
+  rest: { scale: 1 },
+  pressed: { scale: 1.03, transition: { duration: 0.2, ease: 'easeOut' } },
+}
+
 const ProjectCard = memo(function ProjectCard({ project }) {
+  const width = useWindowWidth()
+  const isCompact = width > 0 && width < 1200
+
+  if (isCompact) {
+    return (
+      <motion.div
+        initial="rest"
+        whileTap="pressed"
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      >
+        <Link href={`/work/${project.slug.current}`} className="project-card-mobile">
+          <div className="project-card-mobile__image">
+            <motion.div variants={mobileImgVariants} style={{ position: 'absolute', inset: 0 }}>
+              <Image
+                src={urlFor(project.cardImageDefault).width(800).url()}
+                alt={project.title}
+                fill
+                sizes="(max-width: 600px) 100vw, 50vw"
+                className="project-card__img"
+              />
+            </motion.div>
+            <div className="project-card-mobile__tags">
+              {project.tags?.map((tag, i) => (
+                <span key={i} className="project-card__tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <div className="project-card-mobile__content">
+            <div className="project-card__text">
+              <h3 className="project-card__title heading-2">{project.title}</h3>
+              <p className="project-card__subtitle text-sm">{project.description}</p>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div initial="rest" whileHover="hover" whileTap="hover">
       <Link href={`/work/${project.slug.current}`} className="project-card">
