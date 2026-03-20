@@ -1,4 +1,5 @@
 import "./globals.css";
+import { SmoothCursor } from "@/components/SmoothCursor";
 
 export const metadata = {
   title: "Ily Ameur — Design Engineer",
@@ -29,7 +30,10 @@ export default function RootLayout({ children }) {
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothCursor />
+        {children}
+      </body>
     </html>
   );
 }

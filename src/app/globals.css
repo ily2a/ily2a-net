@@ -41,6 +41,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  cursor: none !important;
 }
 
 html {
@@ -55,6 +56,14 @@ body {
   color: #F3F5F6;
   font-family: 'Satoshi', sans-serif;
   overflow-x: hidden;
+}
+
+input, textarea, select {
+  cursor: text !important;
+}
+
+button, a, [role="button"] {
+  cursor: none !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -271,55 +280,6 @@ body {
   gap: 16px;
 }
 
-.project-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.project-card-image {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: 8px;
-  background: var(--color-surface);
-}
-
-.project-card-img {
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.project-card:hover .project-card-img {
-  transform: scale(1.03);
-}
-
-.project-card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.project-card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
-.project-card-desc {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-  margin: 0;
-  line-height: 150%;
-  letter-spacing: 0.07em;
-}
-
 @media (min-width: 600px) {
   .work-grid {
     grid-template-columns: 1fr 1fr;
@@ -341,7 +301,93 @@ body {
   .work-inner { max-width: 1440px; }
 }
 
-/* ─── Animations ──────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   PROJECT CARD
+   ══════════════════════════════════════════════════════════════ */
+
+.project-card {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: none !important;
+  display: block;
+  text-decoration: none;
+}
+
+.project-card__img {
+  object-fit: cover;
+}
+
+.project-card__blur {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.project-card__blur-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.project-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%);
+}
+
+.project-card__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 24px;
+  z-index: 3;
+}
+
+.project-card__tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.project-card__tag {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #0D1012;
+  background-color: var(--color-brand);
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.project-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-card__title {
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.project-card__subtitle {
+  color: rgba(243,245,246,0.75);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════════════════════ */
+
 @keyframes ripple {
   to {
     transform: scale(4);

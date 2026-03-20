@@ -110,29 +110,33 @@ export default {
     {
       name: 'brief',
       title: 'Business Need / Brief',
-      type: 'text',
+      type: 'array',
       group: 'context',
+      of: [{ type: 'block' }],
       validation: Rule => Rule.required(),
     },
     {
       name: 'problem',
       title: 'Problem Statement',
-      type: 'text',
+      type: 'array',
       group: 'context',
+      of: [{ type: 'block' }],
       validation: Rule => Rule.required(),
     },
     {
       name: 'goals',
       title: 'Project Goals',
-      type: 'text',
+      type: 'array',
       group: 'context',
+      of: [{ type: 'block' }],
       validation: Rule => Rule.required(),
     },
     {
       name: 'uxStrategy',
       title: 'UX Strategy',
-      type: 'text',
+      type: 'array',
       group: 'context',
+      of: [{ type: 'block' }],
       validation: Rule => Rule.required(),
     },
 
@@ -162,6 +166,13 @@ export default {
           ],
         },
       ],
+    },
+    {
+      name: 'figmaEmbed',
+      title: 'Figma Embed URL',
+      type: 'url',
+      group: 'content',
+      description: 'Paste the Figma share URL — will be embedded at the end of the case study',
     },
 
     // ── SETTINGS ──
