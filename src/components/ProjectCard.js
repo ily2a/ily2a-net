@@ -37,6 +37,16 @@ const mobileImgVariants = {
   pressed: { scale: 1.03, transition: { duration: 0.2, ease: 'easeOut' } },
 }
 
+const hoverImgVariants = {
+  rest: { opacity: 0 },
+  hover: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+}
+
+const mobileHoverImgVariants = {
+  rest: { opacity: 0 },
+  pressed: { opacity: 1, transition: { duration: 0.2, ease: 'easeOut' } },
+}
+
 const ProjectCard = memo(function ProjectCard({ project }) {
   const width = useWindowWidth()
   const isCompact = width > 0 && width < 1200
@@ -51,14 +61,27 @@ const ProjectCard = memo(function ProjectCard({ project }) {
         <Link href={`/work/${project.slug.current}`} className="project-card-mobile">
           <div className="project-card-mobile__image">
             <motion.div variants={mobileImgVariants} style={{ position: 'absolute', inset: 0 }}>
-              <Image
-                src={urlFor(project.cardImageDefault).width(800).url()}
-                alt={project.title}
-                fill
-                sizes="(max-width: 600px) 100vw, 50vw"
-                className="project-card__img"
-              />
+              {project.cardImageDefault && (
+                <Image
+                  src={urlFor(project.cardImageDefault).width(800).url()}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 600px) 100vw, 50vw"
+                  className="project-card__img"
+                />
+              )}
             </motion.div>
+            {project.cardImageHover && (
+              <motion.div variants={mobileHoverImgVariants} style={{ position: 'absolute', inset: 0 }}>
+                <Image
+                  src={urlFor(project.cardImageHover).width(800).url()}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 600px) 100vw, 50vw"
+                  className="project-card__img"
+                />
+              </motion.div>
+            )}
             <div className="project-card-mobile__tags">
               {project.tags?.map((tag, i) => (
                 <span key={i} className="project-card__tag">{tag}</span>
@@ -81,14 +104,27 @@ const ProjectCard = memo(function ProjectCard({ project }) {
       <Link href={`/work/${project.slug.current}`} className="project-card">
 
         <motion.div variants={imgVariants} style={{ position: 'absolute', inset: 0 }}>
-          <Image
-            src={urlFor(project.cardImageDefault).width(800).url()}
-            alt={project.title}
-            fill
-            sizes="(max-width: 600px) 100vw, 50vw"
-            className="project-card__img"
-          />
+          {project.cardImageDefault && (
+            <Image
+              src={urlFor(project.cardImageDefault).width(800).url()}
+              alt={project.title}
+              fill
+              sizes="(max-width: 600px) 100vw, 50vw"
+              className="project-card__img"
+            />
+          )}
         </motion.div>
+        {project.cardImageHover && (
+          <motion.div variants={hoverImgVariants} style={{ position: 'absolute', inset: 0 }}>
+            <Image
+              src={urlFor(project.cardImageHover).width(800).url()}
+              alt={project.title}
+              fill
+              sizes="(max-width: 600px) 100vw, 50vw"
+              className="project-card__img"
+            />
+          </motion.div>
+        )}
 
         <motion.div className="project-card__blur" aria-hidden="true" variants={overlayVariants}>
           {BLUR_LAYERS.map((layer, i) => (

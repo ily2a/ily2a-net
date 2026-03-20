@@ -17,6 +17,7 @@ export default function Navbar({ mobile = false }) {
       brightness={15}
       opacity={0.8}
       displace={4}
+      backgroundOpacity={0.4}
       style={{
         maxWidth: mobile ? '440px' : 'none',
         minWidth: mobile ? 'auto' : '472px',

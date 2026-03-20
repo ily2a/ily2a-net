@@ -135,7 +135,7 @@ const GlassSurface = ({
     if (!mounted) {
       return {
         ...baseStyles,
-        background: 'rgba(21, 26, 30, 0.05)',
+        background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
         backdropFilter: 'blur(20px) saturate(300%)',
         WebkitBackdropFilter: 'blur(20px) saturate(300%)',
         border: '1px solid var(--color-amethyst-900)',
@@ -158,14 +158,14 @@ const GlassSurface = ({
     if (!supportsBackdropFilter()) {
       return {
         ...baseStyles,
-        background: 'rgba(21, 26, 30, 0.4)',
+        background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.4)})`,
         border: '1px solid rgba(255, 255, 255, 0.1)',
       }
     }
 
     return {
       ...baseStyles,
-      background: 'rgba(21, 26, 30, 0.05)',
+      background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
       backdropFilter: 'blur(20px) saturate(300%)',
       WebkitBackdropFilter: 'blur(20px) saturate(300%)',
       border: '1px solid var(--color-amethyst-900)',
@@ -180,33 +180,35 @@ const GlassSurface = ({
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
       style={getContainerStyles()}
     >
-      <svg
-        style={{
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          position: 'absolute',
-          inset: 0,
-          opacity: 0,
-          zIndex: -1,
-        }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id={filterId} colorInterpolationFilters="sRGB" x="0%" y="0%" width="100%" height="100%">
-            <feImage ref={feImageRef} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
-            <feDisplacementMap ref={redChannelRef} in="SourceGraphic" in2="map" result="dispRed" />
-            <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
-            <feDisplacementMap ref={greenChannelRef} in="SourceGraphic" in2="map" result="dispGreen" />
-            <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
-            <feDisplacementMap ref={blueChannelRef} in="SourceGraphic" in2="map" result="dispBlue" />
-            <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
-            <feBlend in="red" in2="green" mode="screen" result="rg" />
-            <feBlend in="rg" in2="blue" mode="screen" result="output" />
-            <feGaussianBlur ref={gaussianBlurRef} in="output" stdDeviation="0.7" />
-          </filter>
-        </defs>
-      </svg>
+      {mounted && (
+        <svg
+          style={{
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+            position: 'absolute',
+            inset: 0,
+            opacity: 0,
+            zIndex: -1,
+          }}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <filter id={filterId} colorInterpolationFilters="sRGB" x="0%" y="0%" width="100%" height="100%">
+              <feImage ref={feImageRef} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
+              <feDisplacementMap ref={redChannelRef} in="SourceGraphic" in2="map" result="dispRed" />
+              <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+              <feDisplacementMap ref={greenChannelRef} in="SourceGraphic" in2="map" result="dispGreen" />
+              <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
+              <feDisplacementMap ref={blueChannelRef} in="SourceGraphic" in2="map" result="dispBlue" />
+              <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+              <feBlend in="red" in2="green" mode="screen" result="rg" />
+              <feBlend in="rg" in2="blue" mode="screen" result="output" />
+              <feGaussianBlur ref={gaussianBlurRef} in="output" stdDeviation="0.7" />
+            </filter>
+          </defs>
+        </svg>
+      )}
       <div style={{
         width: '100%',
         height: '100%',

@@ -6,7 +6,7 @@ import Link from 'next/link'
 export default async function Home() {
   const projects = await client.fetch(
     `*[_type == "caseStudy"] | order(order asc) [0...4] {
-      _id, title, slug, description, tags, cardImageDefault
+      _id, title, slug, description, tags, cardImageDefault, cardImageHover
     }`
   )
 
