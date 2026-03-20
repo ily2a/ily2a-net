@@ -60,7 +60,7 @@ export default function ContactButton({ label = "Contact", onClick }) {
         WebkitTapHighlightColor: "transparent",
       }}
     >
-      <div style={{ ...layerBase, backgroundColor: "#151A1E" }} />
+      <div style={{ ...layerBase, backgroundColor: "var(--color-surface)" }} />
       <div style={{ ...layerBase, background: conicGradient, opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
       <div style={{ ...layerBase, background: conicGradient, filter: "blur(8px)", opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
       <div style={{ ...layerBase, background: conicGradient, transform: "rotate(180deg)", opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
@@ -68,13 +68,13 @@ export default function ContactButton({ label = "Contact", onClick }) {
       <div style={{
         ...layerBase,
         inset: "1px",
-        background: "linear-gradient(180deg, #151A1E 0%, #0D1012 100%)",
+        background: "linear-gradient(180deg, var(--color-surface) 0%, var(--color-background) 100%)",
         borderRadius: "7px",
       }} />
       <span className="btn-label" style={{
         position: "relative",
         zIndex: 1,
-        color: "#F3F5F6",
+        color: "var(--color-text-primary)",
         whiteSpace: "nowrap",
         pointerEvents: "none",
       }}>

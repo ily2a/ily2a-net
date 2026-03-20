@@ -182,13 +182,7 @@ export default {
       type: 'boolean',
       group: 'settings',
       initialValue: false,
-    },
-    {
-      name: 'password',
-      title: 'Password',
-      type: 'string',
-      group: 'settings',
-      hidden: ({ document }) => !document?.isPasswordProtected,
+      description: 'When enabled, the case study page will require a password. Store the password in the CASE_STUDY_PASSWORD env variable and validate it via an API route — never store it here.',
     },
   ],
 }
