@@ -7,11 +7,11 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
   const words = useMemo(() => text.split(' '), [text])
 
   return (
-    <p className={className} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25em' }}>
+    <p className={className}>
       {words.map((word, wi) => (
         <motion.span
           key={wi}
-          style={{ display: 'inline-block', willChange: 'filter, transform, opacity' }}
+          style={{ display: 'inline-block', willChange: 'filter, transform, opacity', marginRight: '0.25em' }}
           initial={{ opacity: 0, filter: 'blur(6px)', y: 8, scale }}
           animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
           transition={{

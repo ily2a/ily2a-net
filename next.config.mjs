@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 
+const isDev = process.env.NODE_ENV === 'development'
+
 const ContentSecurityPolicy = [
   "default-src 'self'",
   // Next.js requires unsafe-inline for its runtime scripts (inline styles/scripts injected by the framework)
-  "script-src 'self' 'unsafe-inline' https://cal.com https://app.cal.com",
+  // React dev mode requires unsafe-eval for callstack reconstruction; never used in production
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://cal.com https://app.cal.com`,
   "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
   "img-src 'self' data: blob: https://cdn.sanity.io https://cal.com https://app.cal.com",
   "font-src 'self' https://api.fontshare.com",

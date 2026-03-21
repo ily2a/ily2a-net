@@ -25,7 +25,7 @@ export default async function Home() {
       </HeroSection>
 
       {/* ── WORK ── */}
-      <section className="work-section">
+      <section id="work" className="work-section">
         <div className="work-inner">
           <div className="work-header-block">
             <div className="work-header">
