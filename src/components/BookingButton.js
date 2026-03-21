@@ -102,6 +102,7 @@ export default function BookingButton() {
     // this restores focus to the trigger even when Escape is pressed inside
     // the iframe (where the keydown listener can't reach).
     const handleCalMessage = (e) => {
+      if (e.origin !== 'https://cal.com' && e.origin !== 'https://app.cal.com') return
       if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
         handleClose()
       }

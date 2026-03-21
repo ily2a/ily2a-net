@@ -68,7 +68,7 @@ export default function HeroSection({ children }) {
 
   return (
     <>
-      <section className="hero-section">
+      <section id="hero" className="hero-section">
         <HeroBackground />
         <div className="hero-container">
           <div style={{ width: '100%', maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '24px' }}>

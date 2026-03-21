@@ -3,9 +3,15 @@ import { sanityFetch } from '@/sanity/lib/live'
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ily2a.net'
 
 export default async function sitemap() {
-  const { data: projects } = await sanityFetch({
-    query: `*[_type == "caseStudy"] { "slug": slug.current, _updatedAt }`,
-  })
+  let projects = []
+  try {
+    const { data } = await sanityFetch({
+      query: `*[_type == "caseStudy"] { "slug": slug.current, _updatedAt }`,
+    })
+    projects = data ?? []
+  } catch (e) {
+    console.error('[sitemap.js] Sanity fetch failed:', e)
+  }
 
   return [
     {

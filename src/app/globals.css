@@ -109,7 +109,25 @@ button, a, [role="button"] {
   border: 2px solid var(--color-text-subtle);
   border-top-color: var(--color-brand);
   border-radius: 50%;
-  animation: booking-spin 0.75s linear infinite;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .booking-spinner { animation: booking-spin 0.75s linear infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .booking-spinner { opacity: 0.5; }
+}
+
+/* ─── Screen Reader Only ──────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ══════════════════════════════════════════════════════════════

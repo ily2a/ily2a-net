@@ -14,8 +14,8 @@ export default async function Home() {
       }`,
     })
     projects = data ?? []
-  } catch {
-    // Sanity fetch failed — render page with empty project list
+  } catch (e) {
+    console.error('[page.js] Sanity fetch failed:', e)
   }
 
   return (

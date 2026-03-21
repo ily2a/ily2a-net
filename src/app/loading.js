@@ -1,6 +1,7 @@
 export default function Loading() {
   return (
-    <main>
+    <main aria-busy="true" aria-label="Loading page content">
+      <p className="sr-only">Loading, please wait…</p>
       {/* ── Hero skeleton ── */}
       <section className="hero-section">
         <div className="hero-container">
