@@ -1,6 +1,28 @@
 'use client'
 
-import { useEffect, useRef, useState, useId } from 'react'
+import { useEffect, useRef, useState, useId, useMemo } from 'react'
+
+// Module-level cache — browser support is detected once on first mount,
+// shared across all GlassSurface instances on the page.
+let _svgSupportCache = null
+let _backdropSupportCache = null
+
+function detectSVGFilterSupport(filterId) {
+  if (_svgSupportCache !== null) return _svgSupportCache
+  if (typeof window === 'undefined' || typeof document === 'undefined') return false
+  if (CSS.supports('-moz-appearance', 'none')) { _svgSupportCache = false; return false }
+  if (CSS.supports('hanging-punctuation', 'first')) { _svgSupportCache = false; return false }
+  const div = document.createElement('div')
+  div.style.backdropFilter = `url(#${filterId})`
+  _svgSupportCache = div.style.backdropFilter !== ''
+  return _svgSupportCache
+}
+
+function detectBackdropSupport() {
+  if (_backdropSupportCache !== null) return _backdropSupportCache
+  _backdropSupportCache = typeof CSS !== 'undefined' && CSS.supports('backdrop-filter', 'blur(10px)')
+  return _backdropSupportCache
+}
 
 const GlassSurface = ({
   children,
@@ -45,6 +67,9 @@ const GlassSurface = ({
   // Cache last rendered dimensions — skip SVG regen when size hasn't changed
   const lastSizeRef = useRef({ w: 0, h: 0 })
 
+  // All props interpolated into the SVG data URI must remain numeric.
+  // If this component is ever extended, validate props at the call site to
+  // prevent SVG injection via string values.
   const generateDisplacementMap = () => {
     const rect = containerRef.current?.getBoundingClientRect()
     const actualWidth = rect?.width || 400
@@ -86,24 +111,12 @@ const GlassSurface = ({
   // Keep the ref pointing at the latest version — avoids stale closure in ResizeObserver
   updateRef.current = updateDisplacementMap
 
-  const supportsSVGFilters = () => {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return false
-    // Firefox accepts the style string but doesn't render SVG backdrop-filter correctly
-    if (CSS.supports('-moz-appearance', 'none')) return false
-    // Safari accepts the style string but doesn't render SVG backdrop-filter correctly
-    // hanging-punctuation is a CSS property only Safari supports among major browsers
-    if (CSS.supports('hanging-punctuation', 'first')) return false
-    const div = document.createElement('div')
-    div.style.backdropFilter = `url(#${filterId})`
-    return div.style.backdropFilter !== ''
-  }
-
-  // Compute support flags once on mount
+  // Compute support flags once on mount (results cached at module level across instances)
   useEffect(() => {
     setMounted(true)
-    setSvgSupported(supportsSVGFilters())
-    setBackdropSupported(CSS.supports('backdrop-filter', 'blur(10px)'))
-  }, [])
+    setSvgSupported(detectSVGFilterSupport(filterId))
+    setBackdropSupported(detectBackdropSupport())
+  }, [filterId])
 
   // Update SVG filter attributes when relevant props change
   useEffect(() => {
@@ -139,7 +152,7 @@ const GlassSurface = ({
     if (mounted) updateRef.current?.()
   }, [width, height, mounted])
 
-  const getContainerStyles = () => {
+  const containerStyles = useMemo(() => {
     const baseStyles = {
       ...style,
       width: typeof width === 'number' ? `${width}px` : width,
@@ -188,13 +201,13 @@ const GlassSurface = ({
       boxShadow: `inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
                   inset 0 -1px 0 0 rgba(255, 255, 255, 0.04)`,
     }
-  }
+  }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId, blur, displace])
 
   return (
     <div
       ref={containerRef}
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
-      style={getContainerStyles()}
+      style={containerStyles}
     >
       {mounted && (
         <svg

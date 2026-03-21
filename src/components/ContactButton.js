@@ -1,37 +1,33 @@
 'use client'
 
-import { useState, useRef, useEffect } from "react";
-import { motion, animate } from "framer-motion";
+import { useState, useRef, useEffect } from 'react'
+import { motion, animate } from 'framer-motion'
+import { SPRING_SNAP } from '@/constants/animations'
 
-export default function ContactButton({ label = "Contact", onClick }) {
-  const [hovered, setHovered] = useState(false);
-  const [angle, setAngle] = useState(62);
-  const animRef = useRef(null);
+export default function ContactButton({ label = 'Contact', onClick }) {
+  const [hovered, setHovered] = useState(false)
+  const [angle, setAngle]     = useState(62)
+  const animRef = useRef(null)
 
   useEffect(() => {
-    return () => { animRef.current?.stop() };
-  }, []);
+    return () => { animRef.current?.stop() }
+  }, [])
 
   const animateTo = (from, targetAngle) => {
-    animRef.current?.stop();
+    animRef.current?.stop()
     animRef.current = animate(from, targetAngle, {
       duration: 0.4,
       ease: 'easeOut',
       onUpdate: setAngle,
-    });
-  };
+    })
+  }
 
-  const handleMouseEnter = () => { setHovered(true); animateTo(angle, 224); };
-  const handleMouseLeave = () => { setHovered(false); animateTo(angle, 62); };
+  const handleMouseEnter = () => { setHovered(true);  animateTo(angle, 224) }
+  const handleMouseLeave = () => { setHovered(false); animateTo(angle, 62)  }
 
-  const conicGradient = `conic-gradient(from ${angle}deg, rgba(255,255,255,0) 249deg, #b2adc7 249.6deg)`;
-
-  const layerBase = {
-    position: "absolute",
-    inset: 0,
-    borderRadius: "8px",
-    overflow: "hidden",
-  };
+  // Normalise angle to [0, 360) to prevent the value growing unbounded at 60fps
+  const conicGradient = `conic-gradient(from ${angle % 360}deg, rgba(255,255,255,0) 249deg, var(--color-amethyst-400) 249.6deg)`
+  const layerClass    = 'absolute inset-0 rounded-[8px] overflow-hidden'
 
   return (
     <motion.button
@@ -39,47 +35,32 @@ export default function ContactButton({ label = "Contact", onClick }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       whileTap={{ scale: 0.96 }}
-      transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
+      transition={SPRING_SNAP}
+      aria-label={label}
+      className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-[8px] overflow-visible select-none shrink-0"
       style={{
-        appearance: "none",
-        border: "none",
-        background: "none",
-        font: "inherit",
-        position: "relative",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "0",
-        width: "104px",
-        height: "44px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        overflow: "visible",
-        userSelect: "none",
-        flexShrink: 0,
-        WebkitTapHighlightColor: "transparent",
+        appearance: 'none',
+        border: 'none',
+        background: 'none',
+        font: 'inherit',
+        WebkitTapHighlightColor: 'transparent',
       }}
     >
-      <div style={{ ...layerBase, backgroundColor: "var(--color-surface)" }} />
-      <div style={{ ...layerBase, background: conicGradient, opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
-      <div style={{ ...layerBase, background: conicGradient, filter: "blur(8px)", opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
-      <div style={{ ...layerBase, background: conicGradient, transform: "rotate(180deg)", opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
-      <div style={{ ...layerBase, background: conicGradient, filter: "blur(8px)", transform: "rotate(180deg)", opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease" }} />
-      <div style={{
-        ...layerBase,
-        inset: "1px",
-        background: "linear-gradient(180deg, var(--color-surface) 0%, var(--color-background) 100%)",
-        borderRadius: "7px",
-      }} />
-      <span className="btn-label" style={{
-        position: "relative",
-        zIndex: 1,
-        color: "var(--color-text-primary)",
-        whiteSpace: "nowrap",
-        pointerEvents: "none",
-      }}>
+      <div className={layerClass} style={{ backgroundColor: 'var(--color-surface)' }} />
+      <div className={layerClass} style={{ background: conicGradient, opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
+      <div className={layerClass} style={{ background: conicGradient, filter: 'blur(8px)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
+      <div className={layerClass} style={{ background: conicGradient, transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
+      <div className={layerClass} style={{ background: conicGradient, filter: 'blur(8px)', transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
+      <div
+        className="absolute rounded-[7px]"
+        style={{
+          inset: '1px',
+          background: 'linear-gradient(180deg, var(--color-surface) 0%, var(--color-background) 100%)',
+        }}
+      />
+      <span className="btn-label relative z-[1] whitespace-nowrap pointer-events-none" style={{ color: 'var(--color-text-primary)' }}>
         {label}
       </span>
     </motion.button>
-  );
+  )
 }

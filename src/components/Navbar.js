@@ -1,12 +1,13 @@
 'use client'
 
+import { memo } from 'react'
 import Logo from '@/components/Logo'
 import NavbarButton from '@/components/NavbarButton'
 import ContactButton from '@/components/ContactButton'
 import MobileContactButton from '@/components/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
 
-export default function Navbar({ isMobile = false }) {
+const Navbar = memo(function Navbar({ isMobile = false }) {
   return (
     <GlassSurface
       width={isMobile ? 'calc(100vw - 32px)' : '472px'}
@@ -27,22 +28,14 @@ export default function Navbar({ isMobile = false }) {
     >
       <nav
         aria-label="Main navigation"
-        style={{
-          display:        'inline-flex',
-          alignItems:     'center',
-          justifyContent: 'center',
-          gap:            '16px',
-          width:          '100%',
-          height:         '100%',
-          padding:        '8px 24px',
-          boxSizing:      'border-box',
-        }}
+        className="inline-flex items-center justify-center gap-4 w-full h-full py-2 px-6 box-border"
       >
         <Logo isMobile={isMobile} />
-        <NavbarButton icon="craft"  label="Craft"  isMobile={isMobile} />
-        <NavbarButton icon="skills" label="Skills" isMobile={isMobile} />
+        {/* aria-disabled until /craft and /skills routes are implemented */}
+        <NavbarButton icon="craft"  label="Craft"  isMobile={isMobile} aria-disabled="true" />
+        <NavbarButton icon="skills" label="Skills" isMobile={isMobile} aria-disabled="true" />
         {isMobile ? (
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="flex-1 min-w-0">
             <MobileContactButton />
           </div>
         ) : (
@@ -51,4 +44,6 @@ export default function Navbar({ isMobile = false }) {
       </nav>
     </GlassSurface>
   )
-}
+})
+
+export default Navbar

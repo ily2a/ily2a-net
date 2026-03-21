@@ -2,11 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, useSpring } from 'framer-motion'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const DESKTOP_POINTER_QUERY = '(any-hover: hover) and (any-pointer: fine)'
 
 function isTrackablePointer(pointerType) {
   return pointerType !== 'touch'
+}
+
+// Keep angle diff in [-180, 180] so the cursor always rotates the short way
+function normalizeAngleDiff(current, previous) {
+  let diff = current - previous
+  if (diff >  180) diff -= 360
+  if (diff < -180) diff += 360
+  return diff
 }
 
 const DefaultCursorSVG = () => (
@@ -31,6 +40,7 @@ const DefaultCursorSVG = () => (
 )
 
 export function SmoothCursor({ cursor = <DefaultCursorSVG />, springConfig = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 } }) {
+  const prefersReduced = usePrefersReducedMotion()
   const lastMousePos = useRef({ x: 0, y: 0 })
   const velocity = useRef({ x: 0, y: 0 })
   const lastUpdateTime = useRef(Date.now())
@@ -76,15 +86,14 @@ export function SmoothCursor({ cursor = <DefaultCursorSVG />, springConfig = { d
       setIsVisible(true)
       const currentPos = { x: e.clientX, y: e.clientY }
       updateVelocity(currentPos)
-      const speed = Math.sqrt(Math.pow(velocity.current.x, 2) + Math.pow(velocity.current.y, 2))
+      const speed = Math.hypot(velocity.current.x, velocity.current.y)
       cursorX.set(currentPos.x)
       cursorY.set(currentPos.y)
       if (speed > 0.1) {
         const currentAngle = Math.atan2(velocity.current.y, velocity.current.x) * (180 / Math.PI) + 90
-        let angleDiff = currentAngle - previousAngle.current
-        if (angleDiff > 180) angleDiff -= 360
-        if (angleDiff < -180) angleDiff += 360
-        accumulatedRotation.current += angleDiff
+        accumulatedRotation.current += normalizeAngleDiff(currentAngle, previousAngle.current)
+        // accumulatedRotation grows unbounded by design — Framer Motion handles
+        // large rotation values correctly and normalising would cause spring jumps.
         rotation.set(accumulatedRotation.current)
         previousAngle.current = currentAngle
         scale.set(0.95)
@@ -111,7 +120,7 @@ export function SmoothCursor({ cursor = <DefaultCursorSVG />, springConfig = { d
     }
   }, [cursorX, cursorY, rotation, scale, isEnabled])
 
-  if (!isEnabled) return null
+  if (!isEnabled || prefersReduced) return null
 
   return (
     <motion.div

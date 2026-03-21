@@ -41,23 +41,8 @@ const CloseButton = forwardRef(function CloseButton({ onClick }, ref) {
       }}
       transition={SPRING_SNAP}
       aria-label="Close"
-      style={{
-        // 44×44 touch target, 32×32 visual — padding makes up the difference
-        width:     '44px',
-        height:    '44px',
-        minWidth:  '44px',
-        minHeight: '44px',
-        borderRadius: '8px',
-        border:    '2px solid',
-        display:   'flex',
-        alignItems:     'center',
-        justifyContent: 'center',
-        cursor:    'pointer',
-        padding:   '6px',
-        flexShrink: 0,
-        position:  'relative',
-        overflow:  'hidden',
-      }}
+      className="flex items-center justify-center shrink-0 relative overflow-hidden w-11 h-11 min-w-11 min-h-11 rounded-[8px] p-[6px]"
+      style={{ border: '2px solid' }}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path

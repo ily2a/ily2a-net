@@ -9,6 +9,26 @@ import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
 
+// Defined at module level — same object reference on every render, so
+// Framer Motion's `animate` never re-triggers on unchanged state.
+const INNER_STYLES = {
+  default: {
+    background: 'linear-gradient(to bottom, var(--color-amethyst-50), var(--color-amethyst-500))',
+    border:     '1px solid var(--color-amethyst-100)',
+    boxShadow:  'none',
+  },
+  hover: {
+    background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-300))',
+    border:     '1px solid var(--color-amethyst-300)',
+    boxShadow:  'none',
+  },
+  pressed: {
+    background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-100))',
+    border:     '1px solid var(--color-brand)',
+    boxShadow:  'inset 0px 3px 3px var(--color-brand), inset 0px -3px 3px var(--color-brand), inset -3px 0px 3px var(--color-brand), inset 3px 0px 3px var(--color-brand)',
+  },
+}
+
 export default function BookingButton() {
   const [open, setOpen]             = useState(false)
   const [mounted, setMounted]       = useState(false)
@@ -21,38 +41,55 @@ export default function BookingButton() {
   const { state, handlers } = useButtonState()
 
   // Cal.com is initialised lazily — only when the user first opens the modal
-  const calInitialized = useRef(false)
-  const closeButtonRef = useRef(null)
-  const frameRef       = useRef(null)  // modal content container for focus trap
+  const calInitialized  = useRef(false)
+  const closeButtonRef  = useRef(null)
+  const frameRef        = useRef(null)    // modal content container for focus trap
+  const triggerRef      = useRef(null)    // element that opened the modal — restored on close
+  const focusableRef    = useRef([])      // cached focusable elements — queried once on open
 
   useEffect(() => { setMounted(true) }, [])
+
+  // Pre-initialise Cal.com on mount so the first modal open is instant
+  // rather than waiting for the async getCalApi() call.
+  useEffect(() => { initCal() }, [])
 
   // Reset iframe loading state each time modal opens
   useEffect(() => {
     if (open) setIframeLoaded(false)
   }, [open])
 
+  const handleClose = () => {
+    setOpen(false)
+    triggerRef.current?.focus()
+    triggerRef.current = null
+  }
+
   // Focus management + focus trap + Escape handler when modal is open
   useEffect(() => {
-    if (!open) return
+    if (!open) { focusableRef.current = []; return }
 
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setOpen(false)
-        return
-      }
-
-      // Focus trap — cycle within modal
-      if (e.key === 'Tab' && frameRef.current) {
-        const focusable = Array.from(
+    // rAF: element is in DOM immediately after AnimatePresence mounts it
+    const raf = requestAnimationFrame(() => {
+      closeButtonRef.current?.focus()
+      // Cache focusable elements once on open — avoids querySelectorAll on every keydown
+      if (frameRef.current) {
+        // Exclude iframes — the Cal.com iframe is sandboxed so keyboard focus
+        // cannot cycle within it; including it in the trap causes dead Tab stops.
+        focusableRef.current = Array.from(
           frameRef.current.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), iframe'
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
           )
         )
-        if (!focusable.length) return
-        const first = focusable[0]
-        const last  = focusable[focusable.length - 1]
+      }
+    })
 
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') { handleClose(); return }
+
+      // Focus trap — cycle within modal
+      if (e.key === 'Tab' && focusableRef.current.length) {
+        const first = focusableRef.current[0]
+        const last  = focusableRef.current[focusableRef.current.length - 1]
         if (e.shiftKey) {
           if (document.activeElement === first) { e.preventDefault(); last.focus() }
         } else {
@@ -61,12 +98,20 @@ export default function BookingButton() {
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
-    // rAF instead of setTimeout — element is in DOM immediately after AnimatePresence mounts it
-    const raf = requestAnimationFrame(() => closeButtonRef.current?.focus())
+    // Cal.com fires a postMessage when the user closes or finishes booking;
+    // this restores focus to the trigger even when Escape is pressed inside
+    // the iframe (where the keydown listener can't reach).
+    const handleCalMessage = (e) => {
+      if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
+        handleClose()
+      }
+    }
 
+    document.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('message', handleCalMessage)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
     }
   }, [open])
@@ -97,24 +142,10 @@ export default function BookingButton() {
     }
   }
 
-  const handleOpen = () => { initCal(); setOpen(true) }
-
-  const innerStyles = {
-    default: {
-      background: 'linear-gradient(to bottom, var(--color-amethyst-50), var(--color-amethyst-500))',
-      border:     '1px solid var(--color-amethyst-100)',
-      boxShadow:  'none',
-    },
-    hover: {
-      background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-300))',
-      border:     '1px solid var(--color-amethyst-300)',
-      boxShadow:  'none',
-    },
-    pressed: {
-      background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-100))',
-      border:     '1px solid var(--color-brand)',
-      boxShadow:  'inset 0px 3px 3px var(--color-brand), inset 0px -3px 3px var(--color-brand), inset -3px 0px 3px var(--color-brand), inset 3px 0px 3px var(--color-brand)',
-    },
+  const handleOpen = () => {
+    triggerRef.current = document.activeElement
+    initCal()
+    setOpen(true)
   }
 
   const isSmall = isMobile || isTablet
@@ -165,7 +196,7 @@ export default function BookingButton() {
           role="dialog"
           aria-modal="true"
           aria-label="Book a call with Ily Ameur"
-          onClick={() => setOpen(false)}
+          onClick={handleClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -188,7 +219,7 @@ export default function BookingButton() {
               zIndex:   10,
               ...(isMobile ? { right: '16px' } : { left: '16px' }),
             }}>
-              <CloseButton ref={closeButtonRef} onClick={() => setOpen(false)} />
+              <CloseButton ref={closeButtonRef} onClick={handleClose} />
             </div>
 
             {/* Spinner shown while iframe loads */}
@@ -205,14 +236,17 @@ export default function BookingButton() {
               </div>
             )}
 
+            {/* Wrapper clips the cal.com footer bar via overflow:hidden on the parent frame */}
+            {/* allow-same-origin is required by Cal.com for auth/cookie access.
+                Security trade-off: accepted because Cal.com is a trusted origin
+                and removing it breaks the booking flow entirely. */}
             <iframe
               src="https://cal.com/ily2a/intro?embed=true"
               title="Book a call with Ily Ameur"
               width="100%"
-              height="100%"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
               onLoad={() => setIframeLoaded(true)}
-              style={{ marginBottom: '-60px', height: 'calc(100% + 80px)', border: 'none' }}
+              style={{ display: 'block', border: 'none', width: '100%', height: 'calc(100% + 80px)' }}
             />
           </motion.div>
         </motion.div>
@@ -243,7 +277,7 @@ export default function BookingButton() {
         }}
       >
         <motion.div
-          animate={innerStyles[state]}
+          animate={INNER_STYLES[state]}
           transition={SPRING_SNAP}
           style={{
             display:        'flex',

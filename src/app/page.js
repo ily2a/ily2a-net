@@ -4,13 +4,19 @@ import { sanityFetch } from '@/sanity/lib/live'
 import Link from 'next/link'
 
 export default async function Home() {
-  const { data: projects } = await sanityFetch({
-    query: `*[_type == "caseStudy"] | order(order asc) [0...4] {
-      _id, title, slug, description, tags,
-      cardImageDefault { ..., "lqip": asset->metadata.lqip },
-      cardImageHover   { ..., "lqip": asset->metadata.lqip }
-    }`,
-  })
+  let projects = []
+  try {
+    const { data } = await sanityFetch({
+      query: `*[_type == "caseStudy"] | order(order asc) [0...4] {
+        _id, title, slug, description, tags,
+        cardImageDefault { ..., "lqip": asset->metadata.lqip },
+        cardImageHover   { ..., "lqip": asset->metadata.lqip }
+      }`,
+    })
+    projects = data ?? []
+  } catch {
+    // Sanity fetch failed — render page with empty project list
+  }
 
   return (
     <main>
@@ -24,7 +30,7 @@ export default async function Home() {
           <div className="work-header-block">
             <div className="work-header">
               <h2 className="work-title">My Craft</h2>
-              <Link href="/work" className="work-view-all">View all projects</Link>
+              <Link href="/craft" className="work-view-all">View all projects</Link>
             </div>
             <p className="work-subtitle text-md">
               End-to-end product design across 10+ industries. Increasingly, I build what I design.

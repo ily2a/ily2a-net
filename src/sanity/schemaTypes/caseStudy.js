@@ -6,7 +6,6 @@ export default {
     { name: 'meta', title: '① Meta' },
     { name: 'context', title: '② Context' },
     { name: 'content', title: '③ Content' },
-    { name: 'settings', title: '⚙ Settings' },
   ],
   fields: [
 
@@ -175,14 +174,5 @@ export default {
       description: 'Paste the Figma share URL — will be embedded at the end of the case study',
     },
 
-    // ── SETTINGS ──
-    {
-      name: 'isPasswordProtected',
-      title: 'Password Protected?',
-      type: 'boolean',
-      group: 'settings',
-      initialValue: false,
-      description: 'When enabled, the case study page will require a password. Store the password in the CASE_STUDY_PASSWORD env variable and validate it via an API route — never store it here.',
-    },
   ],
 }

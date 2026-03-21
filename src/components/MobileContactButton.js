@@ -1,19 +1,32 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 export default function MobileContactButton({ label = 'Contact', onClick }) {
   const [ripples, setRipples] = useState([])
+  const buttonRef = useRef(null)
 
-  const handleClick = (e) => {
-    const button = e.currentTarget
+  const triggerRipple = (x, y) => {
+    const button = buttonRef.current
+    if (!button) return
     const rect = button.getBoundingClientRect()
     const size = Math.max(rect.width, rect.height)
-    const x = e.clientX - rect.left - size / 2
-    const y = e.clientY - rect.top - size / 2
-    setRipples((prev) => [...prev, { x, y, size, key: Date.now() }])
+    setRipples((prev) => [...prev, { x: x - rect.left - size / 2, y: y - rect.top - size / 2, size, key: Date.now() }])
+  }
+
+  const handleClick = (e) => {
+    triggerRipple(e.clientX, e.clientY)
     onClick?.()
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const button = buttonRef.current
+      if (!button) return
+      const rect = button.getBoundingClientRect()
+      triggerRipple(rect.left + rect.width / 2, rect.top + rect.height / 2)
+    }
   }
 
   useEffect(() => {
@@ -27,7 +40,9 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
 
   return (
     <motion.button
+      ref={buttonRef}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
       style={{

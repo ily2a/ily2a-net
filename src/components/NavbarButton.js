@@ -18,9 +18,11 @@ const SkillsIcon = ({ color }) => (
   </svg>
 )
 
+const ICONS = { craft: CraftIcon, skills: SkillsIcon }
+
 const webStates = {
-  default: { borderColor: 'transparent',               background: 'transparent', iconColor: '#b2adc7', textColor: '#b2adc7', boxShadow: 'none' },
-  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'transparent', iconColor: '#dedee8', textColor: '#dedee8', boxShadow: 'none' },
+  default: { borderColor: 'transparent',               background: 'transparent',     iconColor: '#b2adc7', textColor: '#b2adc7', boxShadow: 'none' },
+  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'transparent',     iconColor: '#dedee8', textColor: '#dedee8', boxShadow: 'none' },
   pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: '#f6f6f9', textColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
 }
 
@@ -29,41 +31,35 @@ const mobileStates = {
   pressed: { borderColor: 'var(--color-amethyst-50)', background: 'var(--color-surface)', iconColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
 }
 
-export default function NavbarButton({ icon = 'craft', label = 'Craft', isMobile = false, onClick }) {
+export default function NavbarButton({ icon = 'craft', label = 'Craft', isMobile = false, onClick, ...rest }) {
   const { state, handlers } = useButtonState({ isMobile })
-  const Icon   = icon === 'craft' ? CraftIcon : SkillsIcon
+  const Icon   = ICONS[icon] ?? CraftIcon
   const styles = isMobile ? mobileStates : webStates
 
   return (
     <motion.button
       onClick={onClick}
       {...handlers}
-      aria-label={isMobile ? label : undefined}
+      {...rest}
+      aria-label={label}
       animate={{
         borderColor: styles[state].borderColor,
         background:  styles[state].background,
         boxShadow:   styles[state].boxShadow,
       }}
       transition={SPRING_SNAP}
-      style={{
-        display:        'inline-flex',
-        alignItems:     'center',
-        justifyContent: 'center',
-        gap:      isMobile ? 0 : '8px',
-        width:    isMobile ? '44px' : '104px',
-        height:   '44px',
-        padding:  isMobile ? 0 : '15px 19px',
-        borderRadius: '8px',
-        border:   '1px solid transparent',
-        cursor:   'pointer',
-        flexShrink: 0,
-      }}
+      className={`inline-flex items-center justify-center shrink-0 rounded-[8px] h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2'}`}
+      style={isMobile ? {} : { padding: '15px 19px' }}
     >
       <Icon color={styles[state].iconColor} />
       {!isMobile && (
-        <span className="nav-link" style={{ color: styles[state].textColor, transition: 'color 0.15s ease', whiteSpace: 'nowrap' }}>
+        <motion.span
+          className="nav-link whitespace-nowrap"
+          animate={{ color: styles[state].textColor }}
+          transition={SPRING_SNAP}
+        >
           {label}
-        </span>
+        </motion.span>
       )}
     </motion.button>
   )
