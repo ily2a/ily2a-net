@@ -324,7 +324,7 @@ button, a, [role="button"] {
 }
 
 .work-subtitle {
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
 }
 
 .work-view-all {
@@ -615,6 +615,203 @@ button, a, [role="button"] {
   .testimonials-inner   { max-width: 1440px; }
   .testimonials-title   { font-size: 24px; }
   .testimonial-quote    { font-size: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CAPABILITIES SECTION
+   ══════════════════════════════════════════════════════════════ */
+
+.cap-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 28px 16px;
+}
+
+.cap-inner {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cap-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cap-title {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.cap-subtitle {
+  color: var(--color-text-secondary);
+}
+
+/* ── Grids ── */
+
+.cap-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.cap-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .cap-cards-grid  { grid-template-columns: 1fr 1fr; }
+  .cap-bottom-grid { grid-template-columns: 2fr 1fr; }
+}
+
+/* ── Card ── */
+
+.cap-card__spotlight {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+  border-radius: inherit;
+}
+
+.cap-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.cap-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cap-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cap-card__icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cap-card__title {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.cap-card__divider {
+  height: 6px;
+  border: none;
+  border-radius: 2px;
+  margin: 0;
+}
+
+.cap-card__description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-brand);
+  line-height: 160%;
+  letter-spacing: 0.02em;
+}
+
+/* ── Tags ── */
+
+.cap-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cap-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid var(--color-text-subtle);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+/* ── Skills groups ── */
+
+.cap-skills-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cap-skill-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-brand);
+  margin-bottom: 8px;
+}
+
+/* ── Tools tags ── */
+
+.cap-tool-tag {
+  gap: 6px;
+}
+
+.cap-tool-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ── Breakpoints ── */
+
+@media (min-width: 730px) {
+  .cap-section { padding: 32px 40px; }
+  .cap-inner   { max-width: 100%; }
+  .cap-card    { padding: 24px; }
+}
+
+@media (min-width: 1088px) {
+  .cap-section { padding: 40px 56px; }
+}
+
+@media (min-width: 1440px) {
+  .cap-section        { padding: 40px 80px; }
+  .cap-inner          { max-width: 1440px; }
+  .cap-title          { font-size: 24px; }
+  .cap-card__title    { font-size: 20px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
