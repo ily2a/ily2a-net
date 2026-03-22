@@ -29,7 +29,7 @@ const INNER_STYLES = {
   },
 }
 
-export default function BookingButton() {
+export default function BookingButton({ static: isStatic = false, compact = false }) {
   const [open, setOpen]             = useState(false)
   const [mounted, setMounted]       = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
@@ -258,9 +258,9 @@ export default function BookingButton() {
   return (
     <>
       <motion.button
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ ...SPRING_ENTRANCE, delay: HERO_BUTTON_DELAY }}
+        initial={isStatic ? false : { opacity: 0, scale: 0.5 }}
+        animate={isStatic ? {} : { opacity: 1, scale: 1 }}
+        transition={isStatic ? {} : { ...SPRING_ENTRANCE, delay: HERO_BUTTON_DELAY }}
         onClick={handleOpen}
         {...handlers}
         aria-label="Book a call"
@@ -269,8 +269,8 @@ export default function BookingButton() {
           alignItems:     'center',
           justifyContent: 'center',
           padding:        '8px',
-          width:          '140px',
-          height:         '60px',
+          width:          compact ? 'auto' : '140px',
+          height:         compact ? 'auto' : '60px',
           borderRadius:   '8px',
           background:     'rgba(211, 209, 224, 0.25)',
           cursor:         'pointer',
@@ -284,9 +284,10 @@ export default function BookingButton() {
             display:        'flex',
             alignItems:     'center',
             justifyContent: 'center',
-            width:          '100%',
-            height:         '100%',
+            width:          compact ? 'auto' : '100%',
+            height:         compact ? 'auto' : '100%',
             borderRadius:   '8px',
+            padding:        compact ? '10px 16px' : '0',
           }}
         >
           <span className="btn-label" style={{ color: 'var(--color-background)', whiteSpace: 'nowrap' }}>

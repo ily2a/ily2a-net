@@ -1,10 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import BookingButton from '@/components/BookingButton'
 import TestimonialsButton from '@/components/TestimonialsButton'
-import Navbar from '@/components/Navbar'
 import TextReveal from '@/components/TextReveal'
 import dynamic from 'next/dynamic'
 
@@ -20,9 +18,7 @@ const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
     }} />
   ),
 })
-import { useWindowWidth } from '@/hooks/useWindowWidth'
-import { SPRING_NAV, HERO_NAV_DELAY, HERO_SUBTITLE_DELAY } from '@/constants/animations'
-import { BREAKPOINTS } from '@/constants/layout'
+import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
 
 // Site palette: amethyst-950 → amethyst-700 → amethyst-400 → near-white
 const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
@@ -63,9 +59,6 @@ function HeroBackground() {
 }
 
 export default function HeroSection({ children }) {
-  const width    = useWindowWidth()
-  const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
-
   return (
     <>
       <section id="hero" className="hero-section">
@@ -93,20 +86,6 @@ export default function HeroSection({ children }) {
         </div>
       </section>
 
-      <motion.div
-        initial={{ opacity: 0, y: 150, x: '-50%' }}
-        animate={{ opacity: 1, y: 0, x: '-50%' }}
-        transition={{ ...SPRING_NAV, delay: HERO_NAV_DELAY }}
-        style={{
-          position:   'fixed',
-          bottom:     '32px',
-          left:       '50%',
-          zIndex:     50,
-          willChange: 'transform',
-        }}
-      >
-        <Navbar isMobile={isMobile} />
-      </motion.div>
     </>
   )
 }

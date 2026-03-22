@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import FloatingNav from '@/components/FloatingNav'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',
@@ -7,11 +8,12 @@ export const metadata = {
 export default function NotFound() {
   return (
     <main className="flex items-center justify-center min-h-screen">
+      <FloatingNav />
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <p className="hero-heading" style={{ color: 'var(--color-text-subtle)' }}>404</p>
-        <p className="text-md" style={{ color: 'var(--color-text-secondary)' }}>
-          This page doesn&apos;t exist.
-        </p>
+        <h1 className="hero-sub-2" style={{ color: 'var(--color-text-primary)' }}>
+          This page faded into the digital ether.<br />
+          Hit the homepage and keep exploring.
+        </h1>
         <Link
           href="/"
           className="btn-label"

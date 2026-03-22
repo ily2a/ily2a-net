@@ -1,14 +1,17 @@
 'use client'
 
 import Link from 'next/link'
+import FloatingNav from '@/components/FloatingNav'
 
-export default function Error({ reset }) {
+export default function Error({ error: _error, reset }) {
   return (
     <main className="flex items-center justify-center min-h-screen">
+      <FloatingNav />
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <p role="alert" className="text-md" style={{ color: 'var(--color-text-secondary)' }}>
-          Something went wrong.
-        </p>
+        <h1 role="alert" className="hero-sub-2" style={{ color: 'var(--color-text-primary)' }}>
+          Something broke on our end.<br />
+          Try refreshing or head back home.
+        </h1>
         <div className="flex gap-3">
           <button
             onClick={reset}
@@ -20,7 +23,7 @@ export default function Error({ reset }) {
           <Link
             href="/"
             className="btn-label"
-            style={{ color: 'var(--color-text-secondary)', textDecoration: 'underline' }}
+            style={{ color: 'var(--color-brand)', textDecoration: 'underline' }}
           >
             Back home
           </Link>
