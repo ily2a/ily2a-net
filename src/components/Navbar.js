@@ -31,14 +31,14 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
       >
         <Logo isMobile={isMobile} onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })} />
         {/* aria-disabled until /craft and /skills routes are implemented */}
-        <NavbarButton icon="craft"  label="Craft"  isMobile={isMobile} onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })} />
-        <NavbarButton icon="skills" label="Skills" isMobile={isMobile} onClick={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })} />
+        <NavbarButton icon="craft"  label="Craft"  onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })} />
+        <NavbarButton icon="skills" label="Skills" onClick={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })} />
         {isMobile ? (
           <div className="flex-1 min-w-0">
-            <MobileContactButton />
+            <MobileContactButton onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} />
           </div>
         ) : (
-          <ContactButton />
+          <ContactButton onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} />
         )}
       </nav>
     </GlassSurface>

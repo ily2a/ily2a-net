@@ -97,7 +97,7 @@ export default function TestimonialsSection() {
               <div className="testimonial-author">
                 <Image
                   src={avatar}
-                  alt={name}
+                  alt={`${name}, ${role}`}
                   width={44}
                   height={44}
                   className="testimonial-avatar"

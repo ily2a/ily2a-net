@@ -2,19 +2,17 @@ import HeroSection from '@/components/HeroSection'
 import ProjectCard from '@/components/ProjectCard'
 import TestimonialsSection from '@/components/TestimonialsSection'
 import CapabilitiesSection from '@/components/CapabilitiesSection'
+import ContactSection from '@/components/ContactSection'
+import FloatingNav from '@/components/FloatingNav'
 import { sanityFetch } from '@/sanity/lib/live'
+import { CASE_STUDIES_FEATURED_QUERY } from '@/lib/sanity-queries'
+import { HERO_NAV_DELAY } from '@/constants/animations'
 import Link from 'next/link'
 
 export default async function Home() {
   let projects = []
   try {
-    const { data } = await sanityFetch({
-      query: `*[_type == "caseStudy"] | order(order asc) [0...4] {
-        _id, title, slug, description, tags,
-        cardImageDefault { ..., "lqip": asset->metadata.lqip },
-        cardImageHover   { ..., "lqip": asset->metadata.lqip }
-      }`,
-    })
+    const { data } = await sanityFetch({ query: CASE_STUDIES_FEATURED_QUERY })
     projects = data ?? []
   } catch (e) {
     console.error('[page.js] Sanity fetch failed:', e)
@@ -22,6 +20,7 @@ export default async function Home() {
 
   return (
     <main>
+      <FloatingNav delay={HERO_NAV_DELAY} />
       <HeroSection>
         <h1 className="hero-heading">Ily Ameur</h1>
       </HeroSection>
@@ -48,6 +47,7 @@ export default async function Home() {
 
       <TestimonialsSection />
       <CapabilitiesSection />
+      <ContactSection />
     </main>
   )
 }

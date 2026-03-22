@@ -118,7 +118,7 @@ export default function CapabilitiesSection() {
             <SpotlightCard key={card.title}>
               <div className="cap-card__header">
                 <div className="cap-card__title-row">
-                  <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" unoptimized />
+                  <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" />
                   <h3 className="cap-card__title">{card.title}</h3>
                 </div>
                 <hr className="cap-card__divider" style={{ background: card.gradient }} aria-hidden="true" />
@@ -135,14 +135,14 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="cap-card__header">
               <div className="cap-card__title-row">
-                <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" unoptimized />
+                <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" />
                 <h3 className="cap-card__title">Skills</h3>
               </div>
               <hr className="cap-card__divider" aria-hidden="true" style={{ background: 'linear-gradient(90deg, #b2adc7, #6c6284, transparent)' }} />
             </div>
             <div className="cap-skills-groups">
               {SKILL_GROUPS.map((group) => (
-                <div key={group.label}>
+                <div key={group.label} className="cap-skill-group">
                   <p className="cap-skill-label">{group.label}</p>
                   <Tags items={group.items} />
                 </div>
@@ -153,7 +153,7 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="cap-card__header">
               <div className="cap-card__title-row">
-                <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" unoptimized />
+                <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} className="cap-card__icon" />
                 <h3 className="cap-card__title">Tools</h3>
               </div>
               <hr className="cap-card__divider" aria-hidden="true" style={{ background: 'linear-gradient(90deg, #9c95b6, #484257, transparent)' }} />

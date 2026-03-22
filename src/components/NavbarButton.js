@@ -2,7 +2,9 @@
 
 import { motion } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'
+import { BREAKPOINTS } from '@/constants/layout'
 
 const CraftIcon = ({ color }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,7 +33,9 @@ const mobileStates = {
   pressed: { borderColor: 'var(--color-amethyst-50)', background: 'var(--color-surface)', iconColor: '#f6f6f9', boxShadow: 'inset -4px 0px 4px #2e2937, inset 4px 0px 4px #2e2937, inset 0px -4px 4px #2e2937, inset 0px 4px 4px #2e2937' },
 }
 
-export default function NavbarButton({ icon = 'craft', label = 'Craft', isMobile = false, onClick, ...rest }) {
+export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick, ...rest }) {
+  const width    = useWindowWidth()
+  const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
   const { state, handlers } = useButtonState({ isMobile })
   const Icon   = ICONS[icon] ?? CraftIcon
   const styles = isMobile ? mobileStates : webStates
