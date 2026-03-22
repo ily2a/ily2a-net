@@ -1,5 +1,6 @@
 import HeroSection from '@/components/HeroSection'
 import ProjectCard from '@/components/ProjectCard'
+import TestimonialsSection from '@/components/TestimonialsSection'
 import { sanityFetch } from '@/sanity/lib/live'
 import Link from 'next/link'
 
@@ -43,6 +44,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <TestimonialsSection />
     </main>
   )
 }
