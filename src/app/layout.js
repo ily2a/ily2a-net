@@ -4,6 +4,7 @@ import { SmoothCursor } from "@/components/SmoothCursor"
 import { SanityLive } from "@/sanity/lib/live"
 import MotionProvider from "@/components/MotionProvider"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -66,6 +67,7 @@ export default function RootLayout({ children }) {
             {children}
             {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
             <Suspense fallback={null}><SanityLive /></Suspense>
+            <SpeedInsights />
           </ErrorBoundary>
         </MotionProvider>
       </body>
