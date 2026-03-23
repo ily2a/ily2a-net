@@ -28,7 +28,7 @@ const SKILL_GROUPS = [
   },
 ]
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 
 function SpotlightCard({ children, className = '', style, spotlightColor = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)' }) {
@@ -37,30 +37,30 @@ function SpotlightCard({ children, className = '', style, spotlightColor = 'colo
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [opacity, setOpacity] = useState(0)
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove   = useCallback((e) => {
     if (!divRef.current || isFocused) return
     const rect = divRef.current.getBoundingClientRect()
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-  }
+  }, [isFocused])
 
-  const handleFocus    = () => { setIsFocused(true);  setOpacity(1) }
-  const handleBlur     = () => { setIsFocused(false); setOpacity(0) }
-  const handleMouseEnter = () => setOpacity(1)
-  const handleMouseLeave = () => setOpacity(0)
+  const handleFocus       = useCallback(() => { setIsFocused(true);  setOpacity(1) }, [])
+  const handleBlur        = useCallback(() => { setIsFocused(false); setOpacity(0) }, [])
+  const handleMouseEnter  = useCallback(() => setOpacity(1), [])
+  const handleMouseLeave  = useCallback(() => setOpacity(0), [])
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart  = useCallback((e) => {
     if (!divRef.current) return
     const rect  = divRef.current.getBoundingClientRect()
     const touch = e.touches[0]
     setPosition({ x: touch.clientX - rect.left, y: touch.clientY - rect.top })
     setOpacity(1)
-  }
-  const handleTouchEnd = () => setOpacity(0)
+  }, [])
+  const handleTouchEnd    = useCallback(() => setOpacity(0), [])
 
   return (
     <div
       ref={divRef}
-      className={`cap-card ${className}`}
+      className={`cap-card rounded-xl ${className}`}
       style={style}
       onMouseMove={handleMouseMove}
       onFocus={handleFocus}
@@ -103,8 +103,8 @@ function Tags({ items }) {
 
 export default function CapabilitiesSection() {
   return (
-    <section id="capabilities" className="w-full flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20">
-      <div className="w-full max-w-[600px] flex flex-col gap-3 min-[730px]:max-w-none xl:max-w-[1440px]">
+    <section id="capabilities" className="w-full flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20">
+      <div className="w-full max-w-[600px] flex flex-col gap-3 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Header ── */}
         <div className="flex flex-col gap-2">
@@ -125,7 +125,7 @@ export default function CapabilitiesSection() {
                 </div>
                 <hr className="h-[6px] border-0 rounded-sm m-0" style={{ background: card.gradient }} aria-hidden="true" />
               </div>
-              <p className="text-[14px] min-[1088px]:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">{card.description}</p>
+              <p className="text-[14px] desk:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">{card.description}</p>
               <Tags items={card.tags} />
             </SpotlightCard>
           ))}
@@ -160,7 +160,7 @@ export default function CapabilitiesSection() {
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-500 via-amethyst-900 to-transparent" aria-hidden="true" />
             </div>
-            <p className="text-[14px] min-[1088px]:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">The stack I work in daily</p>
+            <p className="text-[14px] desk:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">The stack I work in daily</p>
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
                 <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-[13px] font-medium text-text-primary tracking-[-0.01em] leading-[1.4]">

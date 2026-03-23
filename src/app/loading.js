@@ -20,8 +20,8 @@ export default function Loading() {
       </section>
 
       {/* ── Work section skeleton ── */}
-      <section className="w-full flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20">
-        <div className="w-full max-w-[600px] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
+      <section className="w-full flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20">
+        <div className="w-full max-w-[600px] flex flex-col gap-8 tab:max-w-none xl:max-w-[1440px]">
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-baseline">
               <div className="skeleton h-6 w-24 rounded" />

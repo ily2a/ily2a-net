@@ -62,8 +62,8 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="w-full flex justify-center px-5 pt-10 pb-[140px] min-[730px]:px-10 min-[730px]:pt-8 min-[1088px]:px-14 min-[1088px]:pt-10 xl:px-20">
-      <div className="w-full max-w-[600px] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
+    <section id="contact" className="w-full flex justify-center px-5 pt-10 pb-[140px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
+      <div className="w-full max-w-[600px] flex flex-col gap-8 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
@@ -204,7 +204,7 @@ export default function ContactSection() {
           className="text-center text-md pt-10 text-brand"
           {...fadeUp(0.2)}
         >
-          © 2026 Ily Ameur. All rights reserved.
+          © {new Date().getFullYear()} Ily Ameur. All rights reserved.
         </motion.p>
 
       </div>

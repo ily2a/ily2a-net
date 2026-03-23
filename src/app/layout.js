@@ -54,6 +54,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" />
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" />
         <script
           type="application/ld+json"
@@ -66,7 +67,7 @@ export default function RootLayout({ children }) {
             <SmoothCursor />
             {children}
             {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
-            <Suspense fallback={null}><SanityLive /></Suspense>
+            <ErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></ErrorBoundary>
             <SpeedInsights />
           </ErrorBoundary>
         </MotionProvider>

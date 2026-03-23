@@ -4,6 +4,8 @@ import FloatingNav from '@/components/FloatingNav'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
 
+export const revalidate = 3600
+
 export const metadata = {
   title: 'My Craft — Ily Ameur',
   description: 'End-to-end product design across 10+ industries.',

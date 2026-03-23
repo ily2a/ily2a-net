@@ -49,7 +49,7 @@ export default function TestimonialsSection() {
   return (
     <section
       id="testimonials"
-      className="w-full relative overflow-hidden flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20"
+      className="w-full relative overflow-hidden flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20"
     >
       {/* ── WebGL background ── */}
       <div aria-hidden="true" className="absolute inset-0 z-0">
@@ -66,7 +66,7 @@ export default function TestimonialsSection() {
       </div>
 
       {/* ── Content ── */}
-      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
+      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
           <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Echoes about me</h2>
           <p className="text-md text-text-secondary">
@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
           {TESTIMONIALS.map(({ name, role, avatar, quote, wide }) => (
             <article
               key={name}
-              className={`testimonial-card${wide ? ' col-span-full' : ''}`}
+              className={`testimonial-card rounded-xl${wide ? ' col-span-full' : ''}`}
             >
               <div className="flex items-center gap-3">
                 <Image
@@ -94,7 +94,7 @@ export default function TestimonialsSection() {
                   <span className="text-[13px] text-text-secondary tracking-[0.02em] leading-[1.3]">{role}</span>
                 </div>
               </div>
-              <p className="text-text-primary text-[14px] min-[1088px]:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]">{quote}</p>
+              <p className="text-text-primary text-[14px] desk:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]">{quote}</p>
             </article>
           ))}
         </div>
