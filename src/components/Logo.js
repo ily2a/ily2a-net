@@ -18,17 +18,7 @@ export default function Logo({ isMobile = false, onClick }) {
       onClick={handleClick}
       {...handlers}
       aria-label="ily2a home"
-      style={{
-        cursor:   'pointer',
-        display:  'inline-flex',
-        flexShrink: 0,
-        position: 'relative',
-        width:    64,
-        height:   32,
-        background: 'none',
-        border:   'none',
-        padding:  0,
-      }}
+      className="cursor-pointer inline-flex shrink-0 relative w-16 h-8 bg-transparent border-0 p-0"
     >
       {STATES.map((s) => (
         // SVGs don't benefit from Next.js image optimisation; unoptimized skips

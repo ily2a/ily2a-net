@@ -45,35 +45,13 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
       onKeyDown={handleKeyDown}
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
-      style={{
-        position: 'relative',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '44px',
-        borderRadius: '8px',
-        border: '1px solid var(--color-amethyst-900)',
-        background: 'var(--color-surface)',
-        cursor: 'pointer',
-        overflow: 'hidden',
-        userSelect: 'none',
-        WebkitTapHighlightColor: 'transparent',
-      }}
+      className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-amethyst-900 bg-surface cursor-pointer overflow-hidden select-none"
+      style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <span
-        className="btn-label"
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          color: 'var(--color-text-primary)',
-          pointerEvents: 'none',
-          whiteSpace: 'nowrap',
-        }}
-      >
+      <span className="btn-label relative z-[1] text-text-primary pointer-events-none whitespace-nowrap">
         {label}
       </span>
-      <span style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+      <span className="absolute inset-0 pointer-events-none">
         {ripples.map((ripple) => (
           <span
             key={ripple.key}

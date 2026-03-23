@@ -225,14 +225,7 @@ export default function BookingButton({ static: isStatic = false, compact = fals
 
             {/* Spinner shown while iframe loads */}
             {!iframeLoaded && (
-              <div style={{
-                position:       'absolute',
-                inset:          0,
-                display:        'flex',
-                alignItems:     'center',
-                justifyContent: 'center',
-                pointerEvents:  'none',
-              }}>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="booking-spinner" />
               </div>
             )}
@@ -290,7 +283,7 @@ export default function BookingButton({ static: isStatic = false, compact = fals
             padding:        compact ? '10px 16px' : '0',
           }}
         >
-          <span className="btn-label" style={{ color: 'var(--color-background)', whiteSpace: 'nowrap' }}>
+          <span className="btn-label text-background whitespace-nowrap">
             Book a call
           </span>
         </motion.div>

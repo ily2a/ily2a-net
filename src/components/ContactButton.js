@@ -37,28 +37,19 @@ export default function ContactButton({ label = 'Contact', onClick }) {
       whileTap={{ scale: 0.96 }}
       transition={SPRING_SNAP}
       aria-label={label}
-      className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-[8px] overflow-visible select-none shrink-0"
+      className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-[8px] overflow-visible select-none shrink-0 appearance-none border-0 bg-transparent"
       style={{
-        appearance: 'none',
-        border: 'none',
-        background: 'none',
         font: 'inherit',
         WebkitTapHighlightColor: 'transparent',
       }}
     >
-      <div className={layerClass} style={{ backgroundColor: 'var(--color-surface)' }} />
+      <div className={`${layerClass} bg-surface`} />
       <div className={layerClass} style={{ background: conicGradient, opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
       <div className={layerClass} style={{ background: conicGradient, filter: 'blur(8px)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
       <div className={layerClass} style={{ background: conicGradient, transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
       <div className={layerClass} style={{ background: conicGradient, filter: 'blur(8px)', transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
-      <div
-        className="absolute rounded-[7px]"
-        style={{
-          inset: '1px',
-          background: 'linear-gradient(180deg, var(--color-surface) 0%, var(--color-background) 100%)',
-        }}
-      />
-      <span className="btn-label relative z-[1] whitespace-nowrap pointer-events-none" style={{ color: 'var(--color-text-primary)' }}>
+      <div className="absolute rounded-[7px] [inset:1px] bg-gradient-to-b from-surface to-background" />
+      <span className="btn-label relative z-[1] whitespace-nowrap pointer-events-none text-text-primary">
         {label}
       </span>
     </motion.button>
