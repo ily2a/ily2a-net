@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import SpotlightButton from '@/components/SpotlightButton'
 import { PortableText } from '@portabletext/react'
 import FloatingNav from '@/components/FloatingNav'
 import ContactSection from '@/components/ContactSection'
@@ -161,7 +161,6 @@ export default async function CaseStudyPage({ params }) {
     data.industry && { label: 'Industry', value: data.industry },
   ].filter(Boolean)
 
-  const pillClass = 'inline-flex items-center h-8 px-[14px] rounded-full text-[13px] font-medium tracking-[0.01em] no-underline text-text-secondary bg-white/[0.06] border border-white/[0.08] transition-colors hover:text-text-primary hover:bg-white/10'
 
   return (
     <main>
@@ -175,8 +174,8 @@ export default async function CaseStudyPage({ params }) {
 
             {/* Breadcrumbs */}
             <div className="flex gap-2 flex-wrap">
-              <Link href="/craft" className={pillClass}>← My Craft</Link>
-              <Link href="/"      className={pillClass}>← Home</Link>
+              <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+              <SpotlightButton href="/">Home</SpotlightButton>
             </div>
 
             {/* Header */}
@@ -268,25 +267,25 @@ export default async function CaseStudyPage({ params }) {
 function SidebarContent({ metaFields, tags }) {
   return (
     <div
-      className="flex flex-col gap-5 bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-[20px] p-6"
+      className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-[20px] p-6"
       style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
     >
-      <p className="text-[11px] font-semibold tracking-[0.10em] uppercase text-brand">
+      <p className="heading-3 text-brand">
         Project Details
       </p>
 
       {tags?.length > 0 && (
-        <ul className="flex flex-wrap gap-[6px] list-none p-0 m-0" role="list">
+        <ul className="flex flex-wrap gap-[6px] list-none p-0 m-0 mt-3" role="list">
           {tags.map((tag) => (
             <li key={tag} className="project-card__tag">{tag}</li>
           ))}
         </ul>
       )}
 
-      <dl className="flex flex-col gap-[14px]">
+      <dl className={`flex flex-col gap-3 ${tags?.length > 0 ? 'mt-4' : 'mt-3'}`}>
         {metaFields.map(({ label, value }) => (
-          <div key={label} className="flex flex-col gap-[3px]">
-            <dt className="text-[11px] font-semibold tracking-[0.08em] uppercase text-text-secondary">
+          <div key={label} className="flex flex-col gap-1">
+            <dt className="text-xs text-text-secondary">
               {label}
             </dt>
             <dd className="text-[15px] font-medium tracking-[-0.01em] text-text-primary leading-[1.3]">
