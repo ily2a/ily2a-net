@@ -127,7 +127,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
   return (
     <motion.article initial="rest" whileHover="hover" whileTap="hover">
-      <Link href={`/craft/${project.slug.current}`} className="project-card">
+      <Link href={`/craft/${project.slug.current}`} className="project-card relative aspect-[16/10] w-full rounded-xl overflow-hidden block no-underline">
 
         <motion.div variants={imgVariants} className="absolute inset-0">
           {project.cardImageDefault && (

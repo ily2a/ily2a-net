@@ -151,16 +151,7 @@ input, textarea, select, [contenteditable="true"] {
    PROJECT CARD
    ══════════════════════════════════════════════════════════════ */
 
-.project-card {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: none !important;
-  display: block;
-  text-decoration: none;
-}
+/* .project-card — selector used by SmoothCursor for hover detection */
 
 .project-card__img {
   object-fit: cover;
