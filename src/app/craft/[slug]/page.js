@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -7,6 +8,19 @@ import ContactSection from '@/components/ContactSection'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
+
+export const revalidate = 3600
+
+// Deduplicated fetch — React cache() ensures generateMetadata and the page
+// component share a single request per render pass.
+const getCaseStudy = cache(async (slug) => {
+  try {
+    const { data } = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
+    return data ?? null
+  } catch {
+    return null
+  }
+})
 
 export async function generateStaticParams() {
   try {
@@ -19,15 +33,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  try {
-    const { data } = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
-    if (!data) return {}
-    return {
-      title: `${data.title} — Ily Ameur`,
-      description: data.description,
-    }
-  } catch {
-    return {}
+  const data = await getCaseStudy(slug)
+  if (!data) return {}
+  return {
+    title: `${data.title} — Ily Ameur`,
+    description: data.description,
   }
 }
 
@@ -123,14 +133,7 @@ const ptSection = {
 export default async function CaseStudyPage({ params }) {
   const { slug } = await params
 
-  let data
-  try {
-    const result = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
-    data = result.data
-  } catch (e) {
-    console.error('[craft/[slug]/page.js] Sanity fetch failed:', e)
-  }
-
+  const data = await getCaseStudy(slug)
   if (!data) notFound()
 
   const coverUrl = data.coverImage
@@ -164,8 +167,8 @@ export default async function CaseStudyPage({ params }) {
     <main>
       <FloatingNav />
 
-      <div className="w-full flex justify-center px-5 py-10 min-[730px]:px-10 min-[730px]:py-12 min-[1088px]:px-14 min-[1088px]:py-14 xl:px-20 xl:py-16">
-        <article className="w-full max-w-[600px] flex flex-col gap-12 items-start min-[730px]:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
+      <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
+        <article className="w-full max-w-[600px] flex flex-col gap-12 items-start tab:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
 
           {/* ── LEFT: main content ── */}
           <div className="flex-1 min-w-0 flex flex-col gap-8">

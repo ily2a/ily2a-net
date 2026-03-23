@@ -29,10 +29,12 @@
   --font-sans: 'Satoshi', sans-serif;
 
   /* ─── Breakpoints ─────────────────────────────────────────── */
-  --breakpoint-sm: 390px;
-  --breakpoint-md: 810px;
-  --breakpoint-lg: 1200px;
-  --breakpoint-xl: 1440px;
+  --breakpoint-sm:   390px;
+  --breakpoint-tab:  730px;  /* compact tablet / landscape phone */
+  --breakpoint-md:   810px;
+  --breakpoint-desk: 1088px; /* compact desktop */
+  --breakpoint-lg:   1200px;
+  --breakpoint-xl:   1440px;
 }
 
 /* ─── Base Reset ──────────────────────────────────────────────── */
@@ -132,107 +134,16 @@ button, a, [role="button"] {
    TYPOGRAPHY
    ══════════════════════════════════════════════════════════════ */
 
-.hero-heading {
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 100%;
-  font-size: 36px;
-}
-@media (min-width: 810px)  { .hero-heading { font-size: 38px; } }
-@media (min-width: 1200px) { .hero-heading { font-size: 56px; } }
-@media (min-width: 1440px) { .hero-heading { font-size: 64px; } }
-
-.hero-sub-1 {
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  line-height: 140%;
-  font-size: 24px;
-}
-@media (min-width: 810px)  { .hero-sub-1 { font-size: 28px; } }
-@media (min-width: 1200px) { .hero-sub-1 { font-size: 26px; } }
-@media (min-width: 1440px) { .hero-sub-1 { font-size: 32px; } }
-
-.hero-sub-2 {
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  line-height: 140%;
-  font-size: 24px;
-}
-@media (min-width: 810px)  { .hero-sub-2 { font-size: 26px; } }
-@media (min-width: 1200px) { .hero-sub-2 { font-size: 28px; } }
-@media (min-width: 1440px) { .hero-sub-2 { font-size: 32px; } }
-
-.heading-1 {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 130%;
-  font-size: 20px;
-}
-@media (min-width: 810px)  { .heading-1 { font-size: 24px; } }
-@media (min-width: 1200px) { .heading-1 { font-size: 28px; } }
-@media (min-width: 1440px) { .heading-1 { font-size: 32px; } }
-
-.heading-2 {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 130%;
-  font-size: 18px;
-}
-@media (min-width: 810px)  { .heading-2 { font-size: 20px; } }
-@media (min-width: 1200px) { .heading-2 { font-size: 24px; } }
-@media (min-width: 1440px) { .heading-2 { font-size: 28px; } }
-
-.heading-3 {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 130%;
-  font-size: 16px;
-}
-@media (min-width: 810px)  { .heading-3 { font-size: 16px; } }
-@media (min-width: 1200px) { .heading-3 { font-size: 18px; } }
-@media (min-width: 1440px) { .heading-3 { font-size: 24px; } }
-
-.btn-label {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 120%;
-  font-size: 16px;
-}
-@media (min-width: 1200px) { .btn-label { font-size: 18px; } }
-
-.nav-link {
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 120%;
-  font-size: 16px;
-}
-
-.text-md {
-  font-weight: 400;
-  letter-spacing: 0.07em;
-  line-height: 150%;
-  font-size: 16px;
-}
-@media (min-width: 1200px) { .text-md { font-size: 18px; } }
-@media (min-width: 1440px) { .text-md { font-size: 20px; } }
-
-.text-sm {
-  font-weight: 400;
-  letter-spacing: 0.07em;
-  line-height: 150%;
-  font-size: 14px;
-}
-@media (min-width: 810px)  { .text-sm { font-size: 16px; } }
-@media (min-width: 1440px) { .text-sm { font-size: 20px; } }
-
-.hero-heading,
-.hero-sub-1,
-.hero-sub-2,
-.heading-1,
-.heading-2,
-.heading-3 {
-  text-wrap: balance;
-}
+.hero-heading { @apply font-bold   tracking-[0.01em]  leading-none   text-[36px] md:text-[38px] lg:text-[56px] xl:text-[64px] text-balance; }
+.hero-sub-1   { @apply font-medium tracking-[0.06em]  leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-balance; }
+.hero-sub-2   { @apply font-light  tracking-[0.06em]  leading-[140%] text-[24px] md:text-[26px] lg:text-[28px] xl:text-[32px] text-balance; }
+.heading-1    { @apply font-bold   tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance; }
+.heading-2    { @apply font-bold   tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance; }
+.heading-3    { @apply font-bold   tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance; }
+.btn-label    { @apply font-bold   tracking-[-0.01em] leading-[120%] text-[16px]                lg:text-[18px] text-balance; }
+.nav-link     { @apply font-medium tracking-[-0.01em] leading-[120%] text-[16px] text-balance; }
+.text-md      { @apply font-normal tracking-[0.07em]  leading-[150%] text-[16px]                lg:text-[18px] xl:text-[20px] text-balance; }
+.text-sm      { @apply font-normal tracking-[0.07em]  leading-[150%] text-[14px] md:text-[16px]               xl:text-[20px] text-balance; }
 
 /* ══════════════════════════════════════════════════════════════
    PROJECT CARD
@@ -365,7 +276,6 @@ button, a, [role="button"] {
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -400,7 +310,6 @@ button, a, [role="button"] {
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
   padding: 20px;
   display: flex;
   flex-direction: column;
