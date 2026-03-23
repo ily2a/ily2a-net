@@ -1,6 +1,7 @@
 'use client'
 
 import { memo } from 'react'
+import { usePathname } from 'next/navigation'
 import Logo from '@/components/Logo'
 import NavbarButton from '@/components/NavbarButton'
 import ContactButton from '@/components/ContactButton'
@@ -12,6 +13,17 @@ const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 
 const GLASS_STYLE_DESKTOP = { maxWidth: 'none',  minWidth: '472px', flexShrink: 0, boxSizing: 'border-box' }
 
 const Navbar = memo(function Navbar({ isMobile = false }) {
+  const pathname = usePathname()
+  const isHome   = pathname === '/'
+
+  function navTo(sectionId) {
+    if (isHome) {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      window.location.href = `/?scrollTo=${sectionId}`
+    }
+  }
+
   return (
     <GlassSurface
       width={isMobile ? 'calc(100vw - 32px)' : '472px'}
@@ -29,10 +41,9 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
         aria-label="Main navigation"
         className="inline-flex items-center justify-center gap-4 w-full h-full py-2 px-6 box-border"
       >
-        <Logo isMobile={isMobile} onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })} />
-        {/* aria-disabled until /craft and /skills routes are implemented */}
-        <NavbarButton icon="craft"  label="Craft"  onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })} />
-        <NavbarButton icon="skills" label="Skills" onClick={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })} />
+        <Logo isMobile={isMobile} onClick={() => navTo('hero')} />
+        <NavbarButton icon="craft"  label="Craft"  onClick={() => navTo('work')} />
+        <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} />
         {isMobile ? (
           <div className="flex-1 min-w-0">
             <MobileContactButton onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} />
