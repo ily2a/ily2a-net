@@ -29,8 +29,7 @@ export default class ErrorBoundary extends Component {
             <p role="alert" style={{ color: 'var(--color-text-secondary)' }}>Something went wrong.</p>
             <button
               onClick={() => this.setState(s => ({ hasError: false, resetKey: s.resetKey + 1 }))}
-              className="underline"
-              style={{ color: 'var(--color-brand)', background: 'none', border: 'none', cursor: 'pointer' }}
+              className="underline text-brand bg-transparent border-none cursor-pointer"
             >
               Try again
             </button>

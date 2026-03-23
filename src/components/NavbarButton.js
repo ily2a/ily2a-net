@@ -23,13 +23,13 @@ const SkillsIcon = ({ color }) => (
 const ICONS = { craft: CraftIcon, skills: SkillsIcon }
 
 const webStates = {
-  default: { borderColor: 'transparent',               background: 'transparent',          iconColor: 'var(--color-amethyst-400)', textColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
-  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'transparent',          iconColor: 'var(--color-amethyst-200)', textColor: 'var(--color-amethyst-200)', boxShadow: 'none' },
+  default: { borderColor: 'rgba(0,0,0,0)',               background: 'rgba(0,0,0,0)',          iconColor: 'var(--color-amethyst-400)', textColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
+  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'rgba(0,0,0,0)',          iconColor: 'var(--color-amethyst-200)', textColor: 'var(--color-amethyst-200)', boxShadow: 'none' },
   pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  textColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 
 const mobileStates = {
-  default: { borderColor: 'transparent',               background: 'transparent',          iconColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
+  default: { borderColor: 'rgba(0,0,0,0)',               background: 'rgba(0,0,0,0)',          iconColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
   pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 

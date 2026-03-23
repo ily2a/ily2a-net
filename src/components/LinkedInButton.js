@@ -8,14 +8,14 @@ import { BREAKPOINTS } from '@/constants/layout'
 
 const states = {
   default: {
-    borderColor: 'transparent',
-    background:  'transparent',
+    borderColor: 'rgba(0,0,0,0)',
+    background:  'rgba(0,0,0,0)',
     iconColor:   'var(--color-amethyst-400)',
     boxShadow:   'none',
   },
   hover: {
     borderColor: 'var(--color-amethyst-300)',
-    background:  'transparent',
+    background:  'rgba(0,0,0,0)',
     iconColor:   'var(--color-amethyst-200)',
     boxShadow:   'none',
   },
