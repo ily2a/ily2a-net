@@ -138,7 +138,9 @@ export default async function CaseStudyPage({ params }) {
     : null
 
   const figmaEmbedUrl = data.figmaEmbed
-    ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(data.figmaEmbed)}`
+    ? data.figmaEmbed.startsWith('https://embed.figma.com')
+      ? data.figmaEmbed
+      : `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(data.figmaEmbed)}`
     : null
 
   const contextSections = [
