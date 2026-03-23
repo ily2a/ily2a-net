@@ -57,7 +57,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
   overflow-x: hidden;
-  cursor: none;
 }
 
 body {
@@ -67,16 +66,18 @@ body {
   overflow-x: hidden;
 }
 
-/* Restore natural cursors for form controls */
-input, textarea, select {
-  cursor: text;
-  font-family: inherit;
-  font-size: 14px;
+/* Hide cursor everywhere — custom cursor handles it (desktop only) */
+@media (any-hover: hover) and (any-pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
 }
 
-/* Keep pointer-style elements cursor-less for the custom cursor */
-button, a, [role="button"] {
-  cursor: none;
+/* Restore natural cursor for text inputs */
+input, textarea, select, [contenteditable="true"] {
+  cursor: text !important;
+  font-family: inherit;
+  font-size: 14px;
 }
 
 /* ─── Skeleton Loading ────────────────────────────────────────── */
@@ -144,6 +145,7 @@ button, a, [role="button"] {
 .nav-link     { @apply font-medium tracking-[-0.01em] leading-[120%] text-[16px] text-balance; }
 .text-md      { @apply font-normal tracking-[0.07em]  leading-[150%] text-[16px]                lg:text-[18px] xl:text-[20px] text-balance; }
 .text-sm      { @apply font-normal tracking-[0.07em]  leading-[150%] text-[14px] md:text-[16px]               xl:text-[20px] text-balance; }
+.text-xs      { @apply font-medium tracking-[0.07em]  leading-[150%] text-[12px] md:text-[13px]               xl:text-[14px] text-balance; }
 
 /* ══════════════════════════════════════════════════════════════
    PROJECT CARD
@@ -203,18 +205,14 @@ button, a, [role="button"] {
 }
 
 .project-card__tag {
+  @apply font-medium tracking-[0.07em] leading-[150%] text-[12px] md:text-[13px] xl:text-[14px];
   display: inline-flex;
   align-items: center;
   min-height: 28px;
   padding: 0 10px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.2;
   color: var(--color-background);
   background-color: var(--color-brand);
-  border-radius: 4px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  border-radius: 8px;
 }
 
 .project-card__text {

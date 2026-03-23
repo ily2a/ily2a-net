@@ -1,147 +1,110 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useSpring } from 'framer-motion'
+import { motion, useSpring, AnimatePresence } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
-const DESKTOP_POINTER_QUERY = '(any-hover: hover) and (any-pointer: fine)'
+const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
+const CARD_SELECTOR  = '.project-card, .project-card-mobile'
+const SPRING         = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 }
 
-function isTrackablePointer(pointerType) {
-  return pointerType !== 'touch'
-}
-
-// Keep angle diff in [-180, 180] so the cursor always rotates the short way
-function normalizeAngleDiff(current, previous) {
-  let diff = current - previous
-  if (diff >  180) diff -= 360
-  if (diff < -180) diff += 360
-  return diff
-}
-
-const DefaultCursorSVG = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={50} height={54} viewBox="0 0 50 54" fill="none" style={{ scale: 0.5 }}>
-    <g filter="url(#filter0_d_91_7928)">
-      <path d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z" fill="var(--color-amethyst-400)" />
-      <path d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z" stroke="var(--color-amethyst-950)" strokeWidth={2.25825} />
-    </g>
-    <defs>
-      <filter id="filter0_d_91_7928" x={0.602397} y={0.952444} width={49.0584} height={52.428} filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-        <feOffset dy={2.25825} />
-        <feGaussianBlur stdDeviation={2.25825} />
-        <feComposite in2="hardAlpha" operator="out" />
-        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0" />
-        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_91_7928" />
-        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_91_7928" result="shape" />
-      </filter>
-    </defs>
-  </svg>
-)
-
-export function SmoothCursor({ cursor = <DefaultCursorSVG />, springConfig = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 } }) {
+export function SmoothCursor() {
   const prefersReduced = usePrefersReducedMotion()
-  const lastMousePos = useRef({ x: 0, y: 0 })
-  const velocity = useRef({ x: 0, y: 0 })
-  const lastUpdateTime = useRef(Date.now())
-  const previousAngle = useRef(0)
-  const accumulatedRotation = useRef(0)
-  const [isEnabled, setIsEnabled] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+  const [isEnabled,  setIsEnabled]  = useState(false)
+  const [isVisible,  setIsVisible]  = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const [isClicking, setIsClicking] = useState(false)
+  const rafId = useRef(0)
 
-  const cursorX = useSpring(0, springConfig)
-  const cursorY = useSpring(0, springConfig)
-  const rotation = useSpring(0, { ...springConfig, damping: 60, stiffness: 300 })
-  const scale = useSpring(1, { ...springConfig, stiffness: 500, damping: 35 })
+  const cursorX = useSpring(0, SPRING)
+  const cursorY = useSpring(0, SPRING)
 
+  // Enable only on pointer-capable desktops
   useEffect(() => {
-    const mediaQuery = window.matchMedia(DESKTOP_POINTER_QUERY)
-    const updateEnabled = () => {
-      const nextIsEnabled = mediaQuery.matches
-      setIsEnabled(nextIsEnabled)
-      if (!nextIsEnabled) setIsVisible(false)
-    }
-    updateEnabled()
-    mediaQuery.addEventListener('change', updateEnabled)
-    return () => mediaQuery.removeEventListener('change', updateEnabled)
+    const mq = window.matchMedia(DESKTOP_QUERY)
+    const update = () => { setIsEnabled(mq.matches); if (!mq.matches) setIsVisible(false) }
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
   }, [])
 
   useEffect(() => {
     if (!isEnabled) return
-    let timeout = null
-    const updateVelocity = (currentPos) => {
-      const currentTime = Date.now()
-      const deltaTime = currentTime - lastUpdateTime.current
-      if (deltaTime > 0) {
-        velocity.current = {
-          x: (currentPos.x - lastMousePos.current.x) / deltaTime,
-          y: (currentPos.y - lastMousePos.current.y) / deltaTime,
-        }
-      }
-      lastUpdateTime.current = currentTime
-      lastMousePos.current = currentPos
-    }
-    const smoothPointerMove = (e) => {
-      if (!isTrackablePointer(e.pointerType)) return
+
+    const onPointerMove = (e) => {
+      if (e.pointerType === 'touch') return
       setIsVisible(true)
-      const currentPos = { x: e.clientX, y: e.clientY }
-      updateVelocity(currentPos)
-      const speed = Math.hypot(velocity.current.x, velocity.current.y)
-      cursorX.set(currentPos.x)
-      cursorY.set(currentPos.y)
-      if (speed > 0.1) {
-        const currentAngle = Math.atan2(velocity.current.y, velocity.current.x) * (180 / Math.PI) + 90
-        accumulatedRotation.current += normalizeAngleDiff(currentAngle, previousAngle.current)
-        // accumulatedRotation grows unbounded by design — Framer Motion handles
-        // large rotation values correctly and normalising would cause spring jumps.
-        rotation.set(accumulatedRotation.current)
-        previousAngle.current = currentAngle
-        scale.set(0.95)
-        if (timeout !== null) clearTimeout(timeout)
-        timeout = setTimeout(() => scale.set(1), 150)
-      }
-    }
-    let rafId = 0
-    const throttledPointerMove = (e) => {
-      if (!isTrackablePointer(e.pointerType)) return
-      if (rafId) return
-      rafId = requestAnimationFrame(() => {
-        smoothPointerMove(e)
-        rafId = 0
+      if (rafId.current) return
+      rafId.current = requestAnimationFrame(() => {
+        cursorX.set(e.clientX)
+        cursorY.set(e.clientY)
+        rafId.current = 0
       })
     }
-    document.body.style.cursor = 'none'
-    window.addEventListener('pointermove', throttledPointerMove, { passive: true })
-    return () => {
-      window.removeEventListener('pointermove', throttledPointerMove)
-      document.body.style.cursor = 'auto'
-      if (rafId) cancelAnimationFrame(rafId)
-      if (timeout !== null) clearTimeout(timeout)
+
+    const onMouseOver = (e) => {
+      const next = !!e.target.closest(CARD_SELECTOR)
+      setIsHovering(prev => prev === next ? prev : next)
     }
-  }, [cursorX, cursorY, rotation, scale, isEnabled])
+
+    const onMouseDown = () => setIsClicking(true)
+    const onMouseUp   = () => setIsClicking(false)
+    const onBlur      = () => setIsClicking(false)
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    window.addEventListener('mouseover',   onMouseOver)
+    window.addEventListener('mousedown',   onMouseDown)
+    window.addEventListener('mouseup',     onMouseUp)
+    window.addEventListener('blur',        onBlur)
+
+    return () => {
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('mouseover',   onMouseOver)
+      window.removeEventListener('mousedown',   onMouseDown)
+      window.removeEventListener('mouseup',     onMouseUp)
+      window.removeEventListener('blur',        onBlur)
+      if (rafId.current) cancelAnimationFrame(rafId.current)
+    }
+  }, [cursorX, cursorY, isEnabled])
 
   if (!isEnabled || prefersReduced) return null
 
   return (
     <motion.div
-      style={{
-        position: 'fixed',
-        left: cursorX,
-        top: cursorY,
-        translateX: '-50%',
-        translateY: '-50%',
-        rotate: rotation,
-        scale: scale,
-        zIndex: 100,
-        pointerEvents: 'none',
-        willChange: 'transform',
-        opacity: isVisible ? 1 : 0,
-      }}
-      initial={false}
+      className="fixed z-[9999] pointer-events-none will-change-transform"
+      style={{ left: cursorX, top: cursorY, translateX: '-50%', translateY: '-50%' }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ duration: 0.15 }}
     >
-      {cursor}
+      <motion.div
+        className="flex items-center justify-center overflow-hidden backdrop-blur-[20px] backdrop-saturate-300"
+        animate={{
+          width:        isHovering ? 120 : 16,
+          height:       isHovering ? 36  : 16,
+          scale:        isClicking ? 0.8 : 1,
+          borderRadius: isHovering ? 8   : 9999,
+        }}
+        transition={{ ease: 'easeInOut', duration: 0.2 }}
+        style={{
+          background: 'color-mix(in srgb, var(--color-amethyst-400) 20%, transparent)',
+          border:     '1px solid color-mix(in srgb, var(--color-amethyst-400) 40%, transparent)',
+          boxShadow:  'inset 0 1px 0 0 rgba(255,255,255,0.08), inset 0 -1px 0 0 rgba(255,255,255,0.04)',
+        }}
+      >
+        <AnimatePresence>
+          {isHovering && (
+            <motion.span
+              className="text-[14px] font-medium text-text-primary whitespace-nowrap tracking-[0.02em] pointer-events-none select-none"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{    opacity: 0, scale: 0.6 }}
+              transition={{ ease: 'easeInOut', duration: 0.15 }}
+            >
+              View project
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   )
 }

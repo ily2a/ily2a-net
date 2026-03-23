@@ -1,5 +1,5 @@
 import ProjectCard from '@/components/ProjectCard'
-import Link from 'next/link'
+import SpotlightButton from '@/components/SpotlightButton'
 
 export default function CraftSection({
   projects = [],
@@ -17,9 +17,7 @@ export default function CraftSection({
           <div className="flex justify-between items-baseline">
             <Tag className="font-bold text-[20px] xl:text-2xl tracking-[-0.01em] text-text-primary">My Craft</Tag>
             {showViewAll && (
-              <Link href="/craft" className="text-[14px] font-medium text-brand no-underline tracking-[-0.01em] whitespace-nowrap hover:opacity-70 transition-opacity">
-                View all projects
-              </Link>
+              <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
             )}
           </div>
           <p className="text-md text-text-secondary">
