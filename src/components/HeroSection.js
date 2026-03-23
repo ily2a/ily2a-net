@@ -26,14 +26,7 @@ function HeroBackground() {
   return (
     <div
       aria-hidden="true"
-      style={{
-        position:   'absolute',
-        inset:      0,
-        width:      '100%',
-        height:     '100%',
-        opacity:    visible ? 0.5 : 0,
-        transition: 'opacity 0.8s ease',
-      }}
+      className={`absolute inset-0 w-full h-full transition-opacity duration-[800ms] ease-[ease] ${visible ? 'opacity-50' : 'opacity-0'}`}
     >
       <GradientBlinds
         gradientColors={HERO_COLORS}
@@ -61,9 +54,9 @@ export default function HeroSection({ children }) {
       <section id="hero" className="relative h-screen">
         <HeroBackground />
         <div className="relative z-10 flex justify-center pt-[120px] px-5 pb-7 md:pt-[88px] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
-          <div style={{ width: '100%', maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div className="w-full max-w-[680px] flex flex-col gap-6">
             {children}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="flex flex-col gap-4">
               <TextReveal
                 text="Design Engineer : I design systems, flows, and products. Then build them."
                 className="hero-sub-1"
@@ -75,7 +68,7 @@ export default function HeroSection({ children }) {
                 initialDelay={HERO_SUBTITLE_DELAY}
               />
             </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="flex gap-3">
               <BookingButton />
               <TestimonialsButton />
             </div>

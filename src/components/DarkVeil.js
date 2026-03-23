@@ -154,12 +154,7 @@ export default function DarkVeil({
   return (
     <canvas
       ref={ref}
-      style={{
-        position: 'absolute',
-        inset: 0,
-        width: '100%',
-        height: '100%',
-      }}
+      className="absolute inset-0 w-full h-full"
     />
   )
 }

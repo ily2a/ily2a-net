@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import FloatingNav from '@/components/FloatingNav'
+import LineWavesBackground from '@/components/LineWavesBackground'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',
@@ -7,17 +8,19 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <main className="flex items-center justify-center min-h-screen">
+    <main className="relative flex items-center justify-center min-h-screen overflow-hidden">
+      <LineWavesBackground />
+
       <FloatingNav />
+
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <h1 className="hero-sub-2" style={{ color: 'var(--color-text-primary)' }}>
+        <h1 className="hero-sub-1 text-text-primary">
           This page faded into the digital ether.<br />
           Hit the homepage and keep exploring.
         </h1>
         <Link
           href="/"
-          className="btn-label"
-          style={{ color: 'var(--color-brand)', textDecoration: 'underline' }}
+          className="btn-label text-brand underline"
         >
           Back home
         </Link>

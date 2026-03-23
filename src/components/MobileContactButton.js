@@ -54,7 +54,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
         height: '44px',
         borderRadius: '8px',
         border: '1px solid var(--color-amethyst-900)',
-        background: '#151A1E',
+        background: 'var(--color-surface)',
         cursor: 'pointer',
         overflow: 'hidden',
         userSelect: 'none',

@@ -211,15 +211,7 @@ const GlassSurface = ({
     >
       {mounted && (
         <svg
-          style={{
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none',
-            position: 'absolute',
-            inset: 0,
-            opacity: 0,
-            zIndex: -1,
-          }}
+          className="w-full h-full pointer-events-none absolute inset-0 opacity-0 -z-10"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -238,15 +230,7 @@ const GlassSurface = ({
           </defs>
         </svg>
       )}
-      <div style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        zIndex: 10,
-      }}>
+      <div className="w-full h-full flex items-center justify-center relative z-10">
         {children}
       </div>
     </div>

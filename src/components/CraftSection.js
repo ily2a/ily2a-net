@@ -10,8 +10,7 @@ export default function CraftSection({
   return (
     <section
       id="work"
-      className="w-full flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20"
-      style={navOffset ? { paddingTop: '60px' } : undefined}
+      className={`w-full flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20${navOffset ? ' pt-[60px]' : ''}`}
     >
       <div className="w-full max-w-[600px] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">

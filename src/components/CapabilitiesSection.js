@@ -5,14 +5,14 @@ const CARDS = [
     title: 'Product Design',
     icon: '/capabilities icons/cube.png',
     description: 'From discovery to handoff. Complex flows, scalable systems, products that ship.',
-    gradient: 'linear-gradient(90deg, #b2adc7, #6c6284, transparent)',
+    gradient: 'linear-gradient(90deg, var(--color-amethyst-400), var(--color-amethyst-700), transparent)',
     tags: ['Mobile & Web', 'SaaS', 'Design Systems', 'End-to-end Design'],
   },
   {
     title: 'Design Engineering',
     icon: '/capabilities icons/drop.png',
     description: 'I close the gap between design and code. React components, zero handoff friction.',
-    gradient: 'linear-gradient(90deg, #8479a0, #484257, transparent)',
+    gradient: 'linear-gradient(90deg, var(--color-amethyst-600), var(--color-amethyst-900), transparent)',
     tags: ['React', 'React Native', 'Component Architecture', 'Figma-to-code'],
   },
 ]
@@ -31,7 +31,7 @@ const SKILL_GROUPS = [
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 
-function SpotlightCard({ children, className = '', style, spotlightColor = 'rgba(178, 173, 199, 0.13)' }) {
+function SpotlightCard({ children, className = '', style, spotlightColor = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)' }) {
   const divRef = useRef(null)
   const [isFocused, setIsFocused] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
@@ -140,7 +140,7 @@ export default function CapabilitiesSection() {
                 <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="font-bold text-[18px] xl:text-[20px] text-text-primary tracking-[-0.01em]">Skills</h3>
               </div>
-              <hr className="h-[6px] border-0 rounded-sm m-0" aria-hidden="true" style={{ background: 'linear-gradient(90deg, #b2adc7, #6c6284, transparent)' }} />
+              <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-400 via-amethyst-700 to-transparent" aria-hidden="true" />
             </div>
             <div className="flex flex-col gap-3">
               {SKILL_GROUPS.map((group) => (
@@ -158,7 +158,7 @@ export default function CapabilitiesSection() {
                 <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="font-bold text-[18px] xl:text-[20px] text-text-primary tracking-[-0.01em]">Tools</h3>
               </div>
-              <hr className="h-[6px] border-0 rounded-sm m-0" aria-hidden="true" style={{ background: 'linear-gradient(90deg, #9c95b6, #484257, transparent)' }} />
+              <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-500 via-amethyst-900 to-transparent" aria-hidden="true" />
             </div>
             <p className="text-[14px] min-[1088px]:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">The stack I work in daily</p>
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">

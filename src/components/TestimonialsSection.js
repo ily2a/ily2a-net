@@ -6,11 +6,7 @@ import dynamic from 'next/dynamic'
 const DarkVeil = dynamic(() => import('@/components/DarkVeil'), {
   ssr: false,
   loading: () => (
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: 'linear-gradient(135deg, #0D1012 0%, #2e2937 60%, #484257 100%)',
-    }} />
+    <div className="absolute inset-0 bg-gradient-to-br from-background via-amethyst-950 to-amethyst-900" />
   ),
 })
 
@@ -56,7 +52,7 @@ export default function TestimonialsSection() {
       className="w-full relative overflow-hidden flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20"
     >
       {/* ── WebGL background ── */}
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+      <div aria-hidden="true" className="absolute inset-0 z-0">
         <DarkVeil
           hueShift={0}
           speed={0.3}
@@ -65,17 +61,8 @@ export default function TestimonialsSection() {
           scanlineIntensity={0}
           resolutionScale={0.6}
         />
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(135deg, #2e2937 0%, #6c6284 50%, #484257 100%)',
-          mixBlendMode: 'color',
-        }} />
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'rgba(13, 16, 18, 0.3)',
-        }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-amethyst-950 via-amethyst-700 to-amethyst-900 mix-blend-color" />
+        <div className="absolute inset-0 bg-background/30" />
       </div>
 
       {/* ── Content ── */}

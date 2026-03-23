@@ -29,7 +29,7 @@ export default function Loading() {
           </div>
           <div className="work-grid">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="skeleton w-full rounded-xl" style={{ aspectRatio: '16/10' }} />
+              <div key={i} className="skeleton w-full rounded-xl aspect-[16/10]" />
             ))}
           </div>
         </div>

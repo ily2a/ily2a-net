@@ -15,13 +15,7 @@ export default function FloatingNav({ delay = 0 }) {
       initial={{ opacity: 0, y: 150, x: '-50%' }}
       animate={{ opacity: 1, y: 0,   x: '-50%' }}
       transition={{ ...SPRING_NAV, delay }}
-      style={{
-        position:   'fixed',
-        bottom:     '32px',
-        left:       '50%',
-        zIndex:     50,
-        willChange: 'transform',
-      }}
+      className="fixed bottom-8 left-1/2 z-50 will-change-transform"
     >
       <Navbar isMobile={isMobile} />
     </motion.div>
