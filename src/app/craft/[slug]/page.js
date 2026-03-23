@@ -162,8 +162,8 @@ export default async function CaseStudyPage({ params }) {
     <main>
       <FloatingNav />
 
-      <div className="w-full flex justify-center px-5 py-10 md:px-10 md:py-12 lg:px-14 lg:py-14 xl:px-20 xl:py-16">
-        <article className="w-full max-w-[1280px] flex flex-col gap-12 items-start lg:flex-row lg:gap-14">
+      <div className="w-full flex justify-center px-5 py-10 min-[730px]:px-10 min-[730px]:py-12 min-[1088px]:px-14 min-[1088px]:py-14 xl:px-20 xl:py-16">
+        <article className="w-full max-w-[600px] flex flex-col gap-12 items-start min-[730px]:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
 
           {/* ── LEFT: main content ── */}
           <div className="flex-1 min-w-0 flex flex-col gap-8">

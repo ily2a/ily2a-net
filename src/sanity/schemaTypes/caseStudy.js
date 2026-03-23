@@ -104,6 +104,14 @@ export default {
       type: 'number',
       group: 'meta',
     },
+    {
+      name: 'isPasswordProtected',
+      title: 'Password Protected',
+      type: 'boolean',
+      group: 'meta',
+      description: 'Hide this case study from the public — only accessible via direct link with password',
+      initialValue: false,
+    },
 
     // ── CONTEXT (required on every project) ──
     {

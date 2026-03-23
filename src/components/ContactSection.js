@@ -63,7 +63,7 @@ export default function ContactSection() {
 
   return (
     <section id="contact" className="w-full flex justify-center px-5 pt-10 pb-[140px] min-[730px]:px-10 min-[730px]:pt-8 min-[1088px]:px-14 min-[1088px]:pt-10 xl:px-20">
-      <div className="w-full flex flex-col gap-8">
+      <div className="w-full max-w-[600px] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
