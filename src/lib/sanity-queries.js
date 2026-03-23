@@ -11,3 +11,18 @@ export const CASE_STUDIES_QUERY = `*[_type == "caseStudy"] | order(order asc) {$
 
 // First 4 case studies — used on home page
 export const CASE_STUDIES_FEATURED_QUERY = `*[_type == "caseStudy"] | order(order asc) [0...4] {${CASE_STUDY_FIELDS}}`
+
+// Single case study by slug — used on /craft/[slug]
+export const CASE_STUDY_BY_SLUG_QUERY = `*[_type == "caseStudy" && slug.current == $slug][0] {
+  _id, title, slug, client, role, timeline, platform, industry, tags, description,
+  coverImage { ..., "lqip": asset->metadata.lqip },
+  brief, problem, goals, uxStrategy,
+  body[] {
+    ...,
+    _type == "image" => { ..., "lqip": asset->metadata.lqip }
+  },
+  figmaEmbed
+}`
+
+// All slugs — used for generateStaticParams
+export const CASE_STUDY_SLUGS_QUERY = `*[_type == "caseStudy"] { "slug": slug.current }`

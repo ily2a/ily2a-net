@@ -11,25 +11,27 @@ const jsonLd = {
   "name": "Ily Ameur",
   "jobTitle": "Design Engineer",
   "url": "https://ily2a.net",
-  "description": "I design systems, flows, and products. Then build them.",
+  "description": "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
   "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
 }
 
 export const metadata = {
-  title: "Ily Ameur — Design Engineer",
-  description: "I design systems, flows, and products. Then build them.",
+  title: "Ily Ameur : Design Engineer",
+  description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
   openGraph: {
-    title: "Ily Ameur — Design Engineer",
-    description: "I design systems, flows, and products. Then build them.",
+    title: "Ily Ameur : Design Engineer",
+    description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
     url: "https://ily2a.net",
     siteName: "Ily Ameur",
     locale: "en_GB",
     type: "website",
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ily Ameur — Design Engineer",
-    description: "I design systems, flows, and products. Then build them.",
+    title: "Ily Ameur : Design Engineer",
+    description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
+    images: ['/og-image.png'],
   },
   metadataBase: new URL("https://ily2a.net"),
   alternates: {
@@ -37,11 +39,11 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicons/favicon.ico' },
+      { url: '/favicons/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicons/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
     ],
-    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+    apple: { url: '/favicons/apple-touch-icon.png', sizes: '180x180' },
   },
   manifest: '/site.webmanifest',
 }

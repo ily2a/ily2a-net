@@ -10,8 +10,6 @@ import dynamic from 'next/dynamic'
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false })
 
 
-// Hoisted at module level — stable references prevent Framer Motion
-// from re-evaluating unchanged animate values on every render.
 const INPUT_RING         = { boxShadow: '0 0 0 1px rgba(178, 173, 199, 0.3)' }
 const INPUT_RING_ERROR   = { boxShadow: '0 0 0 1px #e57373' }
 const FOCUS_RING         = { boxShadow: '0 0 0 2px #6c6284' }
@@ -64,13 +62,13 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="contact-section">
-      <div className="contact-inner">
+    <section id="contact" className="w-full flex justify-center px-5 pt-10 pb-[140px] min-[730px]:px-10 min-[730px]:pt-8 min-[1088px]:px-14 min-[1088px]:pt-10 xl:px-20">
+      <div className="w-full flex flex-col gap-8">
 
         {/* ── Full-width header ── */}
-        <motion.div className="contact-header" {...fadeUp(0)}>
-          <h2 className="contact-title">Contact</h2>
-          <p className="contact-subtitle text-md">
+        <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
+          <h2 className="text-[20px] xl:text-2xl font-bold text-text-primary tracking-[-0.01em]">Contact</h2>
+          <p className="text-md text-text-secondary">
             Please fill out this form to get in touch, I'm excited to hear about your ideas.
           </p>
         </motion.div>
@@ -180,7 +178,6 @@ export default function ContactSection() {
               </ContactFormButton>
             </div>
 
-            {/* aria-live: announces status changes to screen readers */}
             <div aria-live="polite" aria-atomic="true">
               {status === 'error' && (
                 <div className="flex items-center gap-3">
@@ -212,7 +209,6 @@ export default function ContactSection() {
           }}
           {...fadeUp(0.15)}
         >
-          {/* Aurora background */}
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
             <Aurora
               colorStops={['#2e2937', '#8479a0', '#b2adc7']}

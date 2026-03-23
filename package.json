@@ -20,6 +20,7 @@
     "ogl": "^1.0.11",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "resend": "^6.9.4",
     "sanity": "^5.17.1",
     "tailwind-merge": "^3.5.0"
   },

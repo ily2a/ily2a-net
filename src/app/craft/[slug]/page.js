@@ -1,3 +1,268 @@
-export default function CaseStudyPage() {
-    return <div>Case Study</div>
+import Image from 'next/image'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { PortableText } from '@portabletext/react'
+import FloatingNav from '@/components/FloatingNav'
+import ContactSection from '@/components/ContactSection'
+import { sanityFetch } from '@/sanity/lib/live'
+import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
+import { urlFor } from '@/sanity/lib/image'
+
+export async function generateStaticParams() {
+  try {
+    const { data } = await sanityFetch({ query: CASE_STUDY_SLUGS_QUERY })
+    return (data ?? []).map(({ slug }) => ({ slug }))
+  } catch {
+    return []
   }
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params
+  try {
+    const { data } = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
+    if (!data) return {}
+    return {
+      title: `${data.title} — Ily Ameur`,
+      description: data.description,
+    }
+  } catch {
+    return {}
+  }
+}
+
+// ── Portable Text ─────────────────────────────────────────────────────────────
+
+const ptBody = {
+  block: {
+    normal:     ({ children }) => <p className="text-md text-text-secondary">{children}</p>,
+    h2:         ({ children }) => <h2 className="heading-2 text-text-primary">{children}</h2>,
+    h3:         ({ children }) => <h3 className="heading-3 text-text-primary">{children}</h3>,
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-2 border-brand pl-5 text-text-secondary italic text-base leading-[160%] tracking-[0.04em]">
+        {children}
+      </blockquote>
+    ),
+  },
+  types: {
+    image: ({ value }) => {
+      const url = urlFor(value).width(1200).auto('format').url()
+      return (
+        <figure className="flex flex-col gap-[10px] w-full">
+          <Image
+            src={url}
+            alt={value.alt ?? ''}
+            width={1200}
+            height={675}
+            className="w-full h-auto rounded-xl block"
+            placeholder={value.lqip ? 'blur' : 'empty'}
+            blurDataURL={value.lqip}
+          />
+          {value.caption && (
+            <figcaption className="text-xs text-text-subtle tracking-[0.04em] text-center">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      )
+    },
+  },
+  marks: {
+    strong: ({ children }) => <strong>{children}</strong>,
+    em:     ({ children }) => <em>{children}</em>,
+    link:   ({ value, children }) => (
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-brand underline underline-offset-[3px] transition-opacity hover:opacity-75"
+      >
+        {children}
+      </a>
+    ),
+  },
+}
+
+const ptSection = {
+  block: {
+    normal: ({ children }) => <p className="text-md text-text-secondary">{children}</p>,
+  },
+  marks: {
+    strong: ({ children }) => <strong>{children}</strong>,
+    em:     ({ children }) => <em>{children}</em>,
+  },
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
+export default async function CaseStudyPage({ params }) {
+  const { slug } = await params
+
+  let data
+  try {
+    const result = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
+    data = result.data
+  } catch (e) {
+    console.error('[craft/[slug]/page.js] Sanity fetch failed:', e)
+  }
+
+  if (!data) notFound()
+
+  const coverUrl = data.coverImage
+    ? urlFor(data.coverImage).width(1400).auto('format').url()
+    : null
+
+  const figmaEmbedUrl = data.figmaEmbed
+    ? `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(data.figmaEmbed)}`
+    : null
+
+  const contextSections = [
+    { label: 'Business Need', content: data.brief },
+    { label: 'Problem',       content: data.problem },
+    { label: 'Goals',         content: data.goals },
+    { label: 'UX Strategy',   content: data.uxStrategy },
+  ].filter((s) => s.content?.length)
+
+  const metaFields = [
+    { label: 'Client',   value: data.client },
+    { label: 'Role',     value: data.role },
+    { label: 'Timeline', value: data.timeline },
+    data.platform && { label: 'Platform', value: data.platform },
+    data.industry && { label: 'Industry', value: data.industry },
+  ].filter(Boolean)
+
+  const pillClass = 'inline-flex items-center h-8 px-[14px] rounded-full text-[13px] font-medium tracking-[0.01em] no-underline text-text-secondary bg-white/[0.06] border border-white/[0.08] transition-colors hover:text-text-primary hover:bg-white/10'
+
+  return (
+    <main>
+      <FloatingNav />
+
+      <div className="w-full flex justify-center px-5 py-10 md:px-10 md:py-12 lg:px-14 lg:py-14 xl:px-20 xl:py-16">
+        <article className="w-full max-w-[1280px] flex flex-col gap-12 items-start lg:flex-row lg:gap-14">
+
+          {/* ── LEFT: main content ── */}
+          <div className="flex-1 min-w-0 flex flex-col gap-8">
+
+            {/* Breadcrumbs */}
+            <div className="flex gap-2 flex-wrap">
+              <Link href="/craft" className={pillClass}>← My Craft</Link>
+              <Link href="/"      className={pillClass}>← Home</Link>
+            </div>
+
+            {/* Header */}
+            <header className="flex flex-col gap-3">
+              <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] tracking-[-0.02em] leading-[115%] text-text-primary text-balance">
+                {data.title}
+              </h1>
+              {data.description && (
+                <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
+              )}
+            </header>
+
+            {/* Cover image */}
+            {coverUrl && (
+              <div className="w-full rounded-2xl overflow-hidden">
+                <Image
+                  src={coverUrl}
+                  alt={data.title}
+                  width={1400}
+                  height={788}
+                  priority
+                  className="w-full h-auto block object-cover"
+                  placeholder={data.coverImage?.lqip ? 'blur' : 'empty'}
+                  blurDataURL={data.coverImage?.lqip}
+                />
+              </div>
+            )}
+
+            {/* Sidebar — mobile only */}
+            <div className="block lg:hidden">
+              <SidebarContent metaFields={metaFields} tags={data.tags} />
+            </div>
+
+            {/* Body */}
+            <div className="flex flex-col gap-10">
+
+              {contextSections.map(({ label, content }) => (
+                <section key={label} className="flex flex-col gap-[14px]">
+                  <h2 className="heading-2 text-text-primary">{label}</h2>
+                  <div className="flex flex-col gap-[10px]">
+                    <PortableText value={content} components={ptSection} />
+                  </div>
+                </section>
+              ))}
+
+              {data.body?.length > 0 && (
+                <PortableText value={data.body} components={ptBody} />
+              )}
+
+              {figmaEmbedUrl && (
+                <div className="flex flex-col gap-3">
+                  <p className="text-[11px] font-semibold tracking-[0.10em] uppercase text-brand">
+                    Prototype
+                  </p>
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                    <iframe
+                      src={figmaEmbedUrl}
+                      allowFullScreen
+                      title={`${data.title} — Figma prototype`}
+                      className="absolute inset-0 w-full h-full border-0"
+                    />
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* ── RIGHT: sidebar (desktop only) ── */}
+          <aside
+            className="hidden lg:block w-[300px] xl:w-[320px] shrink-0 sticky top-24"
+            aria-label="Project details"
+          >
+            <SidebarContent metaFields={metaFields} tags={data.tags} />
+          </aside>
+
+        </article>
+      </div>
+
+      <ContactSection />
+    </main>
+  )
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+
+function SidebarContent({ metaFields, tags }) {
+  return (
+    <div
+      className="flex flex-col gap-5 bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-[20px] p-6"
+      style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
+    >
+      <p className="text-[11px] font-semibold tracking-[0.10em] uppercase text-brand">
+        Project Details
+      </p>
+
+      {tags?.length > 0 && (
+        <ul className="flex flex-wrap gap-[6px] list-none p-0 m-0" role="list">
+          {tags.map((tag) => (
+            <li key={tag} className="project-card__tag">{tag}</li>
+          ))}
+        </ul>
+      )}
+
+      <dl className="flex flex-col gap-[14px]">
+        {metaFields.map(({ label, value }) => (
+          <div key={label} className="flex flex-col gap-[3px]">
+            <dt className="text-[11px] font-semibold tracking-[0.08em] uppercase text-text-secondary">
+              {label}
+            </dt>
+            <dd className="text-[15px] font-medium tracking-[-0.01em] text-text-primary leading-[1.3]">
+              {value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )
+}

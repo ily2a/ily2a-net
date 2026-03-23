@@ -8,8 +8,6 @@ import dynamic from 'next/dynamic'
 
 const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
   ssr: false,
-  // CSS gradient mirrors the HERO_COLORS palette so the background fades in
-  // gracefully while WebGL context initialises (avoids a flash to black).
   loading: () => (
     <div style={{
       position: 'absolute',
@@ -20,7 +18,6 @@ const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
 })
 import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
 
-// Site palette: amethyst-950 → amethyst-700 → amethyst-400 → near-white
 const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
 
 function HeroBackground() {
@@ -61,9 +58,9 @@ function HeroBackground() {
 export default function HeroSection({ children }) {
   return (
     <>
-      <section id="hero" className="hero-section">
+      <section id="hero" className="relative h-screen">
         <HeroBackground />
-        <div className="hero-container">
+        <div className="relative z-10 flex justify-center pt-[120px] px-5 pb-7 md:pt-[88px] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
           <div style={{ width: '100%', maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {children}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

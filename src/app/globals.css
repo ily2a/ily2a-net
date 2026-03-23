@@ -44,6 +44,12 @@
   }
 }
 
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; border-radius: 10px; }
+::-webkit-scrollbar-track { background: none; }
+::-webkit-scrollbar-thumb { background: rgb(255 255 255 / 10%); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 15%); }
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -241,136 +247,6 @@ button, a, [role="button"] {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   LAYOUT
-   ══════════════════════════════════════════════════════════════ */
-
-.hero-section {
-  position: relative;
-  height: 100vh;
-}
-
-.hero-container {
-  position: relative;
-  z-index: 10;
-  padding-top: 120px;
-  padding-right: 20px;
-  padding-bottom: 28px;
-  padding-left: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-@media (min-width: 810px) {
-  .hero-container {
-    padding-top: 88px;
-    padding-right: 40px;
-    padding-bottom: 24px;
-    padding-left: 40px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .hero-container {
-    padding-top: 88px;
-    padding-right: 64px;
-    padding-bottom: 64px;
-    padding-left: 64px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .hero-container {
-    padding-top: 88px;
-    padding-right: 64px;
-    padding-bottom: 64px;
-    padding-left: 64px;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   WORK SECTION
-   ══════════════════════════════════════════════════════════════ */
-
-.work-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 28px 16px;
-}
-
-.work-inner {
-  width: 100%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.work-header-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.work-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.work-title {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-}
-
-.work-subtitle {
-  color: var(--color-text-secondary);
-}
-
-.work-view-all {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-brand);
-  text-decoration: none;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-
-.work-view-all:hover {
-  opacity: 0.7;
-}
-
-.work-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media (min-width: 600px) {
-  .work-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (min-width: 730px) {
-  .work-section { padding: 32px 40px; }
-  .work-inner { max-width: 100%; }
-}
-
-@media (min-width: 1088px) {
-  .work-section { padding: 40px 56px; }
-  .work-inner { max-width: 100%; }
-}
-
-@media (min-width: 1440px) {
-  .work-section { padding: 40px 80px; }
-  .work-inner   { max-width: 1440px; }
-  .work-title   { font-size: 24px; }
-}
-
-/* ══════════════════════════════════════════════════════════════
    PROJECT CARD
    ══════════════════════════════════════════════════════════════ */
 
@@ -496,48 +372,6 @@ button, a, [role="button"] {
    TESTIMONIALS SECTION
    ══════════════════════════════════════════════════════════════ */
 
-.testimonials-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 28px 16px;
-}
-
-.testimonials-inner {
-  width: 100%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.testimonials-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.testimonials-title {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-}
-
-.testimonials-subtitle {
-  color: var(--color-text-secondary);
-}
-
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-@media (min-width: 600px) {
-  .testimonials-grid { grid-template-columns: 1fr 1fr; }
-}
-
 .testimonial-card {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(32px) saturate(180%);
@@ -554,128 +388,13 @@ button, a, [role="button"] {
     0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.testimonial-card--wide {
-  grid-column: 1 / -1;
-}
-
-.testimonial-author {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.testimonial-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.testimonial-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.testimonial-name {
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.testimonial-role {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.02em;
-  line-height: 1.3;
-}
-
-.testimonial-quote {
-  color: var(--color-text-primary);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 160%;
-  letter-spacing: 0.02em;
-}
-
 @media (min-width: 730px) {
-  .testimonials-section { padding: 32px 40px; }
-  .testimonials-inner   { max-width: 100%; }
-  .testimonial-card     { padding: 24px; }
-}
-
-@media (min-width: 1088px) {
-  .testimonials-section { padding: 40px 56px; }
-  .testimonial-quote    { font-size: 15px; }
-}
-
-@media (min-width: 1440px) {
-  .testimonials-section { padding: 40px 80px; }
-  .testimonials-inner   { max-width: 1440px; }
-  .testimonials-title   { font-size: 24px; }
-  .testimonial-quote    { font-size: 16px; }
+  .testimonial-card { padding: 24px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
    CAPABILITIES SECTION
    ══════════════════════════════════════════════════════════════ */
-
-.cap-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 28px 16px;
-}
-
-.cap-inner {
-  width: 100%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.cap-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.cap-title {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-}
-
-.cap-subtitle {
-  color: var(--color-text-secondary);
-}
-
-/* ── Grids ── */
-
-.cap-cards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.cap-bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-@media (min-width: 600px) {
-  .cap-cards-grid  { grid-template-columns: 1fr 1fr; }
-  .cap-bottom-grid { grid-template-columns: 2fr 1fr; }
-}
-
-/* ── Card ── */
 
 .cap-card__spotlight {
   pointer-events: none;
@@ -704,185 +423,10 @@ button, a, [role="button"] {
     0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.cap-card__header {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.cap-card__title-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.cap-card__icon {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.cap-card__title {
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-}
-
-.cap-card__divider {
-  height: 6px;
-  border: none;
-  border-radius: 2px;
-  margin: 0;
-}
-
-.cap-card__description {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-brand);
-  line-height: 160%;
-  letter-spacing: 0.02em;
-}
-
-/* ── Tags ── */
-
-.cap-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cap-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border: 1px solid var(--color-text-subtle);
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-}
-
-/* ── Skills groups ── */
-
-.cap-skills-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.cap-skill-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.cap-skill-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-brand);
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
-/* ── Tools tags ── */
-
-.cap-tool-tag {
-  gap: 6px;
-}
-
-.cap-tool-logo {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-/* ── Breakpoints ── */
-
 @media (min-width: 730px) {
-  .cap-section { padding: 32px 40px; }
-  .cap-inner   { max-width: 100%; }
-  .cap-card    { padding: 24px; }
+  .cap-card { padding: 24px; }
 }
 
-@media (min-width: 1088px) {
-  .cap-section            { padding: 40px 56px; }
-  .cap-card__description  { font-size: 15px; }
-}
-
-@media (min-width: 1440px) {
-  .cap-section            { padding: 40px 80px; }
-  .cap-inner              { max-width: 1440px; }
-  .cap-title              { font-size: 24px; }
-  .cap-card__title        { font-size: 20px; }
-  .cap-card__description  { font-size: 16px; }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   CONTACT SECTION
-   ══════════════════════════════════════════════════════════════ */
-
-.contact-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px 140px;
-}
-
-.contact-inner {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.contact-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.contact-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
-.contact-subtitle {
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-
-/* ── Breakpoints ── */
-
-@media (min-width: 730px) {
-  .contact-section { padding: 32px 40px 140px; }
-}
-
-@media (min-width: 1088px) {
-  .contact-section { padding: 40px 56px 140px; }
-}
-
-@media (min-width: 1440px) {
-  .contact-section { padding: 40px 80px 140px; }
-  .contact-title   { font-size: 24px; }
-}
 
 /* ══════════════════════════════════════════════════════════════
    GRADIENT BUTTON
@@ -928,3 +472,4 @@ button, a, [role="button"] {
     opacity: 0;
   }
 }
+

@@ -77,7 +77,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
         whileTap="pressed"
         transition={SPRING_CARD}
       >
-        <Link href={`/work/${project.slug.current}`} className="project-card-mobile">
+        <Link href={`/craft/${project.slug.current}`} className="project-card-mobile">
           <div className="project-card-mobile__image">
             <motion.div variants={mobileImgVariants} className="absolute inset-0">
               {project.cardImageDefault && (
@@ -127,7 +127,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
   return (
     <motion.article initial="rest" whileHover="hover" whileTap="hover">
-      <Link href={`/work/${project.slug.current}`} className="project-card">
+      <Link href={`/craft/${project.slug.current}`} className="project-card">
 
         <motion.div variants={imgVariants} className="absolute inset-0">
           {project.cardImageDefault && (

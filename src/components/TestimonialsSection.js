@@ -51,8 +51,10 @@ const TESTIMONIALS = [
 
 export default function TestimonialsSection() {
   return (
-    <section id="testimonials" className="testimonials-section" style={{ position: 'relative', overflow: 'hidden' }}>
-
+    <section
+      id="testimonials"
+      className="w-full relative overflow-hidden flex justify-center px-4 py-7 min-[730px]:px-10 min-[730px]:py-8 min-[1088px]:px-14 min-[1088px]:py-10 xl:px-20"
+    >
       {/* ── WebGL background ── */}
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <DarkVeil
@@ -63,14 +65,12 @@ export default function TestimonialsSection() {
           scanlineIntensity={0}
           resolutionScale={0.6}
         />
-        {/* brand color overlay: forces amethyst palette onto CPPN luminance */}
         <div style={{
           position: 'absolute',
           inset: 0,
           background: 'linear-gradient(135deg, #2e2937 0%, #6c6284 50%, #484257 100%)',
           mixBlendMode: 'color',
         }} />
-        {/* dark tint so glass cards stay readable */}
         <div style={{
           position: 'absolute',
           inset: 0,
@@ -79,35 +79,35 @@ export default function TestimonialsSection() {
       </div>
 
       {/* ── Content ── */}
-      <div className="testimonials-inner" style={{ position: 'relative', zIndex: 1 }}>
-        <div className="testimonials-header">
-          <h2 className="testimonials-title">Echoes about me</h2>
-          <p className="text-md testimonials-subtitle">
+      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-8 min-[730px]:max-w-none xl:max-w-[1440px]">
+        <div className="flex flex-col gap-2">
+          <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Echoes about me</h2>
+          <p className="text-md text-text-secondary">
             While some of my client reviews are NDA-protected (because, you know, top-secret
             agency white label stuff), I managed to sneak in a few favorites from my previous partners.
           </p>
         </div>
 
-        <div className="testimonials-grid">
+        <div className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2">
           {TESTIMONIALS.map(({ name, role, avatar, quote, wide }) => (
             <article
               key={name}
-              className={`testimonial-card${wide ? ' testimonial-card--wide' : ''}`}
+              className={`testimonial-card${wide ? ' col-span-full' : ''}`}
             >
-              <div className="testimonial-author">
+              <div className="flex items-center gap-3">
                 <Image
                   src={avatar}
                   alt={`${name}, ${role}`}
                   width={44}
                   height={44}
-                  className="testimonial-avatar"
+                  className="w-11 h-11 rounded-full object-cover shrink-0"
                 />
-                <div className="testimonial-meta">
-                  <span className="testimonial-name">{name}</span>
-                  <span className="testimonial-role">{role}</span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-semibold text-[15px] text-text-primary tracking-[-0.01em] leading-[1.2]">{name}</span>
+                  <span className="text-[13px] text-text-secondary tracking-[0.02em] leading-[1.3]">{role}</span>
                 </div>
               </div>
-              <p className="testimonial-quote">{quote}</p>
+              <p className="text-text-primary text-[14px] min-[1088px]:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]">{quote}</p>
             </article>
           ))}
         </div>
