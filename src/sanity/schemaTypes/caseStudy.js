@@ -169,6 +169,7 @@ export default {
               name: 'alt',
               title: 'Alt text',
               type: 'string',
+              validation: (Rule) => Rule.required().warning('Alt text is required for SEO and accessibility'),
             },
           ],
         },
