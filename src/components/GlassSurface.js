@@ -109,7 +109,7 @@ const GlassSurface = ({
   }
 
   // Keep the ref pointing at the latest version — avoids stale closure in ResizeObserver
-  updateRef.current = updateDisplacementMap
+  useEffect(() => { updateRef.current = updateDisplacementMap })
 
   // Compute support flags once on mount (results cached at module level across instances)
   useEffect(() => {
@@ -134,6 +134,7 @@ const GlassSurface = ({
       }
     })
     gaussianBlurRef.current?.setAttribute('stdDeviation', displace.toString())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, borderRadius, borderWidth, brightness, opacity, blur, displace, distortionScale, redOffset, greenOffset, blueOffset, xChannel, yChannel, mixBlendMode])
 
   // ResizeObserver — uses ref so it always calls the latest updateDisplacementMap.
@@ -201,7 +202,7 @@ const GlassSurface = ({
       boxShadow: `inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
                   inset 0 -1px 0 0 rgba(255, 255, 255, 0.04)`,
     }
-  }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId, blur, displace])
+  }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId])
 
   return (
     <div

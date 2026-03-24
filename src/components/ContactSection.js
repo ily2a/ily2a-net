@@ -69,7 +69,7 @@ export default function ContactSection() {
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
           <h2 className="text-[20px] xl:text-2xl font-bold text-text-primary tracking-[-0.01em]">Contact</h2>
           <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
-            Please fill out this form to get in touch, I'm excited to hear about your ideas.
+            Please fill out this form to get in touch, I&apos;m excited to hear about your ideas.
           </p>
         </motion.div>
 
