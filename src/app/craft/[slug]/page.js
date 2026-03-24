@@ -179,20 +179,20 @@ export default async function CaseStudyPage({ params }) {
           {/* ── LEFT: main content ── */}
           <div className="flex-1 min-w-0 flex flex-col gap-8">
 
-            {/* Breadcrumbs */}
-            <div className="flex gap-2 flex-wrap">
-              <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
-              <SpotlightButton href="/">Home</SpotlightButton>
-            </div>
-
             {/* Header */}
-            <header className="flex flex-col gap-3">
-              <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] tracking-[-0.02em] leading-[115%] text-text-primary text-balance">
-                {data.title}
-              </h1>
-              {data.description && (
-                <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
-              )}
+            <header className="flex flex-row justify-between items-center gap-4">
+              <div className="flex flex-col gap-3">
+                <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] tracking-[-0.02em] leading-[115%] text-text-primary text-balance">
+                  {data.title}
+                </h1>
+                {data.description && (
+                  <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
+                )}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+                <SpotlightButton href="/">Home</SpotlightButton>
+              </div>
             </header>
 
             {/* Cover image */}
