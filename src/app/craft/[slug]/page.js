@@ -38,6 +38,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${data.title} — Ily Ameur`,
     description: data.description,
+    alternates: { canonical: `https://ily2a.net/craft/${slug}` },
   }
 }
 

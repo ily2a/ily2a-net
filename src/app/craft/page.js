@@ -9,6 +9,7 @@ export const revalidate = 3600
 export const metadata = {
   title: 'Craft — Ily Ameur',
   description: 'End-to-end product design across 10+ industries.',
+  alternates: { canonical: 'https://ily2a.net/craft' },
 }
 
 export default async function CraftPage() {
