@@ -5,16 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
-import { SPRING_CARD } from '@/constants/animations'
-
-const imgVariants = {
-  rest:    { scale: 1 },
-  pressed: { scale: 1.03, transition: { duration: 0.2, ease: 'easeOut' } },
-}
 
 const hoverImgVariants = {
   rest:    { opacity: 0 },
-  pressed: { opacity: 1, transition: { duration: 0.2, ease: 'easeOut' } },
+  pressed: { opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } },
 }
 
 const imgUrl = (source) => urlFor(source).width(800).auto('format').url()
@@ -25,11 +19,10 @@ const ProjectCardMobile = memo(function ProjectCardMobile({ project }) {
       <motion.div
         initial="rest"
         whileTap="pressed"
-        transition={SPRING_CARD}
         style={{ touchAction: 'manipulation' }}
       >
         <div className="project-card-mobile__image">
-          <motion.div variants={imgVariants} className="absolute inset-0">
+          <div className="absolute inset-0">
             {project.cardImageDefault && (
               <Image
                 src={imgUrl(project.cardImageDefault)}
@@ -42,7 +35,7 @@ const ProjectCardMobile = memo(function ProjectCardMobile({ project }) {
                 onError={(e) => { e.currentTarget.style.display = 'none' }}
               />
             )}
-          </motion.div>
+          </div>
           {project.cardImageHover && (
             <motion.div variants={hoverImgVariants} className="absolute inset-0">
               <Image
