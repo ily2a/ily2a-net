@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 const MAX = { name: 100, email: 254, message: 5000 }
 
 // ── Rate limiting ──────────────────────────────────────────────────────────────
@@ -52,15 +52,16 @@ export async function POST(request) {
   }
 
   // ── Sanitize inputs ──
-  const safeName  = name.replace(/[\r\n]/g, ' ').trim()
-  const safeEmail = email.replace(/[\r\n]/g, ' ').trim()
+  const safeName    = name.replace(/[\r\n]/g, ' ').trim()
+  const safeEmail   = email.replace(/[\r\n]/g, ' ').trim()
+  const safeMessage = message.replace(/[\r\n]{3,}/g, '\n\n').trim()
 
   const { error } = await resend.emails.send({
     from:    'Contact Form <contact@ily2a.net>',
     to:      'contact@ily2a.net',
     replyTo: safeEmail,
     subject: `New message from ${safeName}`,
-    text:    `Name: ${safeName}\nEmail: ${safeEmail}\n\n${message}`,
+    text:    `Name: ${safeName}\nEmail: ${safeEmail}\n\n${safeMessage}`,
   })
 
   if (error) {

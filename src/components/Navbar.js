@@ -1,7 +1,7 @@
 'use client'
 
 import { memo } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Logo from '@/components/Logo'
 import NavbarButton from '@/components/NavbarButton'
 import ContactButton from '@/components/ContactButton'
@@ -12,15 +12,19 @@ import GlassSurface from '@/components/GlassSurface'
 const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 0, boxSizing: 'border-box' }
 const GLASS_STYLE_DESKTOP = { maxWidth: 'none',  minWidth: '472px', flexShrink: 0, boxSizing: 'border-box' }
 
+const VALID_SECTIONS = new Set(['hero', 'work', 'capabilities', 'contact'])
+
 const Navbar = memo(function Navbar({ isMobile = false }) {
   const pathname = usePathname()
+  const router   = useRouter()
   const isHome   = pathname === '/'
 
   function navTo(sectionId) {
+    if (!VALID_SECTIONS.has(sectionId)) return
     if (isHome) {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
     } else {
-      window.location.href = `/?scrollTo=${sectionId}`
+      router.push(`/?scrollTo=${sectionId}`)
     }
   }
 
