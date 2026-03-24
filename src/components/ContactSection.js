@@ -115,9 +115,11 @@ export default function ContactSection() {
                   animate={errors.email ? INPUT_RING_ERROR : INPUT_RING}
                   whileFocus={errors.email ? FOCUS_RING_ERROR : FOCUS_RING}
                   transition={INPUT_TRANSITION}
+                  aria-invalid={errors.email || undefined}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                 />
                 {errors.email && (
-                  <p className="text-[12px] text-error">Please enter a valid email.</p>
+                  <p id="email-error" className="text-[12px] text-error">Please enter a valid email.</p>
                 )}
               </div>
             </div>
@@ -164,7 +166,7 @@ export default function ContactSection() {
                   </p>
                   <button
                     type="button"
-                    onClick={() => setStatus('idle')}
+                    onClick={() => { setStatus('idle'); setErrors({ name: false, email: false, message: false }) }}
                     className="text-[13px] underline text-error"
                   >
                     Retry

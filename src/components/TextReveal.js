@@ -10,7 +10,7 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
     <p className={className}>
       {words.map((word, wi) => (
         <motion.span
-          key={wi}
+          key={`${word}-${wi}`}
           className="inline-block mr-[0.25em]"
           style={{ willChange: 'filter, transform, opacity' }}
           initial={{ opacity: 0, filter: 'blur(6px)', y: 8, scale }}

@@ -93,16 +93,19 @@ const ptBody = {
   marks: {
     strong: ({ children }) => <strong>{children}</strong>,
     em:     ({ children }) => <em>{children}</em>,
-    link:   ({ value, children }) => (
-      <a
-        href={value?.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-brand underline underline-offset-4 transition-opacity hover:opacity-75"
-      >
-        {children}
-      </a>
-    ),
+    link:   ({ value, children }) => {
+      const href = /^https?:\/\//.test(value?.href ?? '') ? value.href : '#'
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand underline underline-offset-4 transition-opacity hover:opacity-75"
+        >
+          {children}
+        </a>
+      )
+    },
   },
 }
 
@@ -140,11 +143,15 @@ export default async function CaseStudyPage({ params }) {
     ? urlFor(data.coverImage).width(1400).auto('format').url()
     : null
 
-  const figmaEmbedUrl = data.figmaEmbed
-    ? data.figmaEmbed.startsWith('https://embed.figma.com')
-      ? data.figmaEmbed
-      : `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(data.figmaEmbed)}`
-    : null
+  const figmaEmbedUrl = (() => {
+    const raw = data.figmaEmbed
+    if (!raw) return null
+    const isFigma = raw.startsWith('https://www.figma.com/') || raw.startsWith('https://embed.figma.com/')
+    if (!isFigma) return null
+    return raw.startsWith('https://embed.figma.com/')
+      ? raw
+      : `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(raw)}`
+  })()
 
   const contextSections = [
     { label: 'Business Need', content: data.brief },
@@ -236,6 +243,7 @@ export default async function CaseStudyPage({ params }) {
                     <iframe
                       src={figmaEmbedUrl}
                       allowFullScreen
+                      sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
                       title={`${data.title} — Figma prototype`}
                       className="absolute inset-0 w-full h-full border-0"
                     />
