@@ -66,6 +66,14 @@ export default {
       group: 'meta',
       options: { hotspot: true },
       validation: Rule => Rule.required(),
+      fields: [
+        {
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          validation: (Rule) => Rule.required().warning('Alt text is required for SEO and accessibility'),
+        },
+      ],
     },
     {
       name: 'cardImageDefault',
