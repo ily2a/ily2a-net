@@ -180,7 +180,11 @@ export default async function CaseStudyPage({ params }) {
           <div className="flex-1 min-w-0 flex flex-col gap-8">
 
             {/* Header */}
-            <header className="flex flex-row justify-between items-center gap-4">
+            <header className="flex flex-col tab:flex-row tab:justify-between tab:items-center gap-4">
+              <div className="flex gap-2 shrink-0 tab:hidden">
+                <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+                <SpotlightButton href="/">Home</SpotlightButton>
+              </div>
               <div className="flex flex-col gap-3">
                 <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] tracking-[-0.02em] leading-[115%] text-text-primary text-balance">
                   {data.title}
@@ -189,7 +193,7 @@ export default async function CaseStudyPage({ params }) {
                   <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
                 )}
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="hidden tab:flex gap-2 shrink-0">
                 <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
                 <SpotlightButton href="/">Home</SpotlightButton>
               </div>
