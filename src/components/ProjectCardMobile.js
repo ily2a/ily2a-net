@@ -6,19 +6,14 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
 
-const hoverImgVariants = {
-  rest:    { opacity: 0 },
-  pressed: { opacity: 1, transition: { duration: 0.15, ease: 'easeOut' } },
-}
-
 const imgUrl = (source) => urlFor(source).width(800).auto('format').url()
 
 const ProjectCardMobile = memo(function ProjectCardMobile({ project }) {
   return (
     <Link href={`/craft/${project.slug.current}`} className="project-card-mobile">
       <motion.div
-        initial="rest"
-        whileTap="pressed"
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.15, ease: 'easeOut' }}
         style={{ touchAction: 'manipulation' }}
       >
         <div className="project-card-mobile__image">
@@ -36,21 +31,6 @@ const ProjectCardMobile = memo(function ProjectCardMobile({ project }) {
               />
             )}
           </div>
-          {project.cardImageHover && (
-            <motion.div variants={hoverImgVariants} className="absolute inset-0">
-              <Image
-                src={imgUrl(project.cardImageHover)}
-                alt={project.title}
-                fill
-                loading="lazy"
-                sizes="(max-width: 600px) 100vw, 50vw"
-                className="project-card__img"
-                placeholder={project.cardImageHover.lqip ? 'blur' : 'empty'}
-                blurDataURL={project.cardImageHover.lqip}
-                onError={(e) => { e.currentTarget.style.display = 'none' }}
-              />
-            </motion.div>
-          )}
           <ul className="project-card-mobile__tags" role="list">
             {project.tags?.map((tag) => (
               <li key={tag} className="project-card__tag">{tag}</li>
