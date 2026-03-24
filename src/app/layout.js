@@ -48,6 +48,9 @@ export const metadata = {
     apple: { url: '/favicons/apple-touch-icon.png', sizes: '180x180' },
   },
   manifest: '/site.webmanifest',
+  verification: {
+    google: '0-HV9XZQSqf9eZl3DdSQmATQGNcfB9UEvqSzjQkorrM',
+  },
 }
 
 export default function RootLayout({ children }) {
