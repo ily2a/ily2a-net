@@ -236,7 +236,7 @@ export default async function CaseStudyPage({ params }) {
               <div className="w-full rounded-xl overflow-hidden">
                 <Image
                   src={coverUrl}
-                  alt={data.title}
+                  alt={data.coverImage?.alt || data.title}
                   width={1400}
                   height={788}
                   priority
