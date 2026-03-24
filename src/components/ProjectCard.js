@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
+
 const MotionLink = motion.create(Link)
 
 const BLUR_LAYERS = [
@@ -84,15 +85,12 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           />
         </motion.div>
       )}
-
       <motion.div className="project-card__blur" aria-hidden="true" variants={overlayVariants}>
         {BLUR_LAYERS.map((layer) => (
           <div key={layer.blur} className="project-card__blur-layer" style={layer.style} />
         ))}
       </motion.div>
-
       <motion.div className="project-card__scrim" variants={overlayVariants} />
-
       <motion.div className="project-card__content" variants={contentVariants}>
         <ul className="project-card__tags" role="list">
           {project.tags?.map((tag) => (
