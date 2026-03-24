@@ -14,8 +14,8 @@ export const CASE_STUDIES_FEATURED_QUERY = `*[_type == "caseStudy"] | order(orde
 
 // Single case study by slug — used on /craft/[slug]
 export const CASE_STUDY_BY_SLUG_QUERY = `*[_type == "caseStudy" && slug.current == $slug][0] {
-  _id, title, slug, client, role, timeline, platform, industry, tags, description,
-  coverImage { ..., "lqip": asset->metadata.lqip },
+  _id, _updatedAt, title, slug, client, role, timeline, platform, industry, tags, description,
+  coverImage { ..., "lqip": asset->metadata.lqip, "url": asset->url },
   brief, problem, goals, uxStrategy,
   body[] {
     ...,

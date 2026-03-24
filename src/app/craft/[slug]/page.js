@@ -35,10 +35,28 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const data = await getCaseStudy(slug)
   if (!data) return {}
+  const ogImage = data.coverImage?.url
+    ? `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`
+    : '/og-image.png'
   return {
     title: `${data.title} — Ily Ameur`,
     description: data.description,
     alternates: { canonical: `https://ily2a.net/craft/${slug}` },
+    openGraph: {
+      title: `${data.title} — Ily Ameur`,
+      description: data.description,
+      url: `https://ily2a.net/craft/${slug}`,
+      siteName: 'Ily Ameur',
+      locale: 'en_GB',
+      type: 'article',
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${data.title} — Ily Ameur`,
+      description: data.description,
+      images: [ogImage],
+    },
   }
 }
 
@@ -170,8 +188,21 @@ export default async function CaseStudyPage({ params }) {
   ].filter(Boolean)
 
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": data.title,
+    "description": data.description,
+    "url": `https://ily2a.net/craft/${data.slug.current}`,
+    "author": { "@type": "Person", "name": "Ily Ameur", "url": "https://ily2a.net" },
+    "dateModified": data._updatedAt,
+    ...(data.coverImage?.url && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
+    ...(data.client && { "producer": { "@type": "Organization", "name": data.client } }),
+  }
+
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <FloatingNav />
 
       <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">

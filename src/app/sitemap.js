@@ -20,6 +20,12 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority:        1,
     },
+    {
+      url:             `${BASE_URL}/craft`,
+      lastModified:    new Date(),
+      changeFrequency: 'monthly',
+      priority:        0.9,
+    },
     ...projects.map((p) => ({
       url:             `${BASE_URL}/craft/${p.slug}`,
       lastModified:    new Date(p._updatedAt),

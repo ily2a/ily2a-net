@@ -15,6 +15,7 @@ const jsonLd = {
   "url": "https://ily2a.net",
   "description": "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
   "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
+  "sameAs": ["https://linkedin.com/in/ily2a"],
 }
 
 export const metadata = {
