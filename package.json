@@ -26,6 +26,11 @@
     "sanity": "^5.17.1",
     "tailwind-merge": "^3.5.0"
   },
+  "overrides": {
+    "@vercel/frameworks": {
+      "js-yaml": "3.14.2"
+    }
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
