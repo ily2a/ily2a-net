@@ -22,6 +22,7 @@ const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
 
 function HeroBackground() {
   const [visible, setVisible] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setVisible(true) }, [])
   return (
     <div

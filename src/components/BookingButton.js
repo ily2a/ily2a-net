@@ -47,6 +47,33 @@ export default function BookingButton({ static: isStatic = false, compact = fals
   const triggerRef      = useRef(null)    // element that opened the modal — restored on close
   const focusableRef    = useRef([])      // cached focusable elements — queried once on open
 
+  const initCal = async () => {
+    if (calInitialized.current) return
+    calInitialized.current = true
+    try {
+      const cal = await getCalApi()
+      cal('ui', {
+        theme: 'dark',
+        cssVarsPerTheme: {
+          dark: {
+            'cal-brand':          'var(--color-brand)',
+            'cal-brand-emphasis': 'var(--color-amethyst-300)',
+            'cal-bg':             'var(--color-surface)',
+            'cal-bg-subtle':      'var(--color-background)',
+            'cal-border':         'var(--color-text-subtle)',
+            'cal-text':           'var(--color-text-primary)',
+            'cal-text-subtle':    'var(--color-text-secondary)',
+          }
+        },
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+      })
+    } catch {
+      // Cal.com failed to load — modal still renders the iframe directly
+    }
+  }
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true) }, [])
 
   // Pre-initialise Cal.com on mount so the first modal open is instant
@@ -55,6 +82,7 @@ export default function BookingButton({ static: isStatic = false, compact = fals
 
   // Reset iframe loading state each time modal opens
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open) setIframeLoaded(false)
   }, [open])
 
@@ -116,32 +144,6 @@ export default function BookingButton({ static: isStatic = false, compact = fals
       cancelAnimationFrame(raf)
     }
   }, [open])
-
-  const initCal = async () => {
-    if (calInitialized.current) return
-    calInitialized.current = true
-    try {
-      const cal = await getCalApi()
-      cal('ui', {
-        theme: 'dark',
-        cssVarsPerTheme: {
-          dark: {
-            'cal-brand':          'var(--color-brand)',
-            'cal-brand-emphasis': 'var(--color-amethyst-300)',
-            'cal-bg':             'var(--color-surface)',
-            'cal-bg-subtle':      'var(--color-background)',
-            'cal-border':         'var(--color-text-subtle)',
-            'cal-text':           'var(--color-text-primary)',
-            'cal-text-subtle':    'var(--color-text-secondary)',
-          }
-        },
-        hideEventTypeDetails: false,
-        layout: 'month_view',
-      })
-    } catch {
-      // Cal.com failed to load — modal still renders the iframe directly
-    }
-  }
 
   const handleOpen = () => {
     triggerRef.current = document.activeElement
