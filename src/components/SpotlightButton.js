@@ -9,8 +9,9 @@ import { SPRING_SNAP } from '@/constants/animations'
 const MotionLink = motion.create(Link)
 
 const VARIANTS = {
-  default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950' },
-  dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100' },
+  default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950', height: 'h-11', border: '' },
+  dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100', height: 'h-11', border: '' },
+  ghost:   { bg: 'transparent',               text: 'text-white',        height: 'h-9',  border: '' },
 }
 
 export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }) {
@@ -25,7 +26,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   }
 
   const v = VARIANTS[variant] ?? VARIANTS.default
-  const baseClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[8px] px-4 h-11 btn-label ${v.text} overflow-hidden select-none no-underline ${className}`
+  const baseClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[8px] px-4 ${v.height} font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance ${v.text} ${v.border} overflow-hidden select-none no-underline ${className}`
   const baseStyle = { background: v.bg }
 
   const spotlight = (

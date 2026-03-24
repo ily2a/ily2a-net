@@ -68,7 +68,7 @@ export default function ContactSection() {
         {/* ── Full-width header ── */}
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
           <h2 className="text-[20px] xl:text-2xl font-bold text-text-primary tracking-[-0.01em]">Contact</h2>
-          <p className="text-md text-text-secondary">
+          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
             Please fill out this form to get in touch, I'm excited to hear about your ideas.
           </p>
         </motion.div>
@@ -178,7 +178,7 @@ export default function ContactSection() {
 
         {/* ── Info card ── */}
         <motion.div
-          className="relative flex flex-row items-center justify-between rounded-[20px] p-4 md:py-5 md:px-10 mt-2 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
+          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 mt-2 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
           style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
           {...fadeUp(0.15)}
         >
@@ -192,8 +192,8 @@ export default function ContactSection() {
           </div>
 
           <div className="relative flex flex-col gap-1">
-            <p className="heading-1">Ily Ameur</p>
-            <p className="text-md text-brand">Design Engineer</p>
+            <p className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance">Ily Ameur</p>
+            <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-brand">Design Engineer</p>
           </div>
           <div className="relative flex flex-row items-center gap-3">
             <LinkedInButton />
@@ -203,7 +203,7 @@ export default function ContactSection() {
 
         {/* ── Copyright ── */}
         <motion.p
-          className="text-center text-md pt-10 text-brand"
+          className="text-center font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance pt-5 text-brand"
           {...fadeUp(0.2)}
         >
           © {new Date().getFullYear()} Ily Ameur. All rights reserved.

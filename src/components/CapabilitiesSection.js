@@ -109,7 +109,7 @@ export default function CapabilitiesSection() {
         {/* ── Header ── */}
         <div className="flex flex-col gap-2">
           <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Capabilities</h2>
-          <p className="text-md text-text-secondary">
+          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
             End-to-end product design with the technical range to build what I design.
           </p>
         </div>

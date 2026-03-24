@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import ProjectCard from '@/components/ProjectCard'
 import ProjectCardMobile from '@/components/ProjectCardMobile'
 import SpotlightButton from '@/components/SpotlightButton'
@@ -16,12 +17,19 @@ export default function CraftSection({
       <div className="w-full max-w-[600px] flex flex-col gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-baseline">
-            <Tag className="font-bold text-[20px] xl:text-2xl tracking-[-0.01em] text-text-primary">My Craft</Tag>
+            <Tag className="font-bold text-[20px] xl:text-2xl tracking-[-0.01em] text-text-primary">Craft</Tag>
             {showViewAll && (
-              <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+              <>
+                <div className="tab:hidden">
+                  <Link href="/craft" className="inline-flex items-center h-9 px-[6px] text-white hover:text-brand active:text-brand transition-colors duration-150 font-bold tracking-[-0.01em] leading-[120%] text-[16px] whitespace-nowrap no-underline">View all projects</Link>
+                </div>
+                <div className="hidden tab:block">
+                  <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+                </div>
+              </>
             )}
           </div>
-          <p className="text-md text-text-secondary">
+          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
             End-to-end product design across 10+ industries. Increasingly, I build what I design.
           </p>
         </div>
