@@ -49,7 +49,7 @@ export default function ContactButton({ label = 'Contact', onClick }) {
       <div className={layerClass} style={{ background: conicGradient, transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
       <div className={layerClass} style={{ background: conicGradient, filter: 'blur(8px)', transform: 'rotate(180deg)', opacity: hovered ? 1 : 0, transition: 'opacity 0.3s ease' }} />
       <div className="absolute rounded-[7px] [inset:1px] bg-gradient-to-b from-surface to-background" />
-      <span className="btn-label relative z-[1] whitespace-nowrap pointer-events-none text-text-primary">
+      <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance relative z-[1] whitespace-nowrap pointer-events-none text-text-primary">
         {label}
       </span>
     </motion.button>

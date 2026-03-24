@@ -48,11 +48,11 @@ const ptBody = {
     normal:     ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
       if (!text.trim()) return <div className="h-4" />
-      return <p className="text-md text-text-primary">{children}</p>
+      return <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</p>
     },
-    h1:         ({ children }) => <h1 className="heading-1 text-brand">{children}</h1>,
-    h2:         ({ children }) => <h2 className="heading-2 text-brand">{children}</h2>,
-    h3:         ({ children }) => <h3 className="heading-3 text-brand">{children}</h3>,
+    h1:         ({ children }) => <h1 className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand">{children}</h1>,
+    h2:         ({ children }) => <h2 className="font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance text-brand">{children}</h2>,
+    h3:         ({ children }) => <h3 className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">{children}</h3>,
     blockquote: ({ children }) => (
       <blockquote className="border-l-2 border-brand pl-5 text-text-primary italic text-base leading-[160%] tracking-[0.04em]">
         {children}
@@ -60,8 +60,8 @@ const ptBody = {
     ),
   },
   list: {
-    bullet:   ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
-    number:   ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
+    bullet:   ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ul>,
+    number:   ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ol>,
   },
   listItem: {
     bullet: ({ children }) => <li>{children}</li>,
@@ -82,7 +82,7 @@ const ptBody = {
             blurDataURL={value.lqip}
           />
           {value.caption && (
-            <figcaption className="text-xs text-text-subtle tracking-[0.04em] text-center">
+            <figcaption className="font-medium leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance text-text-subtle tracking-[0.04em] text-center">
               {value.caption}
             </figcaption>
           )}
@@ -278,7 +278,7 @@ function SidebarContent({ metaFields, tags }) {
       className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-xl p-6"
       style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
     >
-      <p className="heading-3 text-brand">
+      <p className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">
         Project Details
       </p>
 
@@ -293,7 +293,7 @@ function SidebarContent({ metaFields, tags }) {
       <dl className={`flex flex-col gap-3 ${tags?.length > 0 ? 'mt-4' : 'mt-3'}`}>
         {metaFields.map(({ label, value }) => (
           <div key={label} className="flex flex-col gap-1">
-            <dt className="text-xs text-text-secondary">
+            <dt className="font-medium tracking-[0.07em] leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance text-text-secondary">
               {label}
             </dt>
             <dd className="text-[15px] font-medium tracking-[-0.01em] text-text-primary leading-[1.3]">

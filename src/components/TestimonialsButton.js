@@ -62,7 +62,7 @@ export default function TestimonialsButton() {
           padding:        '0 16px',
         }}
       >
-        <span className="btn-label" style={{ color: 'var(--color-text-primary)', whiteSpace: 'nowrap' }}>
+        <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance" style={{ color: 'var(--color-text-primary)', whiteSpace: 'nowrap' }}>
           Echoes about me
         </span>
       </motion.div>

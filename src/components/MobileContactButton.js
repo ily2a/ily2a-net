@@ -48,7 +48,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
       className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-amethyst-900 bg-surface cursor-pointer overflow-hidden select-none"
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <span className="btn-label relative z-[1] text-text-primary pointer-events-none whitespace-nowrap">
+      <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance relative z-[1] text-text-primary pointer-events-none whitespace-nowrap">
         {label}
       </span>
       <span className="absolute inset-0 pointer-events-none">

@@ -59,11 +59,11 @@ export default function HeroSection({ children }) {
             <div className="flex flex-col gap-4">
               <TextReveal
                 text="Design Engineer : I design systems, flows, and products. Then build them."
-                className="hero-sub-1"
+                className="font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-balance"
               />
               <TextReveal
                 text="End-to-end product design with zero handoff friction."
-                className="text-md"
+                className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance"
                 scale={2}
                 initialDelay={HERO_SUBTITLE_DELAY}
               />

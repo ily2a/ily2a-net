@@ -8,12 +8,13 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 |---|---|
 | Framework | Next.js 16 (App Router) |
 | UI | React 19 + Framer Motion |
-| Styling | Tailwind CSS v4 (custom design tokens) |
+| Styling | Tailwind CSS v4 (inline utilities, no custom font classes) |
 | CMS | Sanity v5 (hosted Studio at `/studio`) |
 | Email | Resend |
 | Booking | Cal.com embed |
 | WebGL | OGL |
 | Font | Satoshi via Fontshare |
+| Analytics | Vercel Speed Insights + Analytics |
 
 ## Pages
 
@@ -87,14 +88,23 @@ Deploy schema changes:
 npx sanity@latest schema deploy
 ```
 
+## Components
+
+- **ProjectCard** — desktop hover card with blur overlay and image swap
+- **ProjectCardMobile** — touch-optimised card with scale-on-tap, shown below the `tab` breakpoint (730px)
+- **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
+- **GlassSurface** — SVG displacement filter glass effect used in the navbar
+- **FloatingNav** — fixed bottom navbar with spring animation
+- **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
+
 ## Design Tokens
 
-Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Key tokens:
+Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typography is inlined as Tailwind utilities — no custom font classes. Key tokens:
 
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
-- **Breakpoints** — `390px`, `810px`, `1200px`, `1440px`
+- **Breakpoints** — `tab: 730px`, `desk: 1200px`, `xl: 1440px`
 
 ## Deployment
 

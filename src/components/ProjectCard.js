@@ -98,8 +98,8 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           ))}
         </ul>
         <div className="project-card__text">
-          <h3 className="project-card__title heading-2">{project.title}</h3>
-          <p className="project-card__subtitle text-sm">{project.description}</p>
+          <h3 className="project-card__title font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance">{project.title}</h3>
+          <p className="project-card__subtitle font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance">{project.description}</p>
         </div>
       </motion.div>
     </MotionLink>
