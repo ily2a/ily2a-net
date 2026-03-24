@@ -4,6 +4,8 @@ import { memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+
+const MotionLink = motion.create(Link)
 import { urlFor } from '@/sanity/lib/image'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_CARD } from '@/constants/animations'
@@ -72,13 +74,13 @@ const ProjectCard = memo(function ProjectCard({ project }) {
 
   if (isCompact) {
     return (
-      <motion.article
+      <MotionLink
+        href={`/craft/${project.slug.current}`}
         initial="rest"
         whileTap="pressed"
         transition={SPRING_CARD}
         style={{ touchAction: 'manipulation' }}
-      >
-        <Link href={`/craft/${project.slug.current}`} className="project-card-mobile">
+        className="project-card-mobile">
           <div className="project-card-mobile__image">
             <motion.div variants={mobileImgVariants} className="absolute inset-0">
               {project.cardImageDefault && (
@@ -121,14 +123,18 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               <p className="project-card__subtitle text-sm">{project.description}</p>
             </div>
           </div>
-        </Link>
-      </motion.article>
+        </MotionLink>
     )
   }
 
   return (
-    <motion.article initial="rest" whileHover="hover" style={{ touchAction: 'manipulation' }}>
-      <Link href={`/craft/${project.slug.current}`} className="project-card relative aspect-[16/10] w-full rounded-xl overflow-hidden block no-underline">
+    <MotionLink
+      href={`/craft/${project.slug.current}`}
+      initial="rest"
+      whileHover="hover"
+      whileTap="hover"
+      style={{ touchAction: 'manipulation' }}
+      className="project-card relative aspect-[16/10] w-full rounded-xl overflow-hidden block no-underline">
 
         <motion.div variants={imgVariants} className="absolute inset-0">
           {project.cardImageDefault && (
@@ -184,8 +190,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
           </div>
         </motion.div>
 
-      </Link>
-    </motion.article>
+      </MotionLink>
   )
 })
 
