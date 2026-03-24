@@ -93,7 +93,7 @@ const ptBody = {
         <figure className="flex flex-col gap-2.5 w-full">
           <Image
             src={url}
-            alt={value.alt ?? ''}
+            alt={value.alt || value.caption || ''}
             width={1200}
             height={675}
             className="w-full h-auto rounded-xl block"
