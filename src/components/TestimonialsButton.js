@@ -41,7 +41,7 @@ export default function TestimonialsButton() {
         justifyContent: 'center',
         padding:        '8px',
         width:          'auto',
-        height:         '60px',
+        height:         '56px',
         borderRadius:   '8px',
         background:     'rgba(13, 16, 18, 0.25)',
         cursor:         'pointer',

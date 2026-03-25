@@ -264,8 +264,8 @@ export default function BookingButton({ static: isStatic = false, compact = fals
           alignItems:     'center',
           justifyContent: 'center',
           padding:        '8px',
-          width:          compact ? 'auto' : '140px',
-          height:         compact ? 'auto' : '60px',
+          width:          'auto',
+          height:         compact ? 'auto' : '56px',
           borderRadius:   '8px',
           background:     'rgba(211, 209, 224, 0.25)',
           cursor:         'pointer',
@@ -282,7 +282,7 @@ export default function BookingButton({ static: isStatic = false, compact = fals
             width:          compact ? 'auto' : '100%',
             height:         compact ? 'auto' : '100%',
             borderRadius:   '8px',
-            padding:        compact ? '10px 16px' : '0',
+            padding:        compact ? '10px 16px' : '0 16px',
           }}
         >
           <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance text-background whitespace-nowrap">
