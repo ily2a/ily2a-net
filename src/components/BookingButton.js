@@ -277,10 +277,10 @@ export default function BookingButton({ static: isStatic = false, compact = fals
             display:        'flex',
             alignItems:     'center',
             justifyContent: 'center',
-            width:          compact ? 'auto' : '100%',
-            height:         compact ? 'auto' : '100%',
+            width:          '100%',
+            height:         '100%',
             borderRadius:   '8px',
-            padding:        compact ? '10px 16px' : '0 16px',
+            padding:        '0 16px',
           }}
         >
           <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance text-background whitespace-nowrap">
