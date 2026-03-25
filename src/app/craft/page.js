@@ -3,25 +3,26 @@ import ContactSection from '@/components/ContactSection'
 import FloatingNav from '@/components/FloatingNav'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
 
 export const revalidate = 3600
 
 export const metadata = {
-  title: 'Craft — Ily Ameur',
+  title: `Craft — ${SITE_NAME}`,
   description: 'End-to-end product design across 10+ industries.',
-  alternates: { canonical: 'https://ily2a.net/craft' },
+  alternates: { canonical: `${SITE_URL}/craft` },
   openGraph: {
-    title: 'Craft — Ily Ameur',
+    title: `Craft — ${SITE_NAME}`,
     description: 'End-to-end product design across 10+ industries.',
-    url: 'https://ily2a.net/craft',
-    siteName: 'Ily Ameur',
+    url: `${SITE_URL}/craft`,
+    siteName: SITE_NAME,
     locale: 'en_GB',
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Craft — Ily Ameur',
+    title: `Craft — ${SITE_NAME}`,
     description: 'End-to-end product design across 10+ industries.',
     images: ['/og-image.png'],
   },
