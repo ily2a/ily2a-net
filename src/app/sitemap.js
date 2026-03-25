@@ -1,6 +1,5 @@
 import { sanityFetch } from '@/sanity/lib/live'
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ily2a.net'
+import { SITE_URL as BASE_URL } from '@/constants/site'
 
 export default async function sitemap() {
   let projects = []
@@ -22,7 +21,9 @@ export default async function sitemap() {
     },
     {
       url:             `${BASE_URL}/craft`,
-      lastModified:    new Date(),
+      lastModified:    projects.length
+        ? new Date(Math.max(...projects.map(p => new Date(p._updatedAt).getTime())))
+        : new Date(),
       changeFrequency: 'monthly',
       priority:        0.9,
     },

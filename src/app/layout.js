@@ -1,5 +1,6 @@
 import "./globals.css"
 import { Suspense } from "react"
+import { SITE_URL, SITE_NAME } from "@/constants/site"
 import { SmoothCursor } from "@/components/SmoothCursor"
 import { SanityLive } from "@/sanity/lib/live"
 import MotionProvider from "@/components/MotionProvider"
@@ -10,35 +11,35 @@ import { Analytics } from "@vercel/analytics/next"
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Ily Ameur",
+  "name": SITE_NAME,
   "jobTitle": "Design Engineer",
-  "url": "https://ily2a.net",
+  "url": SITE_URL,
   "description": "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
   "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
   "sameAs": ["https://linkedin.com/in/ily2a"],
 }
 
 export const metadata = {
-  title: "Ily Ameur : Design Engineer",
+  title: `${SITE_NAME} : Design Engineer`,
   description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
   openGraph: {
-    title: "Ily Ameur : Design Engineer",
+    title: `${SITE_NAME} : Design Engineer`,
     description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
-    url: "https://ily2a.net",
-    siteName: "Ily Ameur",
+    url: SITE_URL,
+    siteName: SITE_NAME,
     locale: "en_GB",
     type: "website",
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ily Ameur : Design Engineer",
+    title: `${SITE_NAME} : Design Engineer`,
     description: "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
     images: ['/og-image.png'],
   },
-  metadataBase: new URL("https://ily2a.net"),
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: "https://ily2a.net",
+    canonical: SITE_URL,
   },
   icons: {
     icon: [
@@ -63,7 +64,7 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }}
         />
       </head>
       <body>

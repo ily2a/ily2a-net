@@ -9,6 +9,7 @@ import ContactSection from '@/components/ContactSection'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
 
 export const revalidate = 3600
 
@@ -40,21 +41,21 @@ export async function generateMetadata({ params }) {
     ? `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`
     : '/og-image.png'
   return {
-    title: `${data.title} — Ily Ameur`,
+    title: `${data.title} — ${SITE_NAME}`,
     description: data.description,
-    alternates: { canonical: `https://ily2a.net/craft/${slug}` },
+    alternates: { canonical: `${SITE_URL}/craft/${slug}` },
     openGraph: {
-      title: `${data.title} — Ily Ameur`,
+      title: `${data.title} — ${SITE_NAME}`,
       description: data.description,
-      url: `https://ily2a.net/craft/${slug}`,
-      siteName: 'Ily Ameur',
+      url: `${SITE_URL}/craft/${slug}`,
+      siteName: SITE_NAME,
       locale: 'en_GB',
       type: 'article',
       images: [{ url: ogImage, width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data.title} — Ily Ameur`,
+      title: `${data.title} — ${SITE_NAME}`,
       description: data.description,
       images: [ogImage],
     },
@@ -194,8 +195,8 @@ export default async function CaseStudyPage({ params }) {
     "@type": "CreativeWork",
     "name": data.title,
     "description": data.description,
-    "url": `https://ily2a.net/craft/${data.slug.current}`,
-    "author": { "@type": "Person", "name": "Ily Ameur", "url": "https://ily2a.net" },
+    "url": `${SITE_URL}/craft/${data.slug.current}`,
+    "author": { "@type": "Person", "name": SITE_NAME, "url": SITE_URL },
     "dateModified": data._updatedAt,
     ...(data.coverImage?.url && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
     ...(data.client && { "producer": { "@type": "Organization", "name": data.client } }),
@@ -203,7 +204,7 @@ export default async function CaseStudyPage({ params }) {
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }} />
       <FloatingNav />
       <BackToTop />
 
