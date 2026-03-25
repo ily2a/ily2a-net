@@ -73,7 +73,6 @@ export default function BookingButton({ static: isStatic = false, compact = fals
     }
   }
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true) }, [])
 
   // Pre-initialise Cal.com on mount so the first modal open is instant
@@ -82,7 +81,6 @@ export default function BookingButton({ static: isStatic = false, compact = fals
 
   // Reset iframe loading state each time modal opens
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open) setIframeLoaded(false)
   }, [open])
 
@@ -265,7 +263,7 @@ export default function BookingButton({ static: isStatic = false, compact = fals
           justifyContent: 'center',
           padding:        '8px',
           width:          'auto',
-          height:         compact ? 'auto' : '56px',
+          height:         '56px',
           borderRadius:   '8px',
           background:     'rgba(211, 209, 224, 0.25)',
           cursor:         'pointer',
