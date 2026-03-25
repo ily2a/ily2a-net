@@ -115,7 +115,7 @@ const ptBody = {
     strong: ({ children }) => <strong>{children}</strong>,
     em:     ({ children }) => <em>{children}</em>,
     link:   ({ value, children }) => {
-      const href = /^https?:\/\//.test(value?.href ?? '') ? value.href : '#'
+      const href = /^(https?|mailto|tel):/.test(value?.href ?? '') ? value.href : '#'
       return (
         <a
           href={href}

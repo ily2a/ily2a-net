@@ -94,10 +94,15 @@ export default function ContactSection() {
                   onChange={handleChange}
                   required autoComplete="name"
                   className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
-                  animate={INPUT_RING}
-                  whileFocus={FOCUS_RING}
+                  animate={errors.name ? INPUT_RING_ERROR : INPUT_RING}
+                  whileFocus={errors.name ? FOCUS_RING_ERROR : FOCUS_RING}
                   transition={INPUT_TRANSITION}
+                  aria-invalid={errors.name || undefined}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
                 />
+                {errors.name && (
+                  <p id="name-error" className="text-[12px] text-error">Please enter your full name.</p>
+                )}
               </div>
 
               {/* Email */}
