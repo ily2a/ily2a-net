@@ -43,7 +43,9 @@ export default function BackToTop() {
             className="pointer-events-none absolute inset-0 transition-opacity duration-300"
             style={{ background: 'radial-gradient(circle 80px at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.3), transparent)' }}
           />
-          <span className="relative z-10 leading-none">↑</span>
+          <svg className="relative z-10" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+          </svg>
           <span className="relative z-10 hidden lg:inline">Back to top</span>
         </motion.button>
       )}
