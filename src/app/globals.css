@@ -81,24 +81,11 @@ input, textarea, select, [contenteditable="true"] {
 }
 
 /* ─── Skeleton Loading ────────────────────────────────────────── */
-@keyframes skeleton-shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
-}
 .skeleton {
-  background: var(--color-surface);
-  background-size: 200% 100%;
+  background-color: var(--color-surface);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--color-surface)        25%,
-      var(--color-amethyst-950)   50%,
-      var(--color-surface)        75%
-    );
-    animation: skeleton-shimmer 1.5s ease-in-out infinite;
-  }
+  .skeleton { @apply animate-pulse; }
 }
 
 /* ─── Focus Visible ───────────────────────────────────────────── */
@@ -113,9 +100,6 @@ input, textarea, select, [contenteditable="true"] {
 }
 
 /* ─── Booking Modal Spinner ───────────────────────────────────── */
-@keyframes booking-spin {
-  to { transform: rotate(360deg); }
-}
 .booking-spinner {
   width:  32px;
   height: 32px;
@@ -124,7 +108,7 @@ input, textarea, select, [contenteditable="true"] {
   border-radius: 50%;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .booking-spinner { animation: booking-spin 0.75s linear infinite; }
+  .booking-spinner { @apply animate-spin; }
 }
 @media (prefers-reduced-motion: reduce) {
   .booking-spinner { opacity: 0.5; }
