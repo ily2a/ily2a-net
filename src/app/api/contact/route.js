@@ -7,7 +7,10 @@ const MAX = { name: 100, email: 254, message: 5000 }
 
 // ── Rate limiting ──────────────────────────────────────────────────────────────
 // In-memory sliding window: 5 requests per IP per hour.
-// Resets on cold start — sufficient protection for a portfolio contact form.
+// Note: resets on cold start AND is per-instance — on Vercel, concurrent
+// serverless instances each have isolated memory, so this is best-effort.
+// Sufficient for a low-traffic portfolio; replace with Upstash KV if spam
+// becomes a real issue.
 const RATE_LIMIT  = 5
 const WINDOW_MS   = 60 * 60 * 1000 // 1 hour
 

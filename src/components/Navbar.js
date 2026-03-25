@@ -50,10 +50,10 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
         <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} />
         {isMobile ? (
           <div className="flex-1 min-w-0">
-            <MobileContactButton onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} />
+            <MobileContactButton onClick={() => navTo('contact')} />
           </div>
         ) : (
-          <ContactButton onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })} />
+          <ContactButton onClick={() => navTo('contact')} />
         )}
       </nav>
     </GlassSurface>
