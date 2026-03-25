@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import SpotlightButton from '@/components/SpotlightButton'
 import { PortableText } from '@portabletext/react'
 import FloatingNav from '@/components/FloatingNav'
+import BackToTop from '@/components/BackToTop'
 import ContactSection from '@/components/ContactSection'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
@@ -204,6 +205,7 @@ export default async function CaseStudyPage({ params }) {
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <FloatingNav />
+      <BackToTop />
 
       <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
         <article className="w-full max-w-[600px] flex flex-col gap-12 items-start tab:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
