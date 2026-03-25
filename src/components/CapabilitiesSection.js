@@ -114,6 +114,9 @@ export default function CapabilitiesSection() {
           </p>
         </div>
 
+        {/* ── Cards ── */}
+        <div className="flex flex-col gap-3">
+
         {/* ── Service cards ── */}
         <div className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2">
           {CARDS.map((card) => (
@@ -172,6 +175,8 @@ export default function CapabilitiesSection() {
           </SpotlightCard>
 
         </div>
+
+        </div>{/* end cards wrapper */}
       </div>
     </section>
   )
