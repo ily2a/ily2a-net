@@ -20,7 +20,7 @@ const CARDS = [
 const SKILL_GROUPS = [
   {
     label: 'Design',
-    items: ['Systems Thinking', 'Complex Flows', 'Design Systems', 'Interaction Design', 'End-to-end Design'],
+    items: ['Product Discovery & Strategy', 'Systems Thinking', 'High-fi prototypes', 'Design system'],
   },
   {
     label: 'Code',
