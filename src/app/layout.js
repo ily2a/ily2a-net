@@ -5,6 +5,7 @@ import { SmoothCursor } from "@/components/SmoothCursor"
 import { SanityLive } from "@/sanity/lib/live"
 import MotionProvider from "@/components/MotionProvider"
 import ErrorBoundary from "@/components/ErrorBoundary"
+import SilentErrorBoundary from "@/components/SilentErrorBoundary"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -73,7 +74,7 @@ export default function RootLayout({ children }) {
             <SmoothCursor />
             {children}
             {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
-            <ErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></ErrorBoundary>
+            <SilentErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></SilentErrorBoundary>
             <ErrorBoundary><SpeedInsights /></ErrorBoundary>
             <ErrorBoundary><Analytics /></ErrorBoundary>
           </ErrorBoundary>
