@@ -12,8 +12,6 @@ import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-q
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 
-export const revalidate = 3600
-
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.
 const getCaseStudy = cache(async (slug) => {

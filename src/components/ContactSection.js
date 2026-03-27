@@ -150,9 +150,11 @@ export default function ContactSection() {
                   animate={errors.message ? INPUT_RING_ERROR : INPUT_RING}
                   whileFocus={errors.message ? FOCUS_RING_ERROR : FOCUS_RING}
                   transition={INPUT_TRANSITION}
+                  aria-invalid={errors.message || undefined}
+                  aria-describedby={errors.message ? 'message-error' : undefined}
                 />
                 {errors.message && (
-                  <p className="text-[12px] text-error">Please tell me how I can help.</p>
+                  <p id="message-error" className="text-[12px] text-error">Please tell me how I can help.</p>
                 )}
               </div>
 
