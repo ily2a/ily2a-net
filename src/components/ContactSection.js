@@ -189,16 +189,16 @@ export default function ContactSection() {
             className="flex flex-col gap-4 w-full md:flex-[1] md:pt-[26px] md:order-2 order-1"
             {...fadeUp(0.15)}
           >
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary text-balance">
               I design systems, flows, and products. Then build them.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary text-balance">
               I work end-to-end across multiple industries. I own the full process: discovery, flows, design systems, high-fidelity prototypes, and handoff. Increasingly, I build what I design using React and React Native.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary text-balance">
               If you need a design engineer who thinks in systems and ships, let&apos;s talk.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary text-balance">
               Cheers, Ily
             </p>
           </motion.div>
