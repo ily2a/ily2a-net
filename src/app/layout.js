@@ -70,14 +70,15 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <MotionProvider>
+          {/* SmoothCursor is decorative — silenced so a crash never wipes page content */}
+          <SilentErrorBoundary><SmoothCursor /></SilentErrorBoundary>
           <ErrorBoundary>
-            <SmoothCursor />
             {children}
-            {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
-            <SilentErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></SilentErrorBoundary>
-            <ErrorBoundary><SpeedInsights /></ErrorBoundary>
-            <ErrorBoundary><Analytics /></ErrorBoundary>
           </ErrorBoundary>
+          {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
+          <SilentErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></SilentErrorBoundary>
+          <SilentErrorBoundary><SpeedInsights /></SilentErrorBoundary>
+          <SilentErrorBoundary><Analytics /></SilentErrorBoundary>
         </MotionProvider>
       </body>
     </html>
