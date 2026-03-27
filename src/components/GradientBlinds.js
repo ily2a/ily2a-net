@@ -172,13 +172,15 @@ const GradientBlinds = ({
   const blindCountRef     = useRef(blindCount)
   const blindMinWidthRef  = useRef(blindMinWidth)
 
-  useEffect(() => { pausedRef.current         = paused },         [paused])
-  useEffect(() => { mouseDampeningRef.current = mouseDampening }, [mouseDampening])
-  useEffect(() => { autoAnimateRef.current    = autoAnimate },    [autoAnimate])
-  useEffect(() => { autoSpeedRef.current      = autoSpeed },      [autoSpeed])
-  useEffect(() => { attractRadiusRef.current  = attractRadius },  [attractRadius])
-  useEffect(() => { blindCountRef.current     = blindCount },     [blindCount])
-  useEffect(() => { blindMinWidthRef.current  = blindMinWidth },  [blindMinWidth])
+  useEffect(() => {
+    pausedRef.current         = paused
+    mouseDampeningRef.current = mouseDampening
+    autoAnimateRef.current    = autoAnimate
+    autoSpeedRef.current      = autoSpeed
+    attractRadiusRef.current  = attractRadius
+    blindCountRef.current     = blindCount
+    blindMinWidthRef.current  = blindMinWidth
+  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth])
 
   // ── Uniform update — no context rebuild ────────────────────────────────────
   // Updates shader uniforms in-place whenever visual props change.
