@@ -74,7 +74,7 @@ export default function ContactSection() {
         </motion.div>
 
         {/* ── Form (2/3) + About blurb (1/3) ── */}
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-6 lg:gap-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6 lg:gap-8">
 
           {/* Form */}
           <motion.form
