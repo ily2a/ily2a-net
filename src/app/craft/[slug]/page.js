@@ -259,7 +259,7 @@ export default async function CaseStudyPage({ params }) {
 
               {contextSections.map(({ label, content }) => (
                 <section key={label} className="flex flex-col gap-[14px]">
-                  <h2 className="heading-2 text-brand">{label}</h2>
+                  <h2 className="font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance text-brand">{label}</h2>
                   <div className="flex flex-col gap-[10px]">
                     <PortableText value={content} components={ptSection} />
                   </div>
