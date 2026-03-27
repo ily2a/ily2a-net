@@ -67,9 +67,13 @@ const GlassSurface = ({
   // Cache last rendered dimensions — skip SVG regen when size hasn't changed
   const lastSizeRef = useRef({ w: 0, h: 0 })
 
-  // All props interpolated into the SVG data URI must remain numeric.
-  // If this component is ever extended, validate props at the call site to
-  // prevent SVG injection via string values.
+  const VALID_BLEND_MODES = new Set([
+    'normal','multiply','screen','overlay','darken','lighten',
+    'color-dodge','color-burn','hard-light','soft-light',
+    'difference','exclusion','hue','saturation','color','luminosity'
+  ])
+  const safeBlendMode = VALID_BLEND_MODES.has(mixBlendMode) ? mixBlendMode : 'normal'
+
   const generateDisplacementMap = () => {
     const rect = containerRef.current?.getBoundingClientRect()
     const actualWidth = rect?.width || 400
@@ -90,7 +94,7 @@ const GlassSurface = ({
         </defs>
         <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" fill="black"></rect>
         <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${redGradId})" />
-        <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${blueGradId})" style="mix-blend-mode: ${mixBlendMode}" />
+        <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${blueGradId})" style="mix-blend-mode: ${safeBlendMode}" />
         <rect x="${edgeSize}" y="${edgeSize}" width="${actualWidth - edgeSize * 2}" height="${actualHeight - edgeSize * 2}" rx="${borderRadius}" fill="hsl(0 0% ${brightness}% / ${opacity})" style="filter:blur(${blur}px)" />
       </svg>
     `
