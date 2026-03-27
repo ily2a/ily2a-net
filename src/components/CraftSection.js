@@ -29,7 +29,7 @@ export default function CraftSection({
               </>
             )}
           </div>
-          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
+          <p className="text-md text-text-secondary">
             End-to-end product design across 10+ industries. Increasingly, I build what I design.
           </p>
         </div>

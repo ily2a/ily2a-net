@@ -69,7 +69,7 @@ export default function TestimonialsSection() {
       <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
           <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Echoes about me</h2>
-          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
+          <p className="text-md text-text-secondary">
             While some of my client reviews are NDA-protected (because, you know, top-secret
             agency white label stuff), I managed to sneak in a few favorites from my previous partners.
           </p>
