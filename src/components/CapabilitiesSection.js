@@ -6,21 +6,21 @@ const CARDS = [
     icon: '/capabilities icons/cube.png',
     description: 'From discovery to handoff. Complex flows, scalable systems, products that ship.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-400), var(--color-amethyst-700), transparent)',
-    tags: ['Mobile & Web', 'SaaS', 'Design Systems', 'End-to-end Design'],
+    tags: ['Mobile & Web Apps', 'SaaS', 'Design Systems', 'Complex Flows', 'End-to-end'],
   },
   {
     title: 'Design Engineering',
     icon: '/capabilities icons/drop.png',
     description: 'I close the gap between design and code. React components, zero handoff friction.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-600), var(--color-amethyst-900), transparent)',
-    tags: ['React', 'React Native', 'Component Architecture', 'Figma-to-code'],
+    tags: ['React', 'React Native', 'Figma-to-code', 'Component Architecture', 'AI-assisted workflows'],
   },
 ]
 
 const SKILL_GROUPS = [
   {
     label: 'Design',
-    items: ['Product Discovery & Strategy', 'Systems Thinking', 'High-fi prototypes', 'Design system'],
+    items: ['Product Discovery & Strategy', 'Systems Thinking', 'High-fi Prototypes', 'Interaction Design'],
   },
   {
     label: 'Code',
