@@ -207,7 +207,7 @@ export default function ContactSection() {
 
         {/* ── Info card ── */}
         <motion.div
-          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 mt-2 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
+          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
           style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
           {...fadeUp(0.15)}
         >
