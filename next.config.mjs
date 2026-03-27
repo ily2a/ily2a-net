@@ -17,7 +17,7 @@ const ContentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://cdn.fontshare.com",
   "img-src 'self' data: blob: https://cdn.sanity.io https://cal.com https://app.cal.com",
   "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com",
-  "frame-src https://cal.com https://app.cal.com https://www.figma.com https://embed.figma.com",
+  "frame-src https://cal.com https://app.cal.com https://www.figma.com https://embed.figma.com https://vercel.live",
   `connect-src 'self' ${sanityConnectSrc} https://api.fontshare.com https://cdn.fontshare.com https://cal.com https://app.cal.com`,
   "worker-src 'none'",
   "object-src 'none'",

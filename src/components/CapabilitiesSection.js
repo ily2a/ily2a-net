@@ -147,8 +147,8 @@ export default function CapabilitiesSection() {
             </div>
             <div className="flex flex-col gap-3">
               {SKILL_GROUPS.map((group) => (
-                <div key={group.label} className="flex flex-row items-center flex-wrap gap-2">
-                  <p className="inline-flex items-center px-3 py-[5px] text-[12px] font-semibold tracking-[0.08em] text-brand leading-[1.4] whitespace-nowrap">{group.label}</p>
+                <div key={group.label} className="flex flex-row items-start gap-2">
+                  <p className="inline-flex items-center px-3 py-[5px] text-[12px] font-semibold tracking-[0.08em] text-brand leading-[1.4] whitespace-nowrap shrink-0">{group.label}</p>
                   <Tags items={group.items} />
                 </div>
               ))}
