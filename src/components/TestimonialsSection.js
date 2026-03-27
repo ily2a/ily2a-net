@@ -66,7 +66,7 @@ export default function TestimonialsSection() {
       </div>
 
       {/* ── Content ── */}
-      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-8 tab:max-w-none xl:max-w-[1440px]">
+      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
           <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Echoes about me</h2>
           <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
