@@ -74,11 +74,11 @@ export default function ContactSection() {
         </motion.div>
 
         {/* ── Form (2/3) + About blurb (1/3) ── */}
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-6 lg:gap-8">
+        <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-6 lg:gap-8">
 
           {/* Form */}
           <motion.form
-            className="flex flex-col gap-3 w-full md:flex-[2] md:order-1 order-2"
+            className="flex flex-col gap-3 w-full md:flex-[2] md:order-1 order-1"
             onSubmit={handleSubmit}
             noValidate
             {...fadeUp(0.1)}
@@ -186,7 +186,7 @@ export default function ContactSection() {
 
           {/* About blurb */}
           <motion.div
-            className="flex flex-col gap-4 w-full md:flex-[1] md:pt-[26px] md:order-2 order-1"
+            className="flex flex-col gap-3 w-full md:flex-[1] md:pt-[26px] md:order-2 order-2"
             {...fadeUp(0.15)}
           >
             <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
