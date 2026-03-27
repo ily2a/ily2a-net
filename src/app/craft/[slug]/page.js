@@ -134,12 +134,12 @@ const ptSection = {
     normal: ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
       if (!text.trim()) return <div className="h-4" />
-      return <p className="text-md text-text-primary">{children}</p>
+      return <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</p>
     },
   },
   list: {
-    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
-    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
+    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ol>,
   },
   listItem: {
     bullet: ({ children }) => <li>{children}</li>,
@@ -224,7 +224,7 @@ export default async function CaseStudyPage({ params }) {
                   {data.title}
                 </h1>
                 {data.description && (
-                  <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
+                  <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary max-w-[60ch]">{data.description}</p>
                 )}
               </div>
               <div className="hidden tab:flex gap-2 shrink-0">
