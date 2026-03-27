@@ -29,7 +29,7 @@ const INNER_STYLES = {
   },
 }
 
-export default function BookingButton({ static: isStatic = false, compact = false }) {
+export default function BookingButton({ static: isStatic = false }) {
   const [open, setOpen]             = useState(false)
   const [mounted, setMounted]       = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)

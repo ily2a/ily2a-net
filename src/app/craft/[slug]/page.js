@@ -63,13 +63,27 @@ export async function generateMetadata({ params }) {
 
 // ── Portable Text ─────────────────────────────────────────────────────────────
 
-const ptBody = {
+const ptBase = {
   block: {
-    normal:     ({ children, value }) => {
+    normal: ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
       if (!text.trim()) return <div className="h-4" />
       return <p className="text-md text-text-primary">{children}</p>
     },
+  },
+  list: {
+    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }) => <li>{children}</li>,
+    number: ({ children }) => <li>{children}</li>,
+  },
+}
+
+const ptBody = {
+  block: {
+    ...ptBase.block,
     h1:         ({ children }) => <h1 className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand">{children}</h1>,
     h2:         ({ children }) => <h2 className="heading-2 text-brand">{children}</h2>,
     h3:         ({ children }) => <h3 className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">{children}</h3>,
@@ -79,14 +93,8 @@ const ptBody = {
       </blockquote>
     ),
   },
-  list: {
-    bullet:   ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
-    number:   ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
-  },
-  listItem: {
-    bullet: ({ children }) => <li>{children}</li>,
-    number: ({ children }) => <li>{children}</li>,
-  },
+  list:     ptBase.list,
+  listItem: ptBase.listItem,
   types: {
     image: ({ value }) => {
       const url = urlFor(value).width(1200).auto('format').url()
@@ -130,21 +138,7 @@ const ptBody = {
 }
 
 const ptSection = {
-  block: {
-    normal: ({ children, value }) => {
-      const text = value?.children?.map(c => c.text).join('') ?? ''
-      if (!text.trim()) return <div className="h-4" />
-      return <p className="text-md text-text-primary">{children}</p>
-    },
-  },
-  list: {
-    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
-    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
-  },
-  listItem: {
-    bullet: ({ children }) => <li>{children}</li>,
-    number: ({ children }) => <li>{children}</li>,
-  },
+  ...ptBase,
   marks: {
     strong: ({ children }) => <strong>{children}</strong>,
     em:     ({ children }) => <em>{children}</em>,
