@@ -68,10 +68,10 @@ const ptBody = {
     normal:     ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
       if (!text.trim()) return <div className="h-4" />
-      return <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</p>
+      return <p className="text-md text-text-primary">{children}</p>
     },
     h1:         ({ children }) => <h1 className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand">{children}</h1>,
-    h2:         ({ children }) => <h2 className="font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance text-brand">{children}</h2>,
+    h2:         ({ children }) => <h2 className="heading-2 text-brand">{children}</h2>,
     h3:         ({ children }) => <h3 className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">{children}</h3>,
     blockquote: ({ children }) => (
       <blockquote className="border-l-2 border-brand pl-5 text-text-primary italic text-base leading-[160%] tracking-[0.04em]">
@@ -80,8 +80,8 @@ const ptBody = {
     ),
   },
   list: {
-    bullet:   ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ul>,
-    number:   ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ol>,
+    bullet:   ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
+    number:   ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
   },
   listItem: {
     bullet: ({ children }) => <li>{children}</li>,
@@ -134,12 +134,12 @@ const ptSection = {
     normal: ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
       if (!text.trim()) return <div className="h-4" />
-      return <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</p>
+      return <p className="text-md text-text-primary">{children}</p>
     },
   },
   list: {
-    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ul>,
-    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-primary">{children}</ol>,
+    bullet: ({ children }) => <ul className="list-disc pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal pl-5 flex flex-col gap-1 text-md text-text-primary">{children}</ol>,
   },
   listItem: {
     bullet: ({ children }) => <li>{children}</li>,
@@ -224,7 +224,7 @@ export default async function CaseStudyPage({ params }) {
                   {data.title}
                 </h1>
                 {data.description && (
-                  <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary max-w-[60ch]">{data.description}</p>
+                  <p className="text-md text-text-secondary max-w-[60ch]">{data.description}</p>
                 )}
               </div>
               <div className="hidden tab:flex gap-2 shrink-0">
@@ -259,7 +259,7 @@ export default async function CaseStudyPage({ params }) {
 
               {contextSections.map(({ label, content }) => (
                 <section key={label} className="flex flex-col gap-[14px]">
-                  <h2 className="font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance text-brand">{label}</h2>
+                  <h2 className="heading-2 text-brand">{label}</h2>
                   <div className="flex flex-col gap-[10px]">
                     <PortableText value={content} components={ptSection} />
                   </div>

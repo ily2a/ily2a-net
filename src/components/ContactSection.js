@@ -68,7 +68,7 @@ export default function ContactSection() {
         {/* ── Full-width header ── */}
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
           <h2 className="text-[20px] xl:text-2xl font-bold text-text-primary tracking-[-0.01em]">Contact</h2>
-          <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-text-secondary">
+          <p className="text-md text-text-secondary">
             Please fill out this form to get in touch, I&apos;m excited to hear about your ideas.
           </p>
         </motion.div>
@@ -224,7 +224,7 @@ export default function ContactSection() {
 
           <div className="relative flex flex-col gap-1">
             <p className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance">Ily Ameur</p>
-            <p className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance text-brand">Design Engineer</p>
+            <p className="text-md text-brand">Design Engineer</p>
           </div>
           <div className="relative flex flex-row items-center gap-3">
             <LinkedInButton />
@@ -234,7 +234,7 @@ export default function ContactSection() {
 
         {/* ── Copyright ── */}
         <motion.p
-          className="text-center font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance pt-5 text-brand"
+          className="text-center text-md pt-5 text-brand"
           {...fadeUp(0.2)}
         >
           © {new Date().getFullYear()} Ily Ameur. All rights reserved.

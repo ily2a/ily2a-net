@@ -63,7 +63,7 @@ export default function HeroSection({ children }) {
               />
               <TextReveal
                 text="End-to-end product design with zero handoff friction."
-                className="font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance"
+                className="text-md"
                 scale={2}
                 initialDelay={HERO_SUBTITLE_DELAY}
               />
