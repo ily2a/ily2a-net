@@ -169,6 +169,18 @@ export default function ContactSection() {
               </div>
 
               <div aria-live="polite" aria-atomic="true">
+                {status === 'sent' && (
+                  <div className="flex items-center gap-3">
+                    <p className="text-[13px] text-text-secondary">Message sent successfully.</p>
+                    <button
+                      type="button"
+                      onClick={() => setStatus('idle')}
+                      className="text-[13px] underline text-brand"
+                    >
+                      Send another
+                    </button>
+                  </div>
+                )}
                 {status === 'error' && (
                   <div className="flex items-center gap-3">
                     <p className="text-[13px] text-error">
@@ -228,7 +240,7 @@ export default function ContactSection() {
           </div>
           <div className="relative flex flex-row items-center gap-3">
             <LinkedInButton />
-            <BookingButton static compact />
+            <BookingButton static />
           </div>
         </motion.div>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { Component } from 'react'
+import React, { Component } from 'react'
 
 /**
  * ErrorBoundary must be a class component — React Hooks do not support
@@ -38,6 +38,6 @@ export default class ErrorBoundary extends Component {
       )
     }
     // resetKey forces a real remount of children on retry, clearing broken render state
-    return <>{this.props.children}</>
+    return <React.Fragment key={this.state.resetKey}>{this.props.children}</React.Fragment>
   }
 }
