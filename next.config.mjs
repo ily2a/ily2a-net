@@ -18,7 +18,7 @@ const ContentSecurityPolicy = [
   "img-src 'self' data: blob: https://cdn.sanity.io https://cal.com https://app.cal.com https://vercel.com",
   "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com https://vercel.live",
   "frame-src https://cal.com https://app.cal.com https://www.figma.com https://embed.figma.com https://vercel.live",
-  `connect-src 'self' ${sanityConnectSrc} https://api.fontshare.com https://cdn.fontshare.com https://cal.com https://app.cal.com`,
+  `connect-src 'self' ${sanityConnectSrc} https://api.fontshare.com https://cdn.fontshare.com https://cal.com https://app.cal.com https://*.pusher.com wss://*.pusher.com`,
   "worker-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",

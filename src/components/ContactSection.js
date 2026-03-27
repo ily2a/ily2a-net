@@ -200,7 +200,7 @@ export default function ContactSection() {
 
           {/* About blurb */}
           <motion.div
-            className="flex flex-col gap-3 w-full md:flex-[1] md:pt-[26px] md:order-2 order-2"
+            className="hidden lg:flex flex-col gap-3 w-full lg:flex-[1] lg:pt-[26px] order-2"
             {...fadeUp(0.15)}
           >
             <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
