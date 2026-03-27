@@ -73,113 +73,137 @@ export default function ContactSection() {
           </p>
         </motion.div>
 
-        {/* ── Form full width ── */}
-        <motion.form
-          className="flex flex-col gap-3"
-          onSubmit={handleSubmit}
-          noValidate
-          {...fadeUp(0.1)}
-        >
-            {/* Name + Email row */}
-            <div className="flex flex-col gap-3 md:flex-row">
-              {/* Name */}
-              <div className="flex flex-col gap-2 flex-1">
-                <label htmlFor="name" className="text-[14px] font-medium text-text-primary">
-                  Full name
-                </label>
-                <motion.input
-                  id="name" name="name" type="text"
-                  placeholder="Jane Doe"
-                  value={form.name}
-                  onChange={handleChange}
-                  required autoComplete="name"
-                  className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
-                  animate={errors.name ? INPUT_RING_ERROR : INPUT_RING}
-                  whileFocus={errors.name ? FOCUS_RING_ERROR : FOCUS_RING}
-                  transition={INPUT_TRANSITION}
-                  aria-invalid={errors.name || undefined}
-                  aria-describedby={errors.name ? 'name-error' : undefined}
-                />
-                {errors.name && (
-                  <p id="name-error" className="text-[12px] text-error">Please enter your full name.</p>
-                )}
-              </div>
+        {/* ── Form (2/3) + About blurb (1/3) ── */}
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-6 lg:gap-8">
 
-              {/* Email */}
-              <div className="flex flex-col gap-2 flex-1">
-                <label htmlFor="email" className={`text-[14px] font-medium ${errors.email ? 'text-error' : 'text-text-primary'}`}>
-                  Email
-                </label>
-                <motion.input
-                  id="email" name="email" type="email"
-                  placeholder="Email@example.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  required autoComplete="email"
-                  className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
-                  animate={errors.email ? INPUT_RING_ERROR : INPUT_RING}
-                  whileFocus={errors.email ? FOCUS_RING_ERROR : FOCUS_RING}
-                  transition={INPUT_TRANSITION}
-                  aria-invalid={errors.email || undefined}
-                  aria-describedby={errors.email ? 'email-error' : undefined}
-                />
-                {errors.email && (
-                  <p id="email-error" className="text-[12px] text-error">Please enter a valid email.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Message */}
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="message"
-                className="text-[14px] font-medium text-text-primary"
-              >
-                How can I help you?
-              </label>
-              <motion.textarea
-                id="message" name="message"
-                placeholder="Please write a small description of your project or idea"
-                value={form.message}
-                onChange={handleChange}
-                required rows={6}
-                className="w-full rounded-[10px] px-4 py-3 outline-none resize-y border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
-                animate={errors.message ? INPUT_RING_ERROR : INPUT_RING}
-                whileFocus={errors.message ? FOCUS_RING_ERROR : FOCUS_RING}
-                transition={INPUT_TRANSITION}
-              />
-              {errors.message && (
-                <p className="text-[12px] text-error">Please tell me how I can help.</p>
-              )}
-            </div>
-
-            <div className="mt-1">
-              <ContactFormButton
-                type="submit"
-                className="w-full"
-                disabled={status === 'sending' || status === 'sent'}
-              >
-                {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit'}
-              </ContactFormButton>
-            </div>
-
-            <div aria-live="polite" aria-atomic="true">
-              {status === 'error' && (
-                <div className="flex items-center gap-3">
-                  <p className="text-[13px] text-error">
-                    Something went wrong — please try again.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => { setStatus('idle'); setErrors({ name: false, email: false, message: false }) }}
-                    className="text-[13px] underline text-error"
-                  >
-                    Retry
-                  </button>
+          {/* Form */}
+          <motion.form
+            className="flex flex-col gap-3 w-full md:flex-[2] md:order-1 order-2"
+            onSubmit={handleSubmit}
+            noValidate
+            {...fadeUp(0.1)}
+          >
+              {/* Name + Email row */}
+              <div className="flex flex-col gap-3 md:flex-row">
+                {/* Name */}
+                <div className="flex flex-col gap-2 flex-1">
+                  <label htmlFor="name" className="text-[14px] font-medium text-text-primary">
+                    Full name
+                  </label>
+                  <motion.input
+                    id="name" name="name" type="text"
+                    placeholder="Jane Doe"
+                    value={form.name}
+                    onChange={handleChange}
+                    required autoComplete="name"
+                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                    animate={errors.name ? INPUT_RING_ERROR : INPUT_RING}
+                    whileFocus={errors.name ? FOCUS_RING_ERROR : FOCUS_RING}
+                    transition={INPUT_TRANSITION}
+                    aria-invalid={errors.name || undefined}
+                    aria-describedby={errors.name ? 'name-error' : undefined}
+                  />
+                  {errors.name && (
+                    <p id="name-error" className="text-[12px] text-error">Please enter your full name.</p>
+                  )}
                 </div>
-              )}
-            </div>
-        </motion.form>
+
+                {/* Email */}
+                <div className="flex flex-col gap-2 flex-1">
+                  <label htmlFor="email" className={`text-[14px] font-medium ${errors.email ? 'text-error' : 'text-text-primary'}`}>
+                    Email
+                  </label>
+                  <motion.input
+                    id="email" name="email" type="email"
+                    placeholder="Email@example.com"
+                    value={form.email}
+                    onChange={handleChange}
+                    required autoComplete="email"
+                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                    animate={errors.email ? INPUT_RING_ERROR : INPUT_RING}
+                    whileFocus={errors.email ? FOCUS_RING_ERROR : FOCUS_RING}
+                    transition={INPUT_TRANSITION}
+                    aria-invalid={errors.email || undefined}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
+                  />
+                  {errors.email && (
+                    <p id="email-error" className="text-[12px] text-error">Please enter a valid email.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="message"
+                  className="text-[14px] font-medium text-text-primary"
+                >
+                  How can I help you?
+                </label>
+                <motion.textarea
+                  id="message" name="message"
+                  placeholder="Please write a small description of your project or idea"
+                  value={form.message}
+                  onChange={handleChange}
+                  required rows={6}
+                  className="w-full rounded-[10px] px-4 py-3 outline-none resize-y border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                  animate={errors.message ? INPUT_RING_ERROR : INPUT_RING}
+                  whileFocus={errors.message ? FOCUS_RING_ERROR : FOCUS_RING}
+                  transition={INPUT_TRANSITION}
+                />
+                {errors.message && (
+                  <p className="text-[12px] text-error">Please tell me how I can help.</p>
+                )}
+              </div>
+
+              <div className="mt-1">
+                <ContactFormButton
+                  type="submit"
+                  className="w-full"
+                  disabled={status === 'sending' || status === 'sent'}
+                >
+                  {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit'}
+                </ContactFormButton>
+              </div>
+
+              <div aria-live="polite" aria-atomic="true">
+                {status === 'error' && (
+                  <div className="flex items-center gap-3">
+                    <p className="text-[13px] text-error">
+                      Something went wrong — please try again.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => { setStatus('idle'); setErrors({ name: false, email: false, message: false }) }}
+                      className="text-[13px] underline text-error"
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+              </div>
+          </motion.form>
+
+          {/* About blurb */}
+          <motion.div
+            className="flex flex-col gap-4 w-full md:flex-[1] md:pt-[26px] md:order-2 order-1"
+            {...fadeUp(0.15)}
+          >
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+              I design systems, flows, and products. Then build them.
+            </p>
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+              I work end-to-end across multiple industries. I own the full process: discovery, flows, design systems, high-fidelity prototypes, and handoff. Increasingly, I build what I design using React and React Native.
+            </p>
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+              If you need a design engineer who thinks in systems and ships, let&apos;s talk.
+            </p>
+            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+              Cheers, Ily
+            </p>
+          </motion.div>
+
+        </div>
 
         {/* ── Info card ── */}
         <motion.div
