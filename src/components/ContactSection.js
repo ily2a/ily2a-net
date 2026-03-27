@@ -110,7 +110,7 @@ export default function ContactSection() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-2 flex-1">
-                  <label htmlFor="email" className={`text-[14px] font-medium ${errors.email ? 'text-error' : 'text-text-primary'}`}>
+                  <label htmlFor="email" className="text-[14px] font-medium text-text-primary">
                     Email
                   </label>
                   <motion.input
