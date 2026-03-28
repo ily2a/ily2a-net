@@ -265,7 +265,7 @@ export default function BookingButton({ static: isStatic = false }) {
           width:          'auto',
           height:         '56px',
           borderRadius:   '8px',
-          background:     'transparent',
+          background:     'rgba(211, 209, 224, 0.25)',
           cursor:         'pointer',
           border:         'none',
         }}
