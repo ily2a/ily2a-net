@@ -1,6 +1,7 @@
 import CraftSection from '@/components/CraftSection'
 import ContactSection from '@/components/ContactSection'
 import FloatingNav from '@/components/FloatingNav'
+import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
@@ -39,9 +40,9 @@ export default async function CraftPage() {
 
   return (
     <main>
-      <FloatingNav />
+      <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <CraftSection projects={projects} headingAs="h1" navOffset />
-      <ContactSection />
+      <SilentErrorBoundary><ContactSection /></SilentErrorBoundary>
     </main>
   )
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import FloatingNav from '@/components/FloatingNav'
+import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import LineWavesBackground from '@/components/LineWavesBackground'
 
 export const metadata = {
@@ -11,7 +12,7 @@ export default function NotFound() {
     <main className="relative flex items-center justify-center min-h-screen overflow-hidden">
       <LineWavesBackground />
 
-      <FloatingNav />
+      <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
 
       <div className="flex flex-col items-center gap-6 p-8 text-center">
         <h1 className="text-intro text-text-primary">

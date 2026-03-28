@@ -100,8 +100,10 @@ const ptBody = {
   block: {
     ...ptBase.block,
     h1:         ({ children, value }) => {
+      // Render as h2 — the page already has an h1 for the project title,
+      // so a second h1 in body content would be invalid HTML and hurt SEO.
       const text = value?.children?.map(c => c.text).join('') ?? ''
-      return <h1 id={toId(text)} className="heading-display text-brand scroll-mt-10">{children}</h1>
+      return <h2 id={toId(text)} className="heading-display text-brand scroll-mt-10">{children}</h2>
     },
     h2:         ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
@@ -281,7 +283,10 @@ export default async function CaseStudyPage({ params }) {
               </div>
             )}
 
-            {/* Sidebar — mobile only */}
+            {/* Sidebar — mobile only (intentionally duplicated from desktop aside below).
+                Achieving mobile-inline + desktop-sidebar with a single DOM node would
+                require significant CSS restructuring; both instances are text-only so
+                the duplication cost is negligible. */}
             <div className="block lg:hidden">
               <SidebarContent metaFields={metaFields} tags={data.tags} />
             </div>
