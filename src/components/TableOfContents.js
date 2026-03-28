@@ -8,21 +8,21 @@ export default function TableOfContents({ items }) {
   useEffect(() => {
     if (!items.length) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveId(entry.target.id)
-        })
-      },
-      { rootMargin: '-20% 0px -70% 0px' }
-    )
+    function onScroll() {
+      const threshold = window.innerHeight * 0.25
+      let best = null
+      for (const { id } of items) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const top = el.getBoundingClientRect().top
+        if (top <= threshold) best = id
+      }
+      setActiveId(best)
+    }
 
-    items.forEach(({ id }) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
-
-    return () => observer.disconnect()
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [items])
 
   if (!items.length) return null
@@ -37,6 +37,7 @@ export default function TableOfContents({ items }) {
           <li key={id}>
             <a
               href={`#${id}`}
+              aria-current={activeId === id ? 'true' : undefined}
               className={`block text-[13px] xl:text-[14px] font-medium leading-[1.4] tracking-[-0.01em] py-[5px] border-l transition-colors duration-150 ${
                 level === 3 ? 'pl-6' : 'pl-3'
               } ${
