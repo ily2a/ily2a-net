@@ -11,15 +11,15 @@ export default function FloatingNav({ delay = 0 }) {
   const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 150 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...SPRING_NAV, delay }}
-      className="fixed bottom-8 left-0 right-0 z-50 flex justify-center pointer-events-none"
-    >
-      <div className="pointer-events-auto">
+    <div className="fixed bottom-8 left-0 right-0 z-50 flex justify-center pointer-events-none">
+      <motion.div
+        className="pointer-events-auto"
+        initial={{ opacity: 0, y: 150 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...SPRING_NAV, delay }}
+      >
         <Navbar isMobile={isMobile} />
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   )
 }
