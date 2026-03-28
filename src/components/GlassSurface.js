@@ -172,7 +172,7 @@ const GlassSurface = ({
         background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
         backdropFilter: 'blur(20px) saturate(300%)',
         WebkitBackdropFilter: 'blur(20px) saturate(300%)',
-        border: '1px solid var(--color-amethyst-900)',
+        boxShadow: 'var(--shadow-glass)',
       }
     }
 
@@ -181,11 +181,7 @@ const GlassSurface = ({
         ...baseStyles,
         background: `hsl(0 0% 0% / ${backgroundOpacity})`,
         backdropFilter: `url(#${filterId}) saturate(${saturation})`,
-        boxShadow: `0 0 2px 1px color-mix(in oklch, white, transparent 65%) inset,
-                    0 0 10px 4px color-mix(in oklch, white, transparent 85%) inset,
-                    0px 4px 16px rgba(17, 17, 26, 0.05),
-                    0px 8px 24px rgba(17, 17, 26, 0.05),
-                    0px 16px 56px rgba(17, 17, 26, 0.05)`,
+        boxShadow: 'var(--shadow-glass)',
       }
     }
 
@@ -202,9 +198,7 @@ const GlassSurface = ({
       background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
       backdropFilter: 'blur(20px) saturate(300%)',
       WebkitBackdropFilter: 'blur(20px) saturate(300%)',
-      border: '1px solid var(--color-amethyst-900)',
-      boxShadow: `inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
-                  inset 0 -1px 0 0 rgba(255, 255, 255, 0.04)`,
+      boxShadow: 'var(--shadow-glass)',
     }
   }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId])
 
