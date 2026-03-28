@@ -5,7 +5,7 @@ import { motion, useSpring, AnimatePresence } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
-const CARD_SELECTOR  = '.project-card'
+const CARD_SELECTOR  = '.project-card, .project-card-mobile'
 const SPRING         = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 }
 
 export function SmoothCursor() {
