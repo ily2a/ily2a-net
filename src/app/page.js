@@ -27,7 +27,7 @@ export default async function Home() {
       </Suspense>
       <SilentErrorBoundary><FloatingNav delay={HERO_NAV_DELAY} /></SilentErrorBoundary>
       <HeroSection>
-        <h1 className="font-bold tracking-[0.01em] leading-none text-[36px] md:text-[38px] lg:text-[56px] xl:text-[64px] text-balance">Ily Ameur</h1>
+        <h1 className="heading-hero">Ily Ameur</h1>
       </HeroSection>
 
       <CraftSection projects={projects} showViewAll />

@@ -94,7 +94,7 @@ export function SmoothCursor() {
         <AnimatePresence>
           {isHovering && (
             <motion.span
-              className="text-[14px] font-medium text-text-primary whitespace-nowrap tracking-[0.02em] pointer-events-none select-none"
+              className="text-cursor text-text-primary pointer-events-none select-none"
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{    opacity: 0, scale: 0.6 }}

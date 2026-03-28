@@ -67,7 +67,7 @@ export default function ContactSection() {
 
         {/* ── Full-width header ── */}
         <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
-          <h2 className="text-[20px] xl:text-2xl font-bold text-text-primary tracking-[-0.01em]">Contact</h2>
+          <h2 className="heading-section text-text-primary">Contact</h2>
           <p className="text-md text-text-secondary">
             Please fill out this form to get in touch, I&apos;m excited to hear about your ideas.
           </p>
@@ -87,7 +87,7 @@ export default function ContactSection() {
               <div className="flex flex-col gap-3 md:flex-row">
                 {/* Name */}
                 <div className="flex flex-col gap-2 flex-1">
-                  <label htmlFor="name" className="text-[14px] font-medium text-text-primary">
+                  <label htmlFor="name" className="text-label text-text-primary">
                     Full name
                   </label>
                   <motion.input
@@ -110,7 +110,7 @@ export default function ContactSection() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-2 flex-1">
-                  <label htmlFor="email" className="text-[14px] font-medium text-text-primary">
+                  <label htmlFor="email" className="text-label text-text-primary">
                     Email
                   </label>
                   <motion.input
@@ -136,7 +136,7 @@ export default function ContactSection() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="message"
-                  className="text-[14px] font-medium text-text-primary"
+                  className="text-label text-text-primary"
                 >
                   How can I help you?
                 </label>
@@ -203,16 +203,16 @@ export default function ContactSection() {
             className="hidden lg:flex flex-col gap-3 w-full lg:flex-[1] lg:pt-[26px] order-2"
             {...fadeUp(0.15)}
           >
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="text-body text-text-primary">
               I design systems, flows, and products. Then build them.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="text-body text-text-primary">
               I work end-to-end across multiple industries. I own the full process: discovery, flows, design systems, high-fidelity prototypes, and handoff. Increasingly, I build what I design using React and React Native.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="text-body text-text-primary">
               If you need a design engineer who thinks in systems and ships, let&apos;s talk.
             </p>
-            <p className="font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px] text-text-primary">
+            <p className="text-body text-text-primary">
               Cheers, Ily
             </p>
           </motion.div>
@@ -235,7 +235,7 @@ export default function ContactSection() {
           </div>
 
           <div className="relative flex flex-col gap-1">
-            <p className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance">Ily Ameur</p>
+            <p className="heading-display">Ily Ameur</p>
             <p className="text-md text-brand">Design Engineer</p>
           </div>
           <div className="relative flex flex-row items-center gap-3">

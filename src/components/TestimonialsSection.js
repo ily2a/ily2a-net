@@ -68,7 +68,7 @@ export default function TestimonialsSection() {
       {/* ── Content ── */}
       <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
-          <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Echoes about me</h2>
+          <h2 className="heading-section text-text-primary">Echoes about me</h2>
           <p className="text-md text-text-secondary">
             While some of my client reviews are NDA-protected (because, you know, top-secret
             agency white label stuff), I managed to sneak in a few favorites from my previous partners.
@@ -90,11 +90,11 @@ export default function TestimonialsSection() {
                   className="w-11 h-11 rounded-full object-cover shrink-0"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <span className="font-semibold text-[15px] text-text-primary tracking-[-0.01em] leading-[1.2]">{name}</span>
-                  <span className="text-[13px] text-text-secondary tracking-[0.02em] leading-[1.3]">{role}</span>
+                  <span className="text-testimonial-name text-text-primary">{name}</span>
+                  <span className="text-testimonial-role text-text-secondary">{role}</span>
                 </div>
               </div>
-              <p className="text-text-primary text-[14px] desk:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]">{quote}</p>
+              <p className="text-body-card text-text-primary">{quote}</p>
             </article>
           ))}
         </div>

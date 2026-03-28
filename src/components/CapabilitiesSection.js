@@ -93,7 +93,7 @@ function Tags({ items }) {
   return (
     <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
       {items.map((item) => (
-        <li key={item} className="inline-flex items-center px-3 py-[5px] border border-text-subtle rounded-[6px] text-[13px] font-medium text-text-primary tracking-[-0.01em] leading-[1.4]">
+        <li key={item} className="inline-flex items-center px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
           {item}
         </li>
       ))}
@@ -108,7 +108,7 @@ export default function CapabilitiesSection() {
 
         {/* ── Header ── */}
         <div className="flex flex-col gap-2">
-          <h2 className="font-bold text-[20px] xl:text-2xl text-text-primary tracking-[-0.01em]">Capabilities</h2>
+          <h2 className="heading-section text-text-primary">Capabilities</h2>
           <p className="text-md text-text-secondary">
             End-to-end product design with the technical range to build what I design.
           </p>
@@ -124,11 +124,11 @@ export default function CapabilitiesSection() {
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                   <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-                  <h3 className="font-bold text-[18px] xl:text-[20px] text-text-primary tracking-[-0.01em]">{card.title}</h3>
+                  <h3 className="heading-sub text-text-primary">{card.title}</h3>
                 </div>
                 <hr className="h-[6px] border-0 rounded-sm m-0" style={{ background: card.gradient }} aria-hidden="true" />
               </div>
-              <p className="text-[14px] desk:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">{card.description}</p>
+              <p className="text-body-card text-brand">{card.description}</p>
               <Tags items={card.tags} />
             </SpotlightCard>
           ))}
@@ -141,14 +141,14 @@ export default function CapabilitiesSection() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-                <h3 className="font-bold text-[18px] xl:text-[20px] text-text-primary tracking-[-0.01em]">Skills</h3>
+                <h3 className="heading-sub text-text-primary">Skills</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-400 via-amethyst-700 to-transparent" aria-hidden="true" />
             </div>
             <div className="flex flex-col gap-3">
               {SKILL_GROUPS.map((group) => (
                 <div key={group.label} className="flex flex-row items-start gap-4">
-                  <p className="inline-flex items-center w-[52px] shrink-0 px-3 py-[5px] text-[12px] font-semibold tracking-[0.08em] text-brand leading-[1.4] whitespace-nowrap">{group.label}</p>
+                  <p className="inline-flex items-center w-[52px] shrink-0 px-3 py-[5px] text-skill-label text-brand">{group.label}</p>
                   <Tags items={group.items} />
                 </div>
               ))}
@@ -159,14 +159,14 @@ export default function CapabilitiesSection() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-                <h3 className="font-bold text-[18px] xl:text-[20px] text-text-primary tracking-[-0.01em]">Tools</h3>
+                <h3 className="heading-sub text-text-primary">Tools</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-500 via-amethyst-900 to-transparent" aria-hidden="true" />
             </div>
-            <p className="text-[14px] desk:text-[15px] xl:text-base text-brand leading-[160%] tracking-[0.02em]">The stack I work in daily</p>
+            <p className="text-body-card text-brand">The stack I work in daily</p>
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
-                <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-[13px] font-medium text-text-primary tracking-[-0.01em] leading-[1.4]">
+                <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
                   <Image src={tool.logo} alt="" aria-hidden="true" width={24} height={24} className="w-6 h-6 object-contain shrink-0" />
                   {tool.name}
                 </li>
