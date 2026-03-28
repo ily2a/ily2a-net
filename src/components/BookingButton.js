@@ -81,6 +81,7 @@ export default function BookingButton({ static: isStatic = false }) {
   }, [open])
 
   const handleClose = () => {
+    document.body.style.overflow = ''
     setOpen(false)
     triggerRef.current?.focus()
     triggerRef.current = null
@@ -136,11 +137,14 @@ export default function BookingButton({ static: isStatic = false }) {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
+      // Safety net: restore scroll if the component unmounts while open
+      document.body.style.overflow = ''
     }
   }, [open])
 
   const handleOpen = () => {
     triggerRef.current = document.activeElement
+    document.body.style.overflow = 'hidden'
     initCal()
     setOpen(true)
   }

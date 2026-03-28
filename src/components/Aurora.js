@@ -140,7 +140,8 @@ export default function Aurora({
       renderer.setSize(width, height)
       if (program) program.uniforms.uResolution.value = [width, height]
     }
-    window.addEventListener('resize', resize)
+    const ro = new ResizeObserver(resize)
+    ro.observe(ctn)
 
     const geometry = new Triangle(gl)
     if (geometry.attributes.uv) delete geometry.attributes.uv
@@ -168,7 +169,17 @@ export default function Aurora({
     let cachedStops = colorStopsArray
     let lastStopsRef = propsRef.current.colorStops
 
+    // Pause the RAF loop when the Aurora container is scrolled out of view.
     let animateId = 0
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        if (animateId) { cancelAnimationFrame(animateId); animateId = 0 }
+      } else if (!animateId) {
+        animateId = requestAnimationFrame(update)
+      }
+    }, { rootMargin: '200px' })
+    io.observe(ctn)
+
     const update = t => {
       animateId = requestAnimationFrame(update)
       if (!program || gl.isContextLost()) return
@@ -188,7 +199,8 @@ export default function Aurora({
 
     return () => {
       cancelAnimationFrame(animateId)
-      window.removeEventListener('resize', resize)
+      ro.disconnect()
+      io.disconnect()
       if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas)
       gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
