@@ -50,6 +50,8 @@ const GlassSurface = ({
   xChannel = 'R',
   yChannel = 'G',
   mixBlendMode = 'difference',
+  fallbackBlur = 20,
+  fallbackSaturation = 300,
   className = '',
   style = {}
 }) => {
@@ -172,8 +174,8 @@ const GlassSurface = ({
       return {
         ...baseStyles,
         background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
-        backdropFilter: 'blur(20px) saturate(300%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(300%)',
+        backdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
+        WebkitBackdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
         boxShadow: 'var(--shadow-glass)',
       }
     }
@@ -198,11 +200,11 @@ const GlassSurface = ({
     return {
       ...baseStyles,
       background: `rgba(21, 26, 30, ${Math.max(backgroundOpacity, 0.05)})`,
-      backdropFilter: 'blur(20px) saturate(300%)',
-      WebkitBackdropFilter: 'blur(20px) saturate(300%)',
+      backdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
+      WebkitBackdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
       boxShadow: 'var(--shadow-glass)',
     }
-  }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId])
+  }, [mounted, svgSupported, backdropSupported, style, width, height, borderRadius, backgroundOpacity, saturation, filterId, fallbackBlur, fallbackSaturation])
 
   return (
     <div
