@@ -21,7 +21,7 @@ export default function CraftSection({
             {showViewAll && (
               <>
                 <div className="tab:hidden">
-                  <Link href="/craft" className="inline-flex items-center h-9 px-[6px] text-white hover:text-brand active:text-brand transition-colors duration-150 font-bold tracking-[-0.01em] leading-[120%] text-[16px] whitespace-nowrap no-underline">View all projects</Link>
+                  <Link href="/craft" className="inline-flex items-center h-9 px-[6px] text-white hover:text-brand active:text-brand transition-colors duration-150 link-label no-underline">View all projects</Link>
                 </div>
                 <div className="hidden tab:block">
                   <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>

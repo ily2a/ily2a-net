@@ -279,7 +279,7 @@ export default function BookingButton({ static: isStatic = false }) {
             padding:        '0 16px',
           }}
         >
-          <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance text-background whitespace-nowrap">
+          <span className="btn-label text-background">
             Book a call
           </span>
         </motion.div>
