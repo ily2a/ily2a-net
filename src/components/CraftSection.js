@@ -17,7 +17,7 @@ export default function CraftSection({
       <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-baseline">
-            <Tag className="font-bold text-[20px] xl:text-2xl tracking-[-0.01em] text-text-primary">Craft</Tag>
+            <Tag className="heading-section text-text-primary">Craft</Tag>
             {showViewAll && (
               <>
                 <div className="tab:hidden">

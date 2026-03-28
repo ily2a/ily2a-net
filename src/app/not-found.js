@@ -14,7 +14,7 @@ export default function NotFound() {
       <FloatingNav />
 
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <h1 className="font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-balance text-text-primary">
+        <h1 className="text-intro text-text-primary">
           This page faded into the digital ether.<br />
           Hit the homepage and keep exploring.
         </h1>

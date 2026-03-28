@@ -101,7 +101,7 @@ const ptBody = {
     ...ptBase.block,
     h1:         ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
-      return <h1 id={toId(text)} className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand scroll-mt-10">{children}</h1>
+      return <h1 id={toId(text)} className="heading-display text-brand scroll-mt-10">{children}</h1>
     },
     h2:         ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
@@ -109,10 +109,10 @@ const ptBody = {
     },
     h3:         ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
-      return <h3 id={toId(text)} className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand scroll-mt-10">{children}</h3>
+      return <h3 id={toId(text)} className="heading-article text-brand scroll-mt-10">{children}</h3>
     },
     blockquote: ({ children }) => (
-      <blockquote className="border-l-2 border-brand pl-5 text-text-primary italic text-base leading-[160%] tracking-[0.04em]">
+      <blockquote className="border-l-2 border-brand pl-5 text-text-primary text-blockquote">
         {children}
       </blockquote>
     ),
@@ -134,7 +134,7 @@ const ptBody = {
             blurDataURL={value.lqip}
           />
           {value.caption && (
-            <figcaption className="font-medium leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance text-text-subtle tracking-[0.04em] text-center">
+            <figcaption className="text-caption text-text-subtle text-center">
               {value.caption}
             </figcaption>
           )}
@@ -252,7 +252,7 @@ export default async function CaseStudyPage({ params }) {
                 <SpotlightButton href="/">Home</SpotlightButton>
               </div>
               <div className="flex flex-col gap-3">
-                <h1 className="font-bold text-[32px] md:text-[40px] lg:text-[48px] tracking-[-0.02em] leading-[115%] text-text-primary text-balance">
+                <h1 className="heading-page text-text-primary">
                   {data.title}
                 </h1>
                 {data.description && (
@@ -306,7 +306,7 @@ export default async function CaseStudyPage({ params }) {
 
               {figmaEmbedUrl && (
                 <div id="prototype" className="flex flex-col gap-3">
-                  <p className="text-[11px] font-semibold tracking-[0.10em] uppercase text-brand">
+                  <p className="text-overline text-brand">
                     Prototype
                   </p>
                   <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
@@ -353,7 +353,7 @@ function SidebarContent({ metaFields, tags }) {
       className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-xl p-6"
       style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
     >
-      <p className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">
+      <p className="heading-article text-brand">
         Project Details
       </p>
 
@@ -368,10 +368,10 @@ function SidebarContent({ metaFields, tags }) {
       <dl className={`flex flex-col gap-3 ${tags?.length > 0 ? 'mt-4' : 'mt-3'}`}>
         {metaFields.map(({ label, value }) => (
           <div key={label} className="flex flex-col gap-1">
-            <dt className="font-medium tracking-[0.07em] leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance text-text-secondary">
+            <dt className="text-caption text-text-secondary">
               {label}
             </dt>
-            <dd className="text-[15px] font-medium tracking-[-0.01em] text-text-primary leading-[1.3]">
+            <dd className="text-meta text-text-primary">
               {value}
             </dd>
           </div>
