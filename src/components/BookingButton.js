@@ -1,6 +1,5 @@
 'use client'
 
-import { getCalApi } from '@calcom/embed-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -51,6 +50,7 @@ export default function BookingButton({ static: isStatic = false }) {
     if (calInitialized.current) return
     calInitialized.current = true
     try {
+      const { getCalApi } = await import('@calcom/embed-react')
       const cal = await getCalApi()
       cal('ui', {
         theme: 'dark',
@@ -74,10 +74,6 @@ export default function BookingButton({ static: isStatic = false }) {
   }
 
   useEffect(() => { setMounted(true) }, [])
-
-  // Pre-initialise Cal.com on mount so the first modal open is instant
-  // rather than waiting for the async getCalApi() call.
-  useEffect(() => { initCal() }, [])
 
   // Reset iframe loading state each time modal opens
   useEffect(() => {
