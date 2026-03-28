@@ -61,7 +61,7 @@
 ::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 15%); }
 
 html {
-  @apply antialiased scroll-smooth;
+  @apply antialiased scroll-smooth overflow-x-clip;
   -moz-osx-font-smoothing: grayscale;
 }
 
