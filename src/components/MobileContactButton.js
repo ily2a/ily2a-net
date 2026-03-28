@@ -45,7 +45,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
       onKeyDown={handleKeyDown}
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
-      className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-amethyst-900 bg-surface cursor-pointer overflow-hidden select-none"
+      className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-white/[0.08] bg-surface cursor-pointer overflow-hidden select-none"
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <span className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance relative z-[1] text-text-primary pointer-events-none whitespace-nowrap">
