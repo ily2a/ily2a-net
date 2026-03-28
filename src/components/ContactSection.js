@@ -17,9 +17,10 @@ const FOCUS_RING_ERROR   = { boxShadow: '0 0 0 2px var(--color-error)' }
 const INPUT_TRANSITION   = { duration: 0.2, ease: 'easeOut' }
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { type: 'spring', stiffness: 260, damping: 24, delay },
+  initial:     { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport:    { once: true, margin: '-80px' },
+  transition:  { type: 'spring', stiffness: 260, damping: 24, delay },
 })
 
 export default function ContactSection() {

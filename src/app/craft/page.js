@@ -6,8 +6,6 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 
-export const revalidate = 3600
-
 export const metadata = {
   title: `Craft — ${SITE_NAME}`,
   description: 'End-to-end product design across 10+ industries.',

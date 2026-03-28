@@ -37,7 +37,7 @@ export default function TableOfContents({ items }) {
           <li key={id}>
             <a
               href={`#${id}`}
-              aria-current={activeId === id ? 'true' : undefined}
+              aria-current={activeId === id ? 'location' : undefined}
               className={`block text-toc py-[5px] border-l transition-colors duration-150 ${
                 level === 3 ? 'pl-6' : 'pl-3'
               } ${

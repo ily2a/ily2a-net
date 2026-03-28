@@ -287,14 +287,21 @@ const GradientBlinds = ({
     }
     canvas.addEventListener('pointermove', onPointerMove)
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
+    // Shared pause/resume — used by both visibilitychange and IntersectionObserver.
+    const setActive = (active) => {
+      if (!active) {
         if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
-      } else {
-        if (!rafRef.current) rafRef.current = requestAnimationFrame(loop)
+      } else if (!rafRef.current && !prefersReducedMotion) {
+        rafRef.current = requestAnimationFrame(loop)
       }
     }
+
+    const onVisibilityChange = () => setActive(!document.hidden)
     document.addEventListener('visibilitychange', onVisibilityChange)
+
+    // Pause the RAF loop when the container is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' })
+    io.observe(container)
 
     const loop = t => {
       rafRef.current = requestAnimationFrame(loop)
@@ -355,6 +362,7 @@ const GradientBlinds = ({
       document.removeEventListener('visibilitychange', onVisibilityChange)
       canvas.removeEventListener('pointermove', onPointerMove)
       ro.disconnect()
+      io.disconnect()
       if (canvas.parentElement === container) container.removeChild(canvas)
       const callIfFn = (obj, key) => { if (obj && typeof obj[key] === 'function') obj[key].call(obj) }
       callIfFn(programRef.current, 'remove')

@@ -132,6 +132,16 @@ export default function DarkVeil({
     const start = performance.now()
     let frame = 0
 
+    // Pause the RAF loop when the canvas is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        if (frame) { cancelAnimationFrame(frame); frame = 0 }
+      } else if (!frame) {
+        frame = requestAnimationFrame(loop)
+      }
+    }, { rootMargin: '200px' })
+    io.observe(canvas)
+
     const loop = () => {
       program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * speed
       program.uniforms.uHueShift.value = hueShift
@@ -148,6 +158,7 @@ export default function DarkVeil({
     return () => {
       cancelAnimationFrame(frame)
       ro.disconnect()
+      io.disconnect()
     }
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale])
 
