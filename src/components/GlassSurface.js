@@ -7,6 +7,13 @@ import { useEffect, useRef, useState, useId, useMemo } from 'react'
 let _svgSupportCache = null
 let _backdropSupportCache = null
 
+// Hoisted to module level — never changes, no need to recreate on every render.
+const VALID_BLEND_MODES = new Set([
+  'normal','multiply','screen','overlay','darken','lighten',
+  'color-dodge','color-burn','hard-light','soft-light',
+  'difference','exclusion','hue','saturation','color','luminosity'
+])
+
 function detectSVGFilterSupport(filterId) {
   if (_svgSupportCache !== null) return _svgSupportCache
   if (typeof window === 'undefined' || typeof document === 'undefined') return false
@@ -67,11 +74,6 @@ const GlassSurface = ({
   // Cache last rendered dimensions — skip SVG regen when size hasn't changed
   const lastSizeRef = useRef({ w: 0, h: 0 })
 
-  const VALID_BLEND_MODES = new Set([
-    'normal','multiply','screen','overlay','darken','lighten',
-    'color-dodge','color-burn','hard-light','soft-light',
-    'difference','exclusion','hue','saturation','color','luminosity'
-  ])
   const safeBlendMode = VALID_BLEND_MODES.has(mixBlendMode) ? mixBlendMode : 'normal'
 
   const generateDisplacementMap = () => {

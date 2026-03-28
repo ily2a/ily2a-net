@@ -12,7 +12,6 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
         <motion.span
           key={`${word}-${wi}`}
           className="inline-block mr-[0.25em]"
-          style={{ willChange: 'filter, transform, opacity' }}
           initial={{ opacity: 0, filter: 'blur(6px)', y: 8, scale }}
           animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
           transition={{

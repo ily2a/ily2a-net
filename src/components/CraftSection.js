@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import ProjectCard from '@/components/ProjectCard'
-import ProjectCardMobile from '@/components/ProjectCardMobile'
+import ProjectCardResponsive from '@/components/ProjectCardResponsive'
 import SpotlightButton from '@/components/SpotlightButton'
 
 export default function CraftSection({
@@ -35,10 +34,7 @@ export default function CraftSection({
         </div>
         <div className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
           {projects.map((project) => (
-            <div key={project._id}>
-              <div className="tab:hidden"><ProjectCardMobile project={project} /></div>
-              <div className="hidden tab:block"><ProjectCard project={project} /></div>
-            </div>
+            <ProjectCardResponsive key={project._id} project={project} />
           ))}
         </div>
       </div>

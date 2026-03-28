@@ -1,5 +1,8 @@
 'use client'
 
+import { useRef, useState, useCallback } from 'react'
+import Image from 'next/image'
+
 const CARDS = [
   {
     title: 'Product Design',
@@ -27,9 +30,6 @@ const SKILL_GROUPS = [
     items: ['React', 'React Native', 'Component Architecture', 'Figma-to-code'],
   },
 ]
-
-import { useRef, useState, useCallback } from 'react'
-import Image from 'next/image'
 
 function SpotlightCard({ children, className = '', style, spotlightColor = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)' }) {
   const divRef = useRef(null)
