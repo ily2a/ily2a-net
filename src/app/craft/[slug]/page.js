@@ -17,6 +17,16 @@ function toId(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
+function dedupeIds(items) {
+  const seen = {}
+  return items.map((item) => {
+    const base = item.id
+    if (!base) return item
+    seen[base] = (seen[base] ?? 0) + 1
+    return seen[base] === 1 ? item : { ...item, id: `${base}-${seen[base]}` }
+  })
+}
+
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.
 const getCaseStudy = cache(async (slug) => {
@@ -196,11 +206,11 @@ export default async function CaseStudyPage({ params }) {
     })
     .filter(h => h.label)
 
-  const tocItems = [
+  const tocItems = dedupeIds([
     ...contextSections.map(s => ({ id: toId(s.label), label: s.label, level: 2 })),
     ...bodyHeadings,
     ...(figmaEmbedUrl ? [{ id: 'prototype', label: 'Prototype', level: 2 }] : []),
-  ]
+  ])
 
   const metaFields = [
     { label: 'Client',   value: data.client },
