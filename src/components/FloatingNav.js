@@ -12,12 +12,14 @@ export default function FloatingNav({ delay = 0 }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 150, x: '-50%' }}
-      animate={{ opacity: 1, y: 0,   x: '-50%' }}
+      initial={{ opacity: 0, y: 150 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ ...SPRING_NAV, delay }}
-      className="fixed bottom-8 left-1/2 z-50 will-change-transform"
+      className="fixed bottom-8 left-0 right-0 z-50 flex justify-center pointer-events-none"
     >
-      <Navbar isMobile={isMobile} />
+      <div className="pointer-events-auto">
+        <Navbar isMobile={isMobile} />
+      </div>
     </motion.div>
   )
 }
