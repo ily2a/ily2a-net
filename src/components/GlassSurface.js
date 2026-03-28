@@ -17,8 +17,8 @@ const VALID_BLEND_MODES = new Set([
 function detectSVGFilterSupport(filterId) {
   if (_svgSupportCache !== null) return _svgSupportCache
   if (typeof window === 'undefined' || typeof document === 'undefined') return false
-  // Test actual support: browsers that don't support SVG backdrop-filter will reject the assignment.
-  // Avoids fragile CSS property heuristics that break as browsers evolve.
+  if (CSS.supports('-moz-appearance', 'none')) { _svgSupportCache = false; return false }
+  if (CSS.supports('hanging-punctuation', 'first')) { _svgSupportCache = false; return false }
   const div = document.createElement('div')
   div.style.backdropFilter = `url(#${filterId})`
   _svgSupportCache = div.style.backdropFilter !== ''
