@@ -26,7 +26,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   }
 
   const v = VARIANTS[variant] ?? VARIANTS.default
-  const baseClass = `relative inline-flex items-center justify-center whitespace-nowrap rounded-[8px] px-4 ${v.height} font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance ${v.text} ${v.border} overflow-hidden select-none no-underline ${className}`
+  const baseClass = `relative inline-flex items-center justify-center rounded-[8px] px-4 ${v.height} btn-label ${v.text} ${v.border} overflow-hidden select-none no-underline ${className}`
   const baseStyle = { background: v.bg }
 
   const spotlight = (

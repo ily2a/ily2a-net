@@ -58,7 +58,7 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
       <Icon color={styles[state].iconColor} />
       {!isMobile && (
         <motion.span
-          className="font-medium tracking-[-0.01em] leading-[120%] text-[16px] text-balance whitespace-nowrap"
+          className="link-label"
           animate={{ color: styles[state].textColor }}
           transition={SPRING_SNAP}
         >

@@ -20,7 +20,7 @@ export default function NotFound() {
         </h1>
         <Link
           href="/"
-          className="font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance text-brand underline"
+          className="btn-label text-brand underline"
         >
           Back home
         </Link>
