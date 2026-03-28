@@ -62,7 +62,7 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="w-full flex justify-center px-5 pt-10 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
+    <section id="contact" className="w-full flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
       <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
