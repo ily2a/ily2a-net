@@ -11,6 +11,11 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
+import TableOfContents from '@/components/TableOfContents'
+
+function toId(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
 
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.
@@ -84,9 +89,18 @@ const ptBase = {
 const ptBody = {
   block: {
     ...ptBase.block,
-    h1:         ({ children }) => <h1 className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand">{children}</h1>,
-    h2:         ({ children }) => <h2 className="heading-2 text-brand">{children}</h2>,
-    h3:         ({ children }) => <h3 className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand">{children}</h3>,
+    h1:         ({ children, value }) => {
+      const text = value?.children?.map(c => c.text).join('') ?? ''
+      return <h1 id={toId(text)} className="font-bold tracking-[-0.01em] leading-[130%] text-[20px] md:text-[24px] lg:text-[28px] xl:text-[32px] text-balance text-brand scroll-mt-10">{children}</h1>
+    },
+    h2:         ({ children, value }) => {
+      const text = value?.children?.map(c => c.text).join('') ?? ''
+      return <h2 id={toId(text)} className="heading-2 text-brand scroll-mt-10">{children}</h2>
+    },
+    h3:         ({ children, value }) => {
+      const text = value?.children?.map(c => c.text).join('') ?? ''
+      return <h3 id={toId(text)} className="font-bold tracking-[-0.01em] leading-[130%] text-[16px] md:text-[16px] lg:text-[18px] xl:text-[24px] text-balance text-brand scroll-mt-10">{children}</h3>
+    },
     blockquote: ({ children }) => (
       <blockquote className="border-l-2 border-brand pl-5 text-text-primary italic text-base leading-[160%] tracking-[0.04em]">
         {children}
@@ -174,6 +188,20 @@ export default async function CaseStudyPage({ params }) {
     { label: 'Project Strategy', content: data.uxStrategy },
   ].filter((s) => s.content?.length)
 
+  const bodyHeadings = (data.body ?? [])
+    .filter(block => block._type === 'block' && ['h1', 'h2', 'h3'].includes(block.style))
+    .map(block => {
+      const text = block.children?.map(c => c.text).join('') ?? ''
+      return { id: toId(text), label: text, level: parseInt(block.style[1]) }
+    })
+    .filter(h => h.label)
+
+  const tocItems = [
+    ...contextSections.map(s => ({ id: toId(s.label), label: s.label, level: 2 })),
+    ...bodyHeadings,
+    ...(figmaEmbedUrl ? [{ id: 'prototype', label: 'Prototype', level: 2 }] : []),
+  ]
+
   const metaFields = [
     { label: 'Client',   value: data.client },
     { label: 'Role',     value: data.role },
@@ -253,7 +281,7 @@ export default async function CaseStudyPage({ params }) {
 
               {contextSections.map(({ label, content }) => (
                 <section key={label} className="flex flex-col gap-[14px]">
-                  <h2 className="heading-2 text-brand">{label}</h2>
+                  <h2 id={toId(label)} className="heading-2 text-brand scroll-mt-10">{label}</h2>
                   <div className="flex flex-col gap-[10px]">
                     <PortableText value={content} components={ptSection} />
                   </div>
@@ -267,7 +295,7 @@ export default async function CaseStudyPage({ params }) {
               )}
 
               {figmaEmbedUrl && (
-                <div className="flex flex-col gap-3">
+                <div id="prototype" className="flex flex-col gap-3">
                   <p className="text-[11px] font-semibold tracking-[0.10em] uppercase text-brand">
                     Prototype
                   </p>
@@ -288,10 +316,15 @@ export default async function CaseStudyPage({ params }) {
 
           {/* ── RIGHT: sidebar (desktop only) ── */}
           <aside
-            className="hidden lg:block w-[300px] xl:w-[320px] shrink-0 sticky top-24"
+            className="hidden lg:flex lg:flex-col lg:gap-6 w-[300px] xl:w-[320px] shrink-0 self-stretch"
             aria-label="Project details"
           >
             <SidebarContent metaFields={metaFields} tags={data.tags} />
+            {tocItems.length > 0 && (
+              <div className="sticky top-8 self-start">
+                <TableOfContents items={tocItems} />
+              </div>
+            )}
           </aside>
 
         </article>

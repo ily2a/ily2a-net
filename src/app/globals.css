@@ -53,12 +53,12 @@
 ::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 15%); }
 
 html {
-  @apply antialiased scroll-smooth overflow-x-hidden;
+  @apply antialiased scroll-smooth overflow-x-clip;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  @apply bg-background text-text-primary font-sans overflow-x-hidden;
+  @apply bg-background text-text-primary font-sans overflow-x-clip;
 }
 
 /* Hide cursor everywhere — custom cursor handles it (desktop only) */
