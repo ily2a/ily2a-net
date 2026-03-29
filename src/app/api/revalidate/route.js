@@ -1,11 +1,17 @@
 import { revalidateTag } from 'next/cache'
+import { timingSafeEqual } from 'crypto'
 
 // POST /api/revalidate
 // Called by a Sanity webhook on document publish/unpublish.
 // Requires SANITY_REVALIDATION_SECRET in env and a matching secret in the Sanity webhook config.
 export async function POST(request) {
-  const secret = request.headers.get('x-sanity-webhook-secret')
-  if (secret !== process.env.SANITY_REVALIDATION_SECRET) {
+  const secret   = request.headers.get('x-sanity-webhook-secret')
+  const expected = process.env.SANITY_REVALIDATION_SECRET
+  const authorized =
+    secret && expected &&
+    secret.length === expected.length &&
+    timingSafeEqual(Buffer.from(secret), Buffer.from(expected))
+  if (!authorized) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
