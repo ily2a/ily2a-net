@@ -12,6 +12,7 @@ import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-q
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 import TableOfContents from '@/components/TableOfContents'
+import PasswordGate from '@/components/PasswordGate'
 
 function toId(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
@@ -239,6 +240,7 @@ export default async function CaseStudyPage({ params }) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }} />
+      {data.isPasswordProtected && <PasswordGate />}
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <SilentErrorBoundary><BackToTop /></SilentErrorBoundary>
 
