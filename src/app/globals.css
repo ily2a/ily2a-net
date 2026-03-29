@@ -161,6 +161,14 @@ input, textarea, select, [contenteditable="true"] {
 
 /* .project-card — selector used by SmoothCursor for hover detection */
 
+/* Tap scale — touch devices only, no conflict with backdrop-filter on desktop */
+@media (hover: none) {
+  .project-card:active {
+    transform: scale(0.97);
+    transition: transform 0.15s ease-out;
+  }
+}
+
 .project-card__img {
   @apply object-cover;
 }
