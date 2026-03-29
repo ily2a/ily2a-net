@@ -9,7 +9,7 @@ export default function Error({ error: _error, reset }) {
     <main className="flex items-center justify-center min-h-screen">
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <h1 role="alert" className="font-light tracking-[0.06em] leading-[140%] text-[24px] md:text-[26px] lg:text-[28px] xl:text-[32px] text-balance text-text-primary">
+        <h1 className="font-light tracking-[0.06em] leading-[140%] text-[24px] md:text-[26px] lg:text-[28px] xl:text-[32px] text-balance text-text-primary">
           Something broke on our end.<br />
           Try refreshing or head back home.
         </h1>

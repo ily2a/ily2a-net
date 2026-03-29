@@ -8,21 +8,29 @@ export default function TableOfContents({ items }) {
   useEffect(() => {
     if (!items.length) return
 
+    let rafId = null
     function onScroll() {
-      const threshold = window.innerHeight * 0.25
-      let best = null
-      for (const { id } of items) {
-        const el = document.getElementById(id)
-        if (!el) continue
-        const top = el.getBoundingClientRect().top
-        if (top <= threshold) best = id
-      }
-      setActiveId(best)
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+        const threshold = window.innerHeight * 0.25
+        let best = null
+        for (const { id } of items) {
+          const el = document.getElementById(id)
+          if (!el) continue
+          const top = el.getBoundingClientRect().top
+          if (top <= threshold) best = id
+        }
+        setActiveId(best)
+      })
     }
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [items])
 
   if (!items.length) return null
