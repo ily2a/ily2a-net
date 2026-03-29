@@ -55,6 +55,8 @@ const ProjectCard = memo(function ProjectCard({ project }) {
       href={`/craft/${project.slug.current}`}
       initial="rest"
       whileHover="hover"
+      whileTap={{ scale: 0.97 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
       style={{ touchAction: 'manipulation' }}
       className="project-card block no-underline"
     >
