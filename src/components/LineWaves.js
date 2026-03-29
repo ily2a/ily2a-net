@@ -182,7 +182,8 @@ export default function LineWaves({
         ];
       }
     }
-    window.addEventListener('resize', resize);
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
     resize();
 
     const geometry = new Triangle(gl);
@@ -219,7 +220,7 @@ export default function LineWaves({
       gl.canvas.addEventListener('mouseleave', handleMouseLeave);
     }
 
-    let animationFrameId;
+    let animationFrameId = 0;
 
     function update(time) {
       animationFrameId = requestAnimationFrame(update);
@@ -237,11 +238,23 @@ export default function LineWaves({
 
       renderer.render({ scene: mesh });
     }
+
+    // Pause RAF when scrolled out of view — mirrors Aurora's IntersectionObserver pattern.
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = 0; }
+      } else if (!animationFrameId) {
+        animationFrameId = requestAnimationFrame(update);
+      }
+    }, { rootMargin: '200px' });
+    io.observe(container);
+
     animationFrameId = requestAnimationFrame(update);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
+      ro.disconnect();
+      io.disconnect();
       if (enableMouseInteraction) {
         gl.canvas.removeEventListener('mousemove', handleMouseMove);
         gl.canvas.removeEventListener('mouseleave', handleMouseLeave);
