@@ -97,7 +97,7 @@ export default function ContactSection() {
                     value={form.name}
                     onChange={handleChange}
                     required autoComplete="name"
-                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
                     animate={errors.name ? INPUT_RING_ERROR : INPUT_RING}
                     whileFocus={errors.name ? FOCUS_RING_ERROR : FOCUS_RING}
                     transition={INPUT_TRANSITION}
@@ -120,7 +120,7 @@ export default function ContactSection() {
                     value={form.email}
                     onChange={handleChange}
                     required autoComplete="email"
-                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
                     animate={errors.email ? INPUT_RING_ERROR : INPUT_RING}
                     whileFocus={errors.email ? FOCUS_RING_ERROR : FOCUS_RING}
                     transition={INPUT_TRANSITION}
@@ -147,7 +147,7 @@ export default function ContactSection() {
                   value={form.message}
                   onChange={handleChange}
                   required rows={6}
-                  className="w-full rounded-[10px] px-4 py-3 outline-none resize-y border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                  className="w-full rounded-[10px] px-4 py-3 outline-none resize-y border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
                   animate={errors.message ? INPUT_RING_ERROR : INPUT_RING}
                   whileFocus={errors.message ? FOCUS_RING_ERROR : FOCUS_RING}
                   transition={INPUT_TRANSITION}

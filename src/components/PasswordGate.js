@@ -88,7 +88,7 @@ export default function PasswordGate() {
                     placeholder="Enter password"
                     autoFocus
                     autoComplete="current-password"
-                    className="w-full rounded-[10px] px-4 py-3 pr-11 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,#0d1114)]"
+                    className="w-full rounded-[10px] px-4 py-3 pr-11 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
                     animate={status === 'error' ? INPUT_RING_ERROR : INPUT_RING}
                     whileFocus={status === 'error' ? FOCUS_RING_ERROR : FOCUS_RING}
                     transition={INPUT_TRANSITION}
@@ -125,7 +125,7 @@ export default function PasswordGate() {
               <button
                 type="submit"
                 disabled={status === 'checking'}
-                className="gradient-button w-full rounded-[8px] px-9 py-4 btn-label disabled:opacity-50 disabled:pointer-events-none"
+                className="gradient-button w-full rounded-[8px] px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
               >
                 {status === 'checking' ? 'Checking…' : 'Unlock case study'}
               </button>
