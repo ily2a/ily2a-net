@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -42,20 +42,26 @@ const hoverImgVariants = {
 }
 
 const imgUrl = (source) => urlFor(source).width(800).auto('format').url()
+const onImgError = (e) => { e.currentTarget.style.display = 'none' }
 
 // Single CSS-responsive card — no JS branching, no hydration CLS.
 // Desktop (tab: 730px+): plain image, all info revealed on hover with blur overlay.
 // Mobile (below tab): image with tags inside + title/subtitle below, slight tap scale.
 //
-// Tap scale is CSS-only via @media (hover: none) so it only fires on touch devices,
-// avoiding any conflict between backdrop-filter and CSS transforms on desktop.
+// whileTap is gated by isTouch (set after mount via matchMedia) so desktop clicks
+// never trigger the scale — only touch devices get the press-down feedback.
 const ProjectCard = memo(function ProjectCard({ project }) {
+  const [isTouch, setIsTouch] = useState(false)
+  useEffect(() => {
+    setIsTouch(window.matchMedia('(hover: none)').matches)
+  }, [])
+
   return (
     <MotionLink
       href={`/craft/${project.slug.current}`}
       initial="rest"
       whileHover="hover"
-      whileTap={{ scale: 0.97 }}
+      whileTap={isTouch ? { scale: 0.97 } : undefined}
       transition={{ duration: 0.15, ease: 'easeOut' }}
       style={{ touchAction: 'manipulation' }}
       className="project-card block no-underline"
@@ -64,7 +70,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
       <div className="relative aspect-[16/10] w-full">
 
         {/* Image wrapper */}
-        <div className="project-card__image-wrap absolute inset-0 rounded-xl overflow-hidden">
+        <div className="absolute inset-0 rounded-xl overflow-hidden">
           {/* Default image */}
           {project.cardImageDefault && (
             <Image
@@ -75,7 +81,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               className="project-card__img"
               placeholder={project.cardImageDefault.lqip ? 'blur' : 'empty'}
               blurDataURL={project.cardImageDefault.lqip}
-              onError={(e) => { e.currentTarget.style.display = 'none' }}
+              onError={onImgError}
             />
           )}
 
@@ -91,7 +97,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
                 className="project-card__img"
                 placeholder={project.cardImageHover.lqip ? 'blur' : 'empty'}
                 blurDataURL={project.cardImageHover.lqip}
-                onError={(e) => { e.currentTarget.style.display = 'none' }}
+                onError={onImgError}
               />
             </motion.div>
           )}
