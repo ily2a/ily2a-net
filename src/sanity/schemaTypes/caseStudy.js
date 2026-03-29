@@ -117,7 +117,7 @@ export default {
       title: 'Password Protected',
       type: 'boolean',
       group: 'meta',
-      description: 'Hide this case study from the public — only accessible via direct link with password',
+      description: 'Not yet enforced — planned feature. Marking this true has no effect currently.',
       initialValue: false,
     },
 

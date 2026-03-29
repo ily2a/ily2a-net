@@ -37,7 +37,7 @@ export default function ContactSection() {
   const validate = () => {
     const e = {
       name:    !form.name.trim(),
-      email:   !form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email),
+      email:   !form.email.trim() || !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(form.email),
       message: !form.message.trim(),
     }
     setErrors(e)
