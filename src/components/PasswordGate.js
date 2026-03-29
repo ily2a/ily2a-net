@@ -65,7 +65,7 @@ export default function PasswordGate() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.05 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 px-5 w-full max-w-[440px] text-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 w-[calc(100vw-32px)] max-w-[440px] text-center"
           >
             {/* Heading */}
             <h1 className="text-intro text-text-primary">
