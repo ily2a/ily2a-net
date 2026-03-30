@@ -183,9 +183,9 @@ const GlassSurface = ({
     if (svgSupported) {
       return {
         ...baseStyles,
-        willChange: 'transform',
         background: `hsl(0 0% 0% / ${backgroundOpacity})`,
-        backdropFilter: `url(#${filterId}) saturate(${saturation})`,
+        backdropFilter: `blur(${Math.round(fallbackBlur * 0.3)}px) saturate(${fallbackSaturation}%) url(#${filterId})`,
+        WebkitBackdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
         boxShadow: 'var(--shadow-glass)',
       }
     }
