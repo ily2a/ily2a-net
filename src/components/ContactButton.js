@@ -26,7 +26,7 @@ export default function ContactButton({ label = 'Contact', onClick }) {
   const handleMouseLeave = () => { setHovered(false); animateTo(angle, 62)  }
 
   // Normalise angle to [0, 360) to prevent the value growing unbounded at 60fps
-  const conicGradient = `conic-gradient(from ${angle % 360}deg, rgba(255,255,255,0) 249deg, var(--color-amethyst-400) 249.6deg)`
+  const conicGradient = `conic-gradient(from ${angle % 360}deg, transparent 249deg, var(--color-amethyst-400) 249.6deg)`
   const layerClass    = 'absolute inset-0 rounded-[8px] overflow-hidden'
 
   return (

@@ -254,7 +254,7 @@ export default function BookingButton({ static: isStatic = false }) {
               width="100%"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
               onLoad={() => setIframeLoaded(true)}
-              style={{ display: 'block', border: 'none', width: '100%', height: 'calc(100% + 80px)' }}
+              className="block border-0 w-full h-[calc(100%+80px)]"
             />
           </motion.div>
         </motion.div>

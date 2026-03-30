@@ -13,12 +13,13 @@ const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: 'linear-gradient(135deg, #2e2937 0%, #6c6284 40%, #b2adc7 75%, #cbc9da 100%)',
+      background: 'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
     }} />
   ),
 })
 import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
 
+// amethyst-950 / amethyst-700 / amethyst-400 / amethyst-300
 const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
 
 function HeroBackground() {

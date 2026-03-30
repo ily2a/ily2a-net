@@ -21,7 +21,7 @@ const states = {
   pressed: {
     background:  'var(--color-amethyst-700)',
     borderColor: 'var(--color-amethyst-50)',
-    boxShadow:   'inset 0px -3px 3px rgba(0,0,0,0.25), inset 0px 2px 3px rgba(0,0,0,0.25)',
+    boxShadow:   'inset 0px -3px 3px var(--color-shadow), inset 0px 2px 3px var(--color-shadow)',
     fill:        'var(--color-amethyst-50)',
   },
 }

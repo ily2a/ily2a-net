@@ -215,9 +215,7 @@ const GradientBlinds = ({
     const gl = renderer.gl
     const canvas = gl.canvas
 
-    canvas.style.width = '100%'
-    canvas.style.height = '100%'
-    canvas.style.display = 'block'
+    canvas.className = 'w-full h-full block'
     container.appendChild(canvas)
 
     const { arr: colorArr, count: colorCount } = prepStops(gradientColors)
