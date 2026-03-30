@@ -183,6 +183,7 @@ const GlassSurface = ({
     if (svgSupported) {
       return {
         ...baseStyles,
+        willChange: 'transform',
         background: `hsl(0 0% 0% / ${backgroundOpacity})`,
         backdropFilter: `url(#${filterId}) saturate(${saturation})`,
         boxShadow: 'var(--shadow-glass)',
