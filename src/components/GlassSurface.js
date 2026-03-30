@@ -184,7 +184,7 @@ const GlassSurface = ({
       return {
         ...baseStyles,
         background: `hsl(0 0% 0% / ${backgroundOpacity})`,
-        backdropFilter: `blur(${Math.round(fallbackBlur * 0.3)}px) saturate(${fallbackSaturation}%) url(#${filterId})`,
+        backdropFilter: `blur(${Math.round(fallbackBlur * 0.7)}px) saturate(${fallbackSaturation}%) url(#${filterId})`,
         WebkitBackdropFilter: `blur(${fallbackBlur}px) saturate(${fallbackSaturation}%)`,
         boxShadow: 'var(--shadow-glass)',
       }
