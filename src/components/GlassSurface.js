@@ -7,9 +7,6 @@ const GlassSurface = ({
   borderRadius = 12,
   className = '',
   style = {},
-  borderWidth, brightness, opacity, blur: _b, displace, backgroundOpacity,
-  saturation, distortionScale, redOffset, greenOffset, blueOffset,
-  xChannel, yChannel, mixBlendMode, fallbackBlur, fallbackSaturation,
 }) => (
   <div
     className={`relative overflow-hidden ${className}`}

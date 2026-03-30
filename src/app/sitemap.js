@@ -1,11 +1,12 @@
 import { sanityFetch } from '@/sanity/lib/live'
 import { SITE_URL as BASE_URL } from '@/constants/site'
+import { CASE_STUDY_SITEMAP_QUERY } from '@/lib/sanity-queries'
 
 export default async function sitemap() {
   let projects = []
   try {
     const { data } = await sanityFetch({
-      query: `*[_type == "caseStudy"] { "slug": slug.current, _updatedAt }`,
+      query: CASE_STUDY_SITEMAP_QUERY,
     })
     projects = data ?? []
   } catch (e) {
