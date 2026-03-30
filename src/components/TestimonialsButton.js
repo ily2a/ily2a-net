@@ -35,34 +35,15 @@ export default function TestimonialsButton() {
       onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })}
       {...handlers}
       aria-label="View testimonials"
-      style={{
-        display:        'inline-flex',
-        alignItems:     'center',
-        justifyContent: 'center',
-        padding:        '8px',
-        width:          'auto',
-        height:         '56px',
-        borderRadius:   '8px',
-        background:     'rgba(13, 16, 18, 0.25)',
-        cursor:         'pointer',
-        border:         'none',
-      }}
+      className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-[rgba(13,16,18,0.25)] cursor-pointer border-none"
     >
       <motion.div
         initial={INNER_STYLES.default}
         animate={INNER_STYLES[state]}
         transition={SPRING_SNAP}
-        style={{
-          display:        'flex',
-          alignItems:     'center',
-          justifyContent: 'center',
-          width:          '100%',
-          height:         '100%',
-          borderRadius:   '8px',
-          padding:        '0 16px',
-        }}
+        className="flex items-center justify-center w-full h-full rounded-[8px] px-4"
       >
-        <span className="btn-label" style={{ color: 'var(--color-text-primary)' }}>
+        <span className="btn-label text-text-primary">
           Echoes about me
         </span>
       </motion.div>
