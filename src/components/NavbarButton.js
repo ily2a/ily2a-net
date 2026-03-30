@@ -52,8 +52,7 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
         boxShadow:   styles[state].boxShadow,
       }}
       transition={SPRING_SNAP}
-      className={`inline-flex items-center justify-center shrink-0 rounded-[8px] h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2'}`}
-      style={isMobile ? {} : { padding: '15px 19px' }}
+      className={`inline-flex items-center justify-center shrink-0 rounded-[8px] h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2 py-[15px] px-[19px]'}`}
     >
       <Icon color={styles[state].iconColor} />
       {!isMobile && (
