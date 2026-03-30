@@ -24,14 +24,14 @@ const INNER_STYLES = {
   },
 }
 
-export default function TestimonialsButton() {
+export default function TestimonialsButton({ instant = false }) {
   const { state, handlers } = useButtonState()
 
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0.5 }}
+      initial={instant ? false : { opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ ...SPRING_ENTRANCE, delay: HERO_BUTTON_DELAY }}
+      transition={{ ...SPRING_ENTRANCE, delay: instant ? 0 : HERO_BUTTON_DELAY }}
       onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })}
       {...handlers}
       aria-label="View testimonials"
