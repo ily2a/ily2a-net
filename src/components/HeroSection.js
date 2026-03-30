@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import BookingButton from '@/components/BookingButton'
 import TestimonialsButton from '@/components/TestimonialsButton'
 import TextReveal from '@/components/TextReveal'
+import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import dynamic from 'next/dynamic'
 
 const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
@@ -49,6 +50,8 @@ function HeroBackground() {
 }
 
 export default function HeroSection({ children }) {
+  const introPlayed = useHeroIntroPlayed()
+
   return (
     <>
       <section id="hero" className="relative h-screen">
@@ -60,17 +63,19 @@ export default function HeroSection({ children }) {
               <TextReveal
                 text="Design Engineer : I design systems, flows, and products. Then build them."
                 className="text-intro"
+                instant={introPlayed}
               />
               <TextReveal
                 text="End-to-end product design with zero handoff friction."
                 className="text-md"
                 scale={2}
                 initialDelay={HERO_SUBTITLE_DELAY}
+                instant={introPlayed}
               />
             </div>
             <div className="flex gap-3">
-              <BookingButton />
-              <TestimonialsButton />
+              <BookingButton isStatic={introPlayed} />
+              <TestimonialsButton instant={introPlayed} />
             </div>
           </div>
         </div>
