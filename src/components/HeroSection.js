@@ -26,7 +26,7 @@ function HeroBackground() {
   return (
     <div
       aria-hidden="true"
-      className={`absolute inset-0 w-full h-full transition-opacity duration-[800ms] ease-[ease] ${visible ? 'opacity-50' : 'opacity-0'}`}
+      className={`absolute inset-0 w-full h-full transition-opacity duration-[800ms] ease-in-out ${visible ? 'opacity-50' : 'opacity-0'}`}
     >
       <GradientBlinds
         gradientColors={HERO_COLORS}
