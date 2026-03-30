@@ -9,7 +9,7 @@ const GlassSurface = ({
   style = {},
 }) => (
   <div
-    className={`relative overflow-hidden bg-surface-blur backdrop-blur-[20px] backdrop-saturate-300 border border-brand/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),inset_0_-1px_0_0_rgba(255,255,255,0.04)] ${className}`}
+    className={`relative overflow-hidden bg-surface-blur backdrop-blur-[20px] backdrop-saturate-300 border border-amethyst-100/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),inset_0_-1px_0_0_rgba(255,255,255,0.04)] ${className}`}
     style={{
       ...style,
       width:        typeof width        === 'number' ? `${width}px`        : width,
