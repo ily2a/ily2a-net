@@ -228,7 +228,7 @@ export default function ContactSection() {
         >
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
             <Aurora
-              colorStops={['#2e2937', '#8479a0', '#b2adc7']}
+              colorStops={/* amethyst-950 / amethyst-600 / amethyst-400 */['#2e2937', '#8479a0', '#b2adc7']}
               amplitude={1.2}
               blend={0.6}
               speed={0.5}
