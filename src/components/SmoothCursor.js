@@ -6,7 +6,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
 const CARD_SELECTOR  = '.project-card'
-const SPRING         = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 }
+const SPRING         = { damping: 38, stiffness: 500, mass: 0.75, restDelta: 0.001 }
 
 export function SmoothCursor() {
   const prefersReduced = usePrefersReducedMotion()
