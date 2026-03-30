@@ -23,6 +23,8 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 - `/craft/[slug]` — Individual case study with rich text, media, and Figma prototype embeds
 - `/studio` — Sanity Studio (content management)
 - `/api/contact` — Contact form submission endpoint (Resend)
+- `/api/revalidate` — On-demand ISR revalidation webhook (triggered by Sanity)
+- `/api/unlock` — Password gate unlock endpoint for protected case studies
 
 ## Getting Started
 
@@ -61,7 +63,10 @@ src/
 ├── app/                  # Next.js App Router pages & API routes
 │   ├── page.js           # Home page
 │   ├── craft/            # Project gallery + dynamic case study pages
-│   ├── api/contact/      # Contact form API (Resend)
+│   ├── api/
+│   │   ├── contact/      # Contact form API (Resend)
+│   │   ├── revalidate/   # On-demand ISR revalidation webhook
+│   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
 ├── components/           # React components
 ├── sanity/               # Sanity client, schema types, image helpers
@@ -90,12 +95,46 @@ npx sanity@latest schema deploy
 
 ## Components
 
-- **ProjectCard** — desktop hover card with blur overlay and image swap
-- **ProjectCardMobile** — touch-optimised card with scale-on-tap, shown below the `tab` breakpoint (730px)
-- **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
-- **GlassSurface** — SVG displacement filter glass effect used in the navbar
+**Layout & Navigation**
 - **FloatingNav** — fixed bottom navbar with spring animation
+- **Navbar** / **NavbarButton** — top navbar with glass surface and scroll-aware behaviour
+- **GlassSurface** — SVG displacement filter glass effect used in the navbar
+- **Logo** — animated logo mark
+- **BackToTop** — scroll-to-top utility
+
+**Home Page Sections**
+- **HeroSection** — hero with entrance animations (played once per session)
+- **CraftSection** — featured projects grid on the home page
+- **CapabilitiesSection** — services / capabilities list
+- **TestimonialsSection** — client testimonials carousel
+- **ContactSection** — contact form and CTA
+
+**Project Cards**
+- **ProjectCard** — hover card with blur overlay and image swap; handles both desktop and touch layouts
+
+**Buttons & CTAs**
 - **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
+- **BookingButton** — Cal.com booking embed trigger
+- **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
+- **LinkedInButton** — LinkedIn profile link
+- **TestimonialsButton** — opens testimonials modal/section
+- **NavbarButton** — navbar-specific button variant
+
+**Visual Effects**
+- **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
+- **Aurora** — animated aurora background effect
+- **LineWaves** / **LineWavesBackground** — SVG line-wave decorative background
+- **GradientBlinds** — animated gradient overlay
+- **DarkVeil** — dark overlay used for transitions
+- **TextReveal** — scroll-triggered text reveal animation
+
+**Utility**
+- **MotionProvider** — wraps the app with Framer Motion `LazyMotion` provider
+- **PasswordGate** — locks protected case studies behind a password
+- **TableOfContents** — in-page navigation for long case studies
+- **ScrollToSection** — smooth-scroll anchor helper
+- **CloseButton** — reusable modal/overlay close button
+- **ErrorBoundary** / **SilentErrorBoundary** — React error boundary wrappers
 
 ## Design Tokens
 
@@ -105,6 +144,13 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
 - **Breakpoints** — `tab: 730px`, `desk: 1200px`, `xl: 1440px`
+
+## Hooks
+
+- **useWindowWidth** — reactive window width for responsive logic in JS
+- **useButtonState** — manages hover/active state for custom button components
+- **usePrefersReducedMotion** — reads `prefers-reduced-motion` media query
+- **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 
 ## Deployment
 
