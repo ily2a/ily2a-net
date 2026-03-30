@@ -26,3 +26,6 @@ export const CASE_STUDY_BY_SLUG_QUERY = `*[_type == "caseStudy" && slug.current 
 
 // All slugs — used for generateStaticParams
 export const CASE_STUDY_SLUGS_QUERY = `*[_type == "caseStudy"] { "slug": slug.current }`
+
+// Slugs + last-modified date — used for sitemap generation
+export const CASE_STUDY_SITEMAP_QUERY = `*[_type == "caseStudy"] { "slug": slug.current, _updatedAt }`

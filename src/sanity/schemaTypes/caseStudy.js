@@ -117,7 +117,7 @@ export default {
       title: 'Password Protected',
       type: 'boolean',
       group: 'meta',
-      description: 'Not yet enforced — planned feature. Marking this true has no effect currently.',
+      description: 'Shows a password gate overlay on the case study page. Content requires the correct password to view.',
       initialValue: false,
     },
 

@@ -33,14 +33,6 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
       width={isMobile ? 'calc(100vw - 32px)' : '472px'}
       height={64}
       borderRadius={12}
-      distortionScale={-150}
-      blur={30}
-      brightness={22}
-      opacity={0.8}
-      displace={6}
-      backgroundOpacity={0.18}
-      fallbackBlur={50}
-      fallbackSaturation={450}
       style={isMobile ? GLASS_STYLE_MOBILE : GLASS_STYLE_DESKTOP}
     >
       <nav
