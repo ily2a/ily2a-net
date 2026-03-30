@@ -30,14 +30,7 @@ export default function Logo({ isMobile = false, onClick }) {
           width={64}
           height={32}
           unoptimized
-          style={{
-            display:  'block',
-            position: s === 'default' ? 'relative' : 'absolute',
-            inset:    0,
-            opacity:  state === s ? 1 : 0,
-            transition: 'opacity 0.08s ease',
-            pointerEvents: 'none',
-          }}
+          className={`block inset-0 pointer-events-none transition-opacity duration-[80ms] ${s === 'default' ? 'relative' : 'absolute'} ${state === s ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}
     </motion.button>

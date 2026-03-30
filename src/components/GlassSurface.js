@@ -9,19 +9,15 @@ const GlassSurface = ({
   style = {},
 }) => (
   <div
-    className={`relative overflow-hidden ${className}`}
+    className={`relative overflow-hidden bg-surface-blur backdrop-blur-[20px] backdrop-saturate-300 border border-brand/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),inset_0_-1px_0_0_rgba(255,255,255,0.04)] ${className}`}
     style={{
       ...style,
-      width:  typeof width  === 'number' ? `${width}px`  : width,
-      height: typeof height === 'number' ? `${height}px` : height,
-      borderRadius: `${borderRadius}px`,
-      background: 'var(--color-surface-blur)',
-      backdropFilter:       'blur(24px) saturate(160%)',
-      WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-      boxShadow: 'var(--shadow-glass)',
+      width:        typeof width        === 'number' ? `${width}px`        : width,
+      height:       typeof height       === 'number' ? `${height}px`       : height,
+      borderRadius: typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius,
     }}
   >
-    <div className="relative flex items-center justify-center w-full h-full" style={{ zIndex: 1 }}>
+    <div className="relative z-[1] flex items-center justify-center w-full h-full">
       {children}
     </div>
   </div>
