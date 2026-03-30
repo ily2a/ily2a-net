@@ -74,7 +74,7 @@ export default function HeroSection({ children }) {
               />
             </div>
             <div className="flex gap-3">
-              <BookingButton isStatic={introPlayed} />
+              <BookingButton static={introPlayed} />
               <TestimonialsButton instant={introPlayed} />
             </div>
           </div>
