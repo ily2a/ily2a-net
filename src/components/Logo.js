@@ -26,7 +26,8 @@ export default function Logo({ isMobile = false, onClick }) {
         <Image
           key={s}
           src={`/assets/logo-${s}.svg`}
-          alt="ily2a"
+          alt={state === s ? 'ily2a' : ''}
+          aria-hidden={state !== s || undefined}
           width={64}
           height={32}
           unoptimized

@@ -26,7 +26,7 @@ const fadeUp = (delay = 0) => ({
 
 export default function ContactSection() {
   const [form, setForm]     = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState('idle')
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error | ratelimited
   const [errors, setErrors] = useState({ name: false, email: false, message: false })
 
   const handleChange = (e) => {
@@ -55,6 +55,7 @@ export default function ContactSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
+      if (res.status === 429) { setStatus('ratelimited'); return }
       if (!res.ok) throw new Error()
       setStatus('sent')
       setForm({ name: '', email: '', message: '' })
@@ -164,7 +165,7 @@ export default function ContactSection() {
                 <ContactFormButton
                   type="submit"
                   className="w-full"
-                  disabled={status === 'sending' || status === 'sent'}
+                  disabled={status === 'sending' || status === 'sent' || status === 'ratelimited'}
                 >
                   {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit'}
                 </ContactFormButton>
@@ -196,6 +197,11 @@ export default function ContactSection() {
                       Retry
                     </button>
                   </div>
+                )}
+                {status === 'ratelimited' && (
+                  <p className="text-[13px] text-error">
+                    Too many submissions — please wait a while before trying again.
+                  </p>
                 )}
               </div>
           </motion.form>

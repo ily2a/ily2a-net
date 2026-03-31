@@ -15,14 +15,20 @@ const VARIANTS = {
 }
 
 export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }) {
-  const ref = useRef(null)
+  const ref    = useRef(null)
+  const rafRef = useRef(0)
 
   const onMouseMove = (e) => {
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    el.style.setProperty('--mx', `${e.clientX - rect.left}px`)
-    el.style.setProperty('--my', `${e.clientY - rect.top}px`)
+    if (rafRef.current) return
+    const { clientX, clientY } = e
+    rafRef.current = requestAnimationFrame(() => {
+      const el = ref.current
+      if (!el) { rafRef.current = 0; return }
+      const rect = el.getBoundingClientRect()
+      el.style.setProperty('--mx', `${clientX - rect.left}px`)
+      el.style.setProperty('--my', `${clientY - rect.top}px`)
+      rafRef.current = 0
+    })
   }
 
   const v = VARIANTS[variant] ?? VARIANTS.default

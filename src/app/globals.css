@@ -39,12 +39,13 @@
     0px 16px 56px rgba(17, 17, 26, 0.05);
 
   /* ─── Breakpoints ─────────────────────────────────────────── */
-  --breakpoint-sm:   390px;
-  --breakpoint-tab:  730px;  /* compact tablet / landscape phone */
-  --breakpoint-md:   810px;
-  --breakpoint-desk: 1088px; /* compact desktop */
-  --breakpoint-lg:   1200px;
-  --breakpoint-xl:   1440px;
+  --breakpoint-sm:     390px;
+  --breakpoint-mobile: 600px;  /* JS-only: compact navbar / stacked hero (between sm and tab) */
+  --breakpoint-tab:    730px;  /* compact tablet / landscape phone */
+  --breakpoint-md:     810px;
+  --breakpoint-desk:   1088px; /* compact desktop */
+  --breakpoint-lg:     1200px;
+  --breakpoint-xl:     1440px;
 }
 
 /* ─── Base Reset ──────────────────────────────────────────────── */

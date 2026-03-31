@@ -209,7 +209,7 @@ const GradientBlinds = ({
     const renderer = new Renderer({
       dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
       alpha: true,
-      antialias: true,
+      antialias: false, // antialias doubles pixel work on Retina for no visible gain in a shader effect
     })
     rendererRef.current = renderer
     const gl = renderer.gl

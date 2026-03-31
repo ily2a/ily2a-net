@@ -25,8 +25,11 @@ function isRateLimited(ip) {
 
 export async function POST(request) {
   // ── Rate limit ──
-  const forwarded = request.headers.get('x-forwarded-for')
-  const ip        = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
+  // Prefer x-real-ip (set by Vercel's infrastructure, not spoofable by clients).
+  // Fall back to the first entry of x-forwarded-for for other environments.
+  const ip = request.headers.get('x-real-ip')
+          ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim()
+          ?? 'unknown'
   if (isRateLimited(ip)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
