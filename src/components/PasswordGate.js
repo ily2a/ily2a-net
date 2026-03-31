@@ -87,7 +87,7 @@ export default function PasswordGate() {
                     onChange={(e) => { setPassword(e.target.value); setStatus('idle') }}
                     placeholder="Enter password"
                     autoFocus
-                    autoComplete="current-password"
+                    autoComplete="off"
                     className="w-full rounded-[10px] px-4 py-3 pr-11 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
                     animate={status === 'error' ? INPUT_RING_ERROR : INPUT_RING}
                     whileFocus={status === 'error' ? FOCUS_RING_ERROR : FOCUS_RING}
@@ -115,11 +115,13 @@ export default function PasswordGate() {
                     )}
                   </button>
                 </div>
-                {status === 'error' && (
-                  <p id="cs-password-error" className="text-[12px] text-error">
-                    Incorrect password. Try again.
-                  </p>
-                )}
+                <div aria-live="polite" aria-atomic="true">
+                  {status === 'error' && (
+                    <p id="cs-password-error" className="text-[12px] text-error">
+                      Incorrect password. Try again.
+                    </p>
+                  )}
+                </div>
               </div>
 
               <button

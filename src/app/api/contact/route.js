@@ -1,8 +1,7 @@
 import { Resend } from 'resend'
+import { EMAIL_RE } from '@/lib/validation'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 const MAX = { name: 100, email: 254, message: 5000 }
 
 // ── Rate limiting ──────────────────────────────────────────────────────────────

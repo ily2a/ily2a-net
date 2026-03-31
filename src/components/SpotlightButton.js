@@ -56,6 +56,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
 
   return (
     <motion.button
+      type="button"
       ref={ref}
       onClick={onClick}
       onMouseMove={onMouseMove}

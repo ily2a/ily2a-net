@@ -169,16 +169,25 @@ export default function Aurora({
     let cachedStops = colorStopsArray
     let lastStopsRef = propsRef.current.colorStops
 
-    // Pause the RAF loop when the Aurora container is scrolled out of view.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Pause/resume helper — used by both IntersectionObserver and visibilitychange.
     let animateId = 0
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
+    const setActive = (active) => {
+      if (!active) {
         if (animateId) { cancelAnimationFrame(animateId); animateId = 0 }
-      } else if (!animateId) {
+      } else if (!animateId && !prefersReducedMotion) {
         animateId = requestAnimationFrame(update)
       }
-    }, { rootMargin: '200px' })
+    }
+
+    // Pause the RAF loop when the Aurora container is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' })
     io.observe(ctn)
+
+    // Pause when the tab is hidden to avoid unnecessary GPU work.
+    const onVisibilityChange = () => setActive(!document.hidden)
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     const update = t => {
       animateId = requestAnimationFrame(update)
@@ -194,11 +203,18 @@ export default function Aurora({
       program.uniforms.uColorStops.value = cachedStops
       renderer.render({ scene: mesh })
     }
-    animateId = requestAnimationFrame(update)
+
+    if (prefersReducedMotion) {
+      // Render one static frame then stop — respect accessibility preference.
+      renderer.render({ scene: mesh })
+    } else {
+      animateId = requestAnimationFrame(update)
+    }
     resize()
 
     return () => {
       cancelAnimationFrame(animateId)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
       ro.disconnect()
       io.disconnect()
       if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas)
