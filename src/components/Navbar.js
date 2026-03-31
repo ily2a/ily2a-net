@@ -18,11 +18,14 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
   const pathname = usePathname()
   const router   = useRouter()
   const isHome   = pathname === '/'
+  const isCraft  = pathname === '/craft' || pathname.startsWith('/craft/')
 
   function navTo(sectionId) {
     if (!VALID_SECTIONS.has(sectionId)) return
     if (isHome) {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
+    } else if (isCraft && sectionId === 'contact') {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
     } else {
       router.push(`/?scrollTo=${sectionId}`)
     }
