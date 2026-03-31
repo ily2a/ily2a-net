@@ -142,13 +142,16 @@ export default function BookingButton({ static: isStatic = false }) {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
-      // Safety net: restore scroll if the component unmounts while open
-      const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
-      document.body.style.position = ''
-      document.body.style.top      = ''
-      document.body.style.width    = ''
-      delete document.body.dataset.scrollY
-      window.scrollTo(0, scrollY)
+      // Safety net: restore scroll if the component unmounts while modal is still open
+      // (i.e. handleClose hasn't already cleared the dataset key).
+      if (document.body.dataset.scrollY !== undefined) {
+        const scrollY = parseInt(document.body.dataset.scrollY, 10)
+        document.body.style.position = ''
+        document.body.style.top      = ''
+        document.body.style.width    = ''
+        delete document.body.dataset.scrollY
+        window.scrollTo(0, scrollY)
+      }
     }
   }, [open])
 

@@ -149,6 +149,16 @@ export default function LineWaves({
 }) {
   const containerRef = useRef(null);
 
+  // ── Loop-read ref ──────────────────────────────────────────────────────────
+  // Changing props does NOT recreate the WebGL context — the loop reads from
+  // this ref so React never tears down/rebuilds the renderer on prop changes.
+  const propsRef = useRef({ speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence });
+
+  useEffect(() => {
+    propsRef.current = { speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence };
+  }, [speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence]);
+
+  // ── Main WebGL setup — runs once on mount ──────────────────────────────────
   useEffect(() => {
     if (!containerRef.current) return;
     const container = containerRef.current;
@@ -156,7 +166,6 @@ export default function LineWaves({
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
 
-    let program;
     let currentMouse = [0.5, 0.5];
     let targetMouse = [0.5, 0.5];
 
@@ -184,49 +193,64 @@ export default function LineWaves({
     }
     const ro = new ResizeObserver(resize);
     ro.observe(container);
-    resize();
 
     const geometry = new Triangle(gl);
-    const rotationRad = (rotation * Math.PI) / 180;
+    const p = propsRef.current;
 
-    program = new Program(gl, {
+    let program = new Program(gl, {
       vertex: vertexShader,
       fragment: fragmentShader,
       uniforms: {
-        uTime: { value: 0 },
-        uResolution: { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
-        uSpeed: { value: speed },
-        uInnerLines: { value: innerLineCount },
-        uOuterLines: { value: outerLineCount },
-        uWarpIntensity: { value: warpIntensity },
-        uRotation: { value: rotationRad },
-        uEdgeFadeWidth: { value: edgeFadeWidth },
-        uColorCycleSpeed: { value: colorCycleSpeed },
-        uBrightness: { value: brightness },
-        uColor1: { value: hexToVec3(color1) },
-        uColor2: { value: hexToVec3(color2) },
-        uColor3: { value: hexToVec3(color3) },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-        uMouseInfluence: { value: mouseInfluence },
-        uEnableMouse: { value: enableMouseInteraction },
+        uTime:           { value: 0 },
+        uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+        uSpeed:          { value: p.speed },
+        uInnerLines:     { value: p.innerLineCount },
+        uOuterLines:     { value: p.outerLineCount },
+        uWarpIntensity:  { value: p.warpIntensity },
+        uRotation:       { value: (p.rotation * Math.PI) / 180 },
+        uEdgeFadeWidth:  { value: p.edgeFadeWidth },
+        uColorCycleSpeed:{ value: p.colorCycleSpeed },
+        uBrightness:     { value: p.brightness },
+        uColor1:         { value: hexToVec3(p.color1) },
+        uColor2:         { value: hexToVec3(p.color2) },
+        uColor3:         { value: hexToVec3(p.color3) },
+        uMouse:          { value: new Float32Array([0.5, 0.5]) },
+        uMouseInfluence: { value: p.mouseInfluence },
+        uEnableMouse:    { value: p.enableMouseInteraction },
       },
     });
+
+    resize();
 
     const mesh = new Mesh(gl, { geometry, program });
     container.appendChild(gl.canvas);
 
-    if (enableMouseInteraction) {
-      gl.canvas.addEventListener('mousemove', handleMouseMove);
-      gl.canvas.addEventListener('mouseleave', handleMouseLeave);
-    }
+    gl.canvas.addEventListener('mousemove', handleMouseMove);
+    gl.canvas.addEventListener('mouseleave', handleMouseLeave);
 
     let animationFrameId = 0;
 
     function update(time) {
       animationFrameId = requestAnimationFrame(update);
-      program.uniforms.uTime.value = time * 0.001;
+      const cp = propsRef.current;
 
-      if (enableMouseInteraction) {
+      // Update uniforms in-place from the latest props ref — no context rebuild needed
+      program.uniforms.uSpeed.value          = cp.speed;
+      program.uniforms.uInnerLines.value     = cp.innerLineCount;
+      program.uniforms.uOuterLines.value     = cp.outerLineCount;
+      program.uniforms.uWarpIntensity.value  = cp.warpIntensity;
+      program.uniforms.uRotation.value       = (cp.rotation * Math.PI) / 180;
+      program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
+      program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
+      program.uniforms.uBrightness.value     = cp.brightness;
+      program.uniforms.uColor1.value         = hexToVec3(cp.color1);
+      program.uniforms.uColor2.value         = hexToVec3(cp.color2);
+      program.uniforms.uColor3.value         = hexToVec3(cp.color3);
+      program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
+      program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
+      program.uniforms.uTime.value           = time * 0.001;
+
+      if (cp.enableMouseInteraction) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
         currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
         program.uniforms.uMouse.value[0] = currentMouse[0];
@@ -239,30 +263,36 @@ export default function LineWaves({
       renderer.render({ scene: mesh });
     }
 
-    // Pause RAF when scrolled out of view — mirrors Aurora's IntersectionObserver pattern.
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
+    // Pause RAF when scrolled out of view — mirrors Aurora/GradientBlinds pattern.
+    const setActive = (active) => {
+      if (!active) {
         if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = 0; }
       } else if (!animationFrameId) {
         animationFrameId = requestAnimationFrame(update);
       }
-    }, { rootMargin: '200px' });
+    };
+    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' });
     io.observe(container);
+
+    // Pause when tab is hidden.
+    const onVisibilityChange = () => setActive(!document.hidden);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     animationFrameId = requestAnimationFrame(update);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       ro.disconnect();
       io.disconnect();
-      if (enableMouseInteraction) {
-        gl.canvas.removeEventListener('mousemove', handleMouseMove);
-        gl.canvas.removeEventListener('mouseleave', handleMouseLeave);
-      }
+      gl.canvas.removeEventListener('mousemove', handleMouseMove);
+      gl.canvas.removeEventListener('mouseleave', handleMouseLeave);
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence]);
+  // Empty dep array: all mutable values are read from propsRef in the loop.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <div ref={containerRef} className="w-full h-full" />;
 }

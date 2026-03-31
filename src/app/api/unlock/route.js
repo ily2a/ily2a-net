@@ -19,8 +19,9 @@ function isRateLimited(ip) {
 
 export async function POST(request) {
   // ── Rate limit ──
-  const forwarded = request.headers.get('x-forwarded-for')
-  const ip        = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
+  const ip = request.headers.get('x-real-ip')
+          ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim()
+          ?? 'unknown'
   if (isRateLimited(ip)) {
     return Response.json({ success: false }, { status: 429 })
   }
@@ -42,11 +43,16 @@ export async function POST(request) {
     return Response.json({ success: false }, { status: 401 })
   }
 
-  const attempt  = password.trim()
-  const correct  = expected.trim()
-  const authorized =
-    attempt.length === correct.length &&
-    timingSafeEqual(Buffer.from(attempt), Buffer.from(correct))
+  const attempt    = password.trim()
+  const correct    = expected.trim()
+  // Always run timingSafeEqual regardless of length — prevents timing-based
+  // length oracle attacks. Pad attempt into a fixed-size buffer matching correct.
+  const correctBuf = Buffer.from(correct)
+  const attemptBuf = Buffer.alloc(correctBuf.length)
+  Buffer.from(attempt).copy(attemptBuf, 0, 0, correctBuf.length)
+  const lengthMatch = attempt.length === correct.length
+  const bytesMatch  = timingSafeEqual(attemptBuf, correctBuf)
+  const authorized  = lengthMatch && bytesMatch
 
   return Response.json({ success: authorized }, { status: authorized ? 200 : 401 })
 }

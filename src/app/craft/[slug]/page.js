@@ -321,6 +321,7 @@ export default async function CaseStudyPage({ params }) {
                     <iframe
                       src={figmaEmbedUrl}
                       allowFullScreen
+                      loading="lazy"
                       sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"
                       title={`${data.title} — Figma prototype`}
                       className="absolute inset-0 w-full h-full border-0"

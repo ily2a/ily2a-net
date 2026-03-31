@@ -15,26 +15,19 @@ const contactFormButtonVariants = cva(
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   {
-    variants: {
-      variant: {
-        default: '',
-        variant: 'gradient-button-variant',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-    },
+    variants: {},
+    defaultVariants: {},
   }
 )
 
 const ContactFormButton = forwardRef(function ContactFormButton(
-  { className, variant, children, ...props },
+  { className, children, ...props },
   ref
 ) {
   return (
     <motion.button
       ref={ref}
-      className={cn(contactFormButtonVariants({ variant, className }))}
+      className={cn(contactFormButtonVariants({ className }))}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       {...props}
