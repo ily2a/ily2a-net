@@ -3,9 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function BackToTop() {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible]    = useState(false)
+  const prefersReduced           = usePrefersReducedMotion()
   const ref = useRef(null)
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function BackToTop() {
       {visible && (
         <motion.button
           ref={ref}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => window.scrollTo({ top: 0, behavior: prefersReduced ? 'instant' : 'smooth' })}
           onMouseMove={onMouseMove}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}

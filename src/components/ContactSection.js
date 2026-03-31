@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { EMAIL_RE } from '@/lib/validation'
 import { ContactFormButton } from '@/components/ContactFormButton'
 import BookingButton from '@/components/BookingButton'
 import LinkedInButton from '@/components/LinkedInButton'
@@ -37,7 +38,7 @@ export default function ContactSection() {
   const validate = () => {
     const e = {
       name:    !form.name.trim(),
-      email:   !form.email.trim() || !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(form.email),
+      email:   !form.email.trim() || !EMAIL_RE.test(form.email),
       message: !form.message.trim(),
     }
     setErrors(e)
