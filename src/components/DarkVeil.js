@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const vertex = `
 attribute vec2 position;
@@ -85,6 +86,7 @@ export default function DarkVeil({
   resolutionScale = 1,
 }) {
   const ref = useRef(null)
+  const prefersReduced = usePrefersReducedMotion()
 
   useEffect(() => {
     const canvas = ref.current
@@ -133,15 +135,6 @@ export default function DarkVeil({
     let frame = 0
 
     // Pause the RAF loop when the canvas is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
-        if (frame) { cancelAnimationFrame(frame); frame = 0 }
-      } else if (!frame) {
-        frame = requestAnimationFrame(loop)
-      }
-    }, { rootMargin: '200px' })
-    io.observe(canvas)
-
     const loop = () => {
       program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * speed
       program.uniforms.uHueShift.value = hueShift
@@ -153,18 +146,40 @@ export default function DarkVeil({
       frame = requestAnimationFrame(loop)
     }
 
-    loop()
+    const renderStatic = () => {
+      program.uniforms.uTime.value     = 0
+      program.uniforms.uHueShift.value = hueShift
+      program.uniforms.uNoise.value    = 0
+      program.uniforms.uScan.value     = 0
+      program.uniforms.uScanFreq.value = scanlineFrequency
+      program.uniforms.uWarp.value     = 0
+      renderer.render({ scene: mesh })
+    }
+
+    // Pause the RAF loop when the canvas is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        if (frame) { cancelAnimationFrame(frame); frame = 0 }
+      } else if (!frame && !prefersReduced) {
+        frame = requestAnimationFrame(loop)
+      }
+    }, { rootMargin: '200px' })
+    io.observe(canvas)
+
+    if (prefersReduced) renderStatic()
+    else loop()
 
     return () => {
       cancelAnimationFrame(frame)
       ro.disconnect()
       io.disconnect()
     }
-  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale])
+  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale, prefersReduced])
 
   return (
     <canvas
       ref={ref}
+      aria-hidden="true"
       className="absolute inset-0 w-full h-full"
     />
   )

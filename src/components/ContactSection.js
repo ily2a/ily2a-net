@@ -7,15 +7,10 @@ import { ContactFormButton } from '@/components/ContactFormButton'
 import BookingButton from '@/components/BookingButton'
 import LinkedInButton from '@/components/LinkedInButton'
 import dynamic from 'next/dynamic'
+import { INPUT_RING, INPUT_RING_ERROR, FOCUS_RING, FOCUS_RING_ERROR, INPUT_TRANSITION } from '@/constants/inputStyles'
 
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false })
 
-
-const INPUT_RING         = { boxShadow: '0 0 0 1px color-mix(in srgb, var(--color-amethyst-400) 30%, transparent)' }
-const INPUT_RING_ERROR   = { boxShadow: '0 0 0 1px var(--color-error)' }
-const FOCUS_RING         = { boxShadow: '0 0 0 2px var(--color-amethyst-700)' }
-const FOCUS_RING_ERROR   = { boxShadow: '0 0 0 2px var(--color-error)' }
-const INPUT_TRANSITION   = { duration: 0.2, ease: 'easeOut' }
 
 const fadeUp = (delay = 0) => ({
   initial:     { opacity: 0, y: 16 },
@@ -28,6 +23,10 @@ export default function ContactSection() {
   const [form, setForm]     = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('idle') // idle | sending | sent | error | ratelimited
   const [errors, setErrors] = useState({ name: false, email: false, message: false })
+  const submitLabel =
+    status === 'sending' ? 'Sending…' :
+    status === 'sent' ? 'Sent ✓' :
+    'Submit'
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -167,7 +166,9 @@ export default function ContactSection() {
                   className="w-full"
                   disabled={status === 'sending' || status === 'sent' || status === 'ratelimited'}
                 >
-                  {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Sent ✓' : 'Submit'}
+                  <span aria-live="polite" aria-atomic="true">
+                    {submitLabel}
+                  </span>
                 </ContactFormButton>
               </div>
 

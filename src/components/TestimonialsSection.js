@@ -1,15 +1,6 @@
-'use client'
-
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import { TESTIMONIALS } from '@/data/testimonials'
-
-const DarkVeil = dynamic(() => import('@/components/DarkVeil'), {
-  ssr: false,
-  loading: () => (
-    <div className="absolute inset-0 bg-gradient-to-br from-background via-amethyst-950 to-amethyst-900" />
-  ),
-})
+import TestimonialsBackground from '@/components/TestimonialsBackground.client'
 
 
 export default function TestimonialsSection() {
@@ -19,18 +10,7 @@ export default function TestimonialsSection() {
       className="w-full relative overflow-hidden flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20"
     >
       {/* ── WebGL background ── */}
-      <div aria-hidden="true" className="absolute inset-0 z-0">
-        <DarkVeil
-          hueShift={0}
-          speed={0.3}
-          warpAmount={0.6}
-          noiseIntensity={0.025}
-          scanlineIntensity={0}
-          resolutionScale={0.6}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-amethyst-950 via-amethyst-700 to-amethyst-900 mix-blend-color" />
-        <div className="absolute inset-0 bg-background/30" />
-      </div>
+      <TestimonialsBackground />
 
       {/* ── Content ── */}
       <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
@@ -54,6 +34,7 @@ export default function TestimonialsSection() {
                   alt={`${name}, ${role}`}
                   width={44}
                   height={44}
+                  sizes="44px"
                   className="w-11 h-11 rounded-full object-cover shrink-0"
                 />
                 <div className="flex flex-col gap-0.5">

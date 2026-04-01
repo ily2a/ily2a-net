@@ -123,7 +123,7 @@ export default function CapabilitiesSection() {
             <SpotlightCard key={card.title}>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+                  <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
                   <h3 className="heading-sub text-text-primary">{card.title}</h3>
                 </div>
                 <hr className="h-[6px] border-0 rounded-sm m-0" style={{ background: card.gradient }} aria-hidden="true" />
@@ -140,7 +140,7 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+                <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="heading-sub text-text-primary">Skills</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-400 via-amethyst-700 to-transparent" aria-hidden="true" />
@@ -158,7 +158,7 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+                <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="heading-sub text-text-primary">Tools</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-500 via-amethyst-900 to-transparent" aria-hidden="true" />
@@ -167,7 +167,7 @@ export default function CapabilitiesSection() {
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
                 <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
-                  <Image src={tool.logo} alt="" aria-hidden="true" width={24} height={24} className="w-6 h-6 object-contain shrink-0" />
+                  <Image src={tool.logo} alt="" aria-hidden="true" width={24} height={24} sizes="24px" className="w-6 h-6 object-contain shrink-0" />
                   {tool.name}
                 </li>
               ))}

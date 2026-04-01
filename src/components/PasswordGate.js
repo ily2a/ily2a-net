@@ -5,14 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import LineWavesBackground from '@/components/LineWavesBackground'
 import FloatingNav from '@/components/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import { INPUT_RING, INPUT_RING_ERROR, FOCUS_RING, FOCUS_RING_ERROR, INPUT_TRANSITION } from '@/constants/inputStyles'
 
 const SESSION_KEY = 'cs_unlocked'
-
-const INPUT_RING       = { boxShadow: '0 0 0 1px color-mix(in srgb, var(--color-amethyst-400) 30%, transparent)' }
-const INPUT_RING_ERROR = { boxShadow: '0 0 0 1px var(--color-error)' }
-const FOCUS_RING       = { boxShadow: '0 0 0 2px var(--color-amethyst-700)' }
-const FOCUS_RING_ERROR = { boxShadow: '0 0 0 2px var(--color-error)' }
-const INPUT_TRANSITION = { duration: 0.2, ease: 'easeOut' }
 
 export default function PasswordGate() {
   const [unlocked, setUnlocked] = useState(false)
