@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { SPRING_SNAP } from '@/constants/animations'
@@ -17,6 +17,12 @@ const VARIANTS = {
 export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }) {
   const ref    = useRef(null)
   const rafRef = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
 
   const onMouseMove = (e) => {
     if (rafRef.current) return

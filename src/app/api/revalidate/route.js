@@ -7,6 +7,9 @@ import { timingSafeEqual } from 'crypto'
 export async function POST(request) {
   const secret   = request.headers.get('x-sanity-webhook-secret')
   const expected = process.env.SANITY_REVALIDATION_SECRET
+  if (!expected) {
+    return Response.json({ error: 'Server misconfigured' }, { status: 500 })
+  }
   const authorized =
     secret && expected &&
     secret.length === expected.length &&

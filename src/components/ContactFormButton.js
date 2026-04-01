@@ -2,23 +2,10 @@
 
 import { forwardRef } from 'react'
 import { motion } from 'framer-motion'
-import { cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-const contactFormButtonVariants = cva(
-  [
-    'gradient-button',
-    'inline-flex items-center justify-center',
-    'rounded-[8px] min-w-[132px] px-9 py-4',
-    'text-base font-bold leading-none',
-    'focus-visible:outline-none',
-    'disabled:pointer-events-none disabled:opacity-50',
-  ],
-  {
-    variants: {},
-    defaultVariants: {},
-  }
-)
+const baseClass =
+  'gradient-button inline-flex items-center justify-center rounded-[8px] min-w-[132px] px-9 py-4 text-base font-bold leading-none focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50'
 
 const ContactFormButton = forwardRef(function ContactFormButton(
   { className, children, ...props },
@@ -27,7 +14,7 @@ const ContactFormButton = forwardRef(function ContactFormButton(
   return (
     <motion.button
       ref={ref}
-      className={cn(contactFormButtonVariants({ className }))}
+      className={cn(baseClass, className)}
       whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       {...props}
@@ -39,4 +26,4 @@ const ContactFormButton = forwardRef(function ContactFormButton(
 
 ContactFormButton.displayName = 'ContactFormButton'
 
-export { ContactFormButton, contactFormButtonVariants }
+export { ContactFormButton }

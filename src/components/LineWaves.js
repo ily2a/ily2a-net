@@ -2,6 +2,7 @@
 
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 function hexToVec3(hex) {
   const h = hex.replace('#', '');
@@ -148,6 +149,7 @@ export default function LineWaves({
   mouseInfluence = 2.0,
 }) {
   const containerRef = useRef(null);
+  const prefersReduced = usePrefersReducedMotion();
 
   // ── Loop-read ref ──────────────────────────────────────────────────────────
   // Changing props does NOT recreate the WebGL context — the loop reads from
@@ -263,11 +265,30 @@ export default function LineWaves({
       renderer.render({ scene: mesh });
     }
 
+    const renderStatic = () => {
+      const cp = propsRef.current;
+      program.uniforms.uSpeed.value          = cp.speed;
+      program.uniforms.uInnerLines.value     = cp.innerLineCount;
+      program.uniforms.uOuterLines.value     = cp.outerLineCount;
+      program.uniforms.uWarpIntensity.value  = cp.warpIntensity;
+      program.uniforms.uRotation.value       = (cp.rotation * Math.PI) / 180;
+      program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
+      program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
+      program.uniforms.uBrightness.value     = cp.brightness;
+      program.uniforms.uColor1.value         = hexToVec3(cp.color1);
+      program.uniforms.uColor2.value         = hexToVec3(cp.color2);
+      program.uniforms.uColor3.value         = hexToVec3(cp.color3);
+      program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
+      program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
+      program.uniforms.uTime.value           = 0;
+      renderer.render({ scene: mesh });
+    };
+
     // Pause RAF when scrolled out of view — mirrors Aurora/GradientBlinds pattern.
     const setActive = (active) => {
       if (!active) {
         if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = 0; }
-      } else if (!animationFrameId) {
+      } else if (!animationFrameId && !prefersReduced) {
         animationFrameId = requestAnimationFrame(update);
       }
     };
@@ -278,7 +299,11 @@ export default function LineWaves({
     const onVisibilityChange = () => setActive(!document.hidden);
     document.addEventListener('visibilitychange', onVisibilityChange);
 
-    animationFrameId = requestAnimationFrame(update);
+    if (prefersReduced) {
+      renderStatic();
+    } else {
+      animationFrameId = requestAnimationFrame(update);
+    }
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -292,7 +317,7 @@ export default function LineWaves({
     };
   // Empty dep array: all mutable values are read from propsRef in the loop.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [prefersReduced]);
 
   return <div ref={containerRef} className="w-full h-full" />;
 }

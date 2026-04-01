@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import CloseButton from '@/components/CloseButton'
@@ -80,7 +80,7 @@ export default function BookingButton({ static: isStatic = false }) {
     if (open) setIframeLoaded(false)
   }, [open])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
     document.body.style.position = ''
     document.body.style.top      = ''
@@ -90,7 +90,7 @@ export default function BookingButton({ static: isStatic = false }) {
     setOpen(false)
     triggerRef.current?.focus()
     triggerRef.current = null
-  }
+  }, [])
 
   // Focus management + focus trap + Escape handler when modal is open
   useEffect(() => {
@@ -153,7 +153,7 @@ export default function BookingButton({ static: isStatic = false }) {
         window.scrollTo(0, scrollY)
       }
     }
-  }, [open])
+  }, [open, handleClose])
 
   const handleOpen = () => {
     triggerRef.current = document.activeElement

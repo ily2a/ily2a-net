@@ -4,15 +4,15 @@ import FloatingNav from '@/components/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
-import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
 
 export const metadata = {
   title: `Craft — ${SITE_NAME}`,
-  description: 'End-to-end product design across 10+ industries.',
+  description: CRAFT_DESCRIPTION,
   alternates: { canonical: `${SITE_URL}/craft` },
   openGraph: {
     title: `Craft — ${SITE_NAME}`,
-    description: 'End-to-end product design across 10+ industries.',
+    description: CRAFT_DESCRIPTION,
     url: `${SITE_URL}/craft`,
     siteName: SITE_NAME,
     locale: 'en_GB',
@@ -22,7 +22,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `Craft — ${SITE_NAME}`,
-    description: 'End-to-end product design across 10+ industries.',
+    description: CRAFT_DESCRIPTION,
     images: ['/og-image.png'],
   },
 }

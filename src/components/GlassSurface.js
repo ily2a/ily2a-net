@@ -1,5 +1,3 @@
-'use client'
-
 const GlassSurface = ({
   children,
   width = '100%',

@@ -2,12 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function MobileContactButton({ label = 'Contact', onClick }) {
   const [ripples, setRipples] = useState([])
   const buttonRef = useRef(null)
+  const prefersReduced = usePrefersReducedMotion()
 
   const triggerRipple = (x, y) => {
+    if (prefersReduced) return
     const button = buttonRef.current
     if (!button) return
     const rect = button.getBoundingClientRect()
@@ -22,6 +25,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === ' ') e.preventDefault()
       const button = buttonRef.current
       if (!button) return
       const rect = button.getBoundingClientRect()
@@ -52,7 +56,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
         {label}
       </span>
       <span className="absolute inset-0 pointer-events-none">
-        {ripples.map((ripple) => (
+        {!prefersReduced && ripples.map((ripple) => (
           <span
             key={ripple.key}
             style={{

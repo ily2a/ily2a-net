@@ -7,6 +7,7 @@ import NavbarButton from '@/components/NavbarButton'
 import ContactButton from '@/components/ContactButton'
 import MobileContactButton from '@/components/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 // Hoisted to module level so GlassSurface's useMemo sees a stable reference.
 const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 0, boxSizing: 'border-box' }
@@ -19,13 +20,18 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
   const router   = useRouter()
   const isHome   = pathname === '/'
   const isCraft  = pathname === '/craft' || pathname.startsWith('/craft/')
+  const prefersReduced = usePrefersReducedMotion()
 
   function navTo(sectionId) {
     if (!VALID_SECTIONS.has(sectionId)) return
     if (isHome) {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
+      document
+        .getElementById(sectionId)
+        ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
     } else if (isCraft && sectionId === 'contact') {
-      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+      document
+        .getElementById('contact')
+        ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
     } else {
       router.push(`/?scrollTo=${sectionId}`)
     }
