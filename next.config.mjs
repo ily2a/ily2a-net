@@ -13,12 +13,12 @@ const ContentSecurityPolicy = [
   "default-src 'self'",
   // Next.js requires unsafe-inline for its runtime scripts (inline styles/scripts injected by the framework)
   // React dev mode requires unsafe-eval for callstack reconstruction; never used in production
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://cal.com https://app.cal.com https://vercel.live`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://cal.com https://app.cal.com https://vercel.live https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://cdn.fontshare.com",
   "img-src 'self' data: blob: https://cdn.sanity.io https://cal.com https://app.cal.com https://vercel.com",
   "font-src 'self' https://api.fontshare.com https://cdn.fontshare.com https://vercel.live",
   "frame-src https://cal.com https://app.cal.com https://www.figma.com https://embed.figma.com https://vercel.live",
-  `connect-src 'self' ${sanityConnectSrc} https://api.fontshare.com https://cdn.fontshare.com https://cal.com https://app.cal.com https://*.pusher.com wss://*.pusher.com https://vitals.vercel-insights.com`,
+  `connect-src 'self' ${sanityConnectSrc} https://api.fontshare.com https://cdn.fontshare.com https://cal.com https://app.cal.com https://*.pusher.com wss://*.pusher.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://vitals.vercel-analytics.com`,
   "worker-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",
