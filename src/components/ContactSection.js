@@ -32,6 +32,7 @@ export default function ContactSection() {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: false }))
+    if (status === 'error') setStatus('idle')
   }
 
   const validate = () => {

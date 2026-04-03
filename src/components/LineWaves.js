@@ -232,11 +232,7 @@ export default function LineWaves({
 
     let animationFrameId = 0;
 
-    function update(time) {
-      animationFrameId = requestAnimationFrame(update);
-      const cp = propsRef.current;
-
-      // Update uniforms in-place from the latest props ref — no context rebuild needed
+    const syncUniforms = (cp, time) => {
       program.uniforms.uSpeed.value          = cp.speed;
       program.uniforms.uInnerLines.value     = cp.innerLineCount;
       program.uniforms.uOuterLines.value     = cp.outerLineCount;
@@ -250,7 +246,15 @@ export default function LineWaves({
       program.uniforms.uColor3.value         = hexToVec3(cp.color3);
       program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
       program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
-      program.uniforms.uTime.value           = time * 0.001;
+      program.uniforms.uTime.value           = time;
+    };
+
+    function update(time) {
+      animationFrameId = requestAnimationFrame(update);
+      const cp = propsRef.current;
+
+      // Update uniforms in-place from the latest props ref — no context rebuild needed
+      syncUniforms(cp, time * 0.001);
 
       if (cp.enableMouseInteraction) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
@@ -266,21 +270,7 @@ export default function LineWaves({
     }
 
     const renderStatic = () => {
-      const cp = propsRef.current;
-      program.uniforms.uSpeed.value          = cp.speed;
-      program.uniforms.uInnerLines.value     = cp.innerLineCount;
-      program.uniforms.uOuterLines.value     = cp.outerLineCount;
-      program.uniforms.uWarpIntensity.value  = cp.warpIntensity;
-      program.uniforms.uRotation.value       = (cp.rotation * Math.PI) / 180;
-      program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
-      program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
-      program.uniforms.uBrightness.value     = cp.brightness;
-      program.uniforms.uColor1.value         = hexToVec3(cp.color1);
-      program.uniforms.uColor2.value         = hexToVec3(cp.color2);
-      program.uniforms.uColor3.value         = hexToVec3(cp.color3);
-      program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
-      program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
-      program.uniforms.uTime.value           = 0;
+      syncUniforms(propsRef.current, 0);
       renderer.render({ scene: mesh });
     };
 
