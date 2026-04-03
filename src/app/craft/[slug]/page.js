@@ -244,7 +244,7 @@ export default async function CaseStudyPage({ params }) {
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <SilentErrorBoundary><BackToTop /></SilentErrorBoundary>
 
-      <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
+      <div id="main-content" className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
         <article className="w-full max-w-[600px] flex flex-col gap-12 items-start tab:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
 
           {/* ── LEFT: main content ── */}
@@ -313,10 +313,10 @@ export default async function CaseStudyPage({ params }) {
               )}
 
               {figmaEmbedUrl && (
-                <div id="prototype" className="flex flex-col gap-3">
-                  <p className="text-overline text-brand">
+                <div className="flex flex-col gap-3">
+                  <h2 id="prototype" className="text-overline text-brand scroll-mt-10">
                     Prototype
-                  </p>
+                  </h2>
                   <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                     <iframe
                       src={figmaEmbedUrl}
@@ -362,9 +362,9 @@ function SidebarContent({ metaFields, tags }) {
       className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-xl p-6"
       style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
     >
-      <p className="heading-article text-brand">
+      <h3 className="heading-article text-brand">
         Project Details
-      </p>
+      </h3>
 
       {tags?.length > 0 && (
         <ul className="flex flex-wrap gap-[6px] list-none p-0 m-0 mt-3" role="list">

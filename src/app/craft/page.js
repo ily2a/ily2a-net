@@ -37,7 +37,7 @@ export default async function CraftPage() {
   }
 
   return (
-    <main>
+    <main id="main-content">
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <CraftSection projects={projects} headingAs="h1" navOffset />
       <SilentErrorBoundary><ContactSection /></SilentErrorBoundary>
