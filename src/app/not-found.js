@@ -5,6 +5,7 @@ import LineWavesBackground from '@/components/LineWavesBackground'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',
+  robots: { index: false },
 }
 
 export default function NotFound() {

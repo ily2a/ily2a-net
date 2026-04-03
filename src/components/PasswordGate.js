@@ -122,6 +122,7 @@ export default function PasswordGate() {
               <button
                 type="submit"
                 disabled={status === 'checking'}
+                aria-busy={status === 'checking'}
                 className="gradient-button w-full rounded-[8px] px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
               >
                 {status === 'checking' ? 'Checking…' : 'Unlock case study'}

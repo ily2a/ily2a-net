@@ -166,6 +166,15 @@ export default function DarkVeil({
     }, { rootMargin: '200px' })
     io.observe(canvas)
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (frame) { cancelAnimationFrame(frame); frame = 0 }
+      } else if (!frame && !prefersReduced) {
+        frame = requestAnimationFrame(loop)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+
     if (prefersReduced) renderStatic()
     else loop()
 
@@ -173,6 +182,7 @@ export default function DarkVeil({
       cancelAnimationFrame(frame)
       ro.disconnect()
       io.disconnect()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale, prefersReduced])
 

@@ -21,7 +21,7 @@ export default async function Home() {
   }
 
   return (
-    <main>
+    <main id="main-content">
       <Suspense fallback={null}>
         <ScrollToSection />
       </Suspense>
