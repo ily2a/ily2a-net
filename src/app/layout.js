@@ -6,7 +6,7 @@ import { SanityLive } from "@/sanity/lib/live"
 import MotionProvider from "@/components/MotionProvider"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import SilentErrorBoundary from "@/components/SilentErrorBoundary"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import SpeedInsightsWrapper from "@/components/SpeedInsightsWrapper"
 import { Analytics } from "@vercel/analytics/next"
 
 const jsonLd = {
@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
           </ErrorBoundary>
           {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
           <SilentErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></SilentErrorBoundary>
-          <SilentErrorBoundary><SpeedInsights beforeSend={(event) => event.url.includes('/studio') ? null : event} /></SilentErrorBoundary>
+          <SilentErrorBoundary><SpeedInsightsWrapper /></SilentErrorBoundary>
           <SilentErrorBoundary><Analytics /></SilentErrorBoundary>
         </MotionProvider>
       </body>
