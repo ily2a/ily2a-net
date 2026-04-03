@@ -12,6 +12,7 @@ const ipLog = new Map()
 function isRateLimited(ip) {
   const now  = Date.now()
   const hits = (ipLog.get(ip) ?? []).filter(t => now - t < WINDOW_MS)
+  if (!hits.length) { ipLog.delete(ip) }
   if (hits.length >= RATE_LIMIT) return true
   ipLog.set(ip, [...hits, now])
   return false

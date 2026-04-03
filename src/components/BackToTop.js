@@ -17,6 +17,10 @@ export default function BackToTop() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [])
+
   const onMouseMove = (e) => {
     if (rafRef.current) return
     const { clientX, clientY } = e
