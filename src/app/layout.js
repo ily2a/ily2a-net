@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
           </ErrorBoundary>
           {/* SanityLive sets up real-time preview — runs in background, no loading UI needed */}
           <SilentErrorBoundary><Suspense fallback={null}><SanityLive /></Suspense></SilentErrorBoundary>
-          <SilentErrorBoundary><SpeedInsights /></SilentErrorBoundary>
+          <SilentErrorBoundary><SpeedInsights beforeSend={(event) => event.url.includes('/studio') ? null : event} /></SilentErrorBoundary>
           <SilentErrorBoundary><Analytics /></SilentErrorBoundary>
         </MotionProvider>
       </body>
