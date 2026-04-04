@@ -4,6 +4,8 @@ const KEY = 'hero_intro_played'
 
 // Module-level cache — persists across client-side navigation within the same
 // JS session, so useState initialises to true on re-mount and there's no flash.
+// Skipped in development: HMR resets React state but not module-level vars,
+// which would prevent animations from replaying after a hot reload.
 let _played = false
 
 export function useHeroIntroPlayed() {

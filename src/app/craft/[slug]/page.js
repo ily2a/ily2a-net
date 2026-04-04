@@ -240,6 +240,9 @@ export default async function CaseStudyPage({ params }) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }} />
+      {/* PasswordGate is intentional soft security — the full page content is
+          server-rendered and visible in the DOM. The gate exists as a human-facing
+          friction layer (NDA/selective sharing), not as server-enforced access control. */}
       {data.isPasswordProtected && <PasswordGate />}
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <SilentErrorBoundary><BackToTop /></SilentErrorBoundary>

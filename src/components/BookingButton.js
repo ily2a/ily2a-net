@@ -80,6 +80,16 @@ export default function BookingButton({ static: isStatic = false }) {
     if (open) setIframeLoaded(false)
   }, [open])
 
+  // Refresh focus trap after iframe signals load — elements are stable by then
+  useEffect(() => {
+    if (!open || !iframeLoaded || !frameRef.current) return
+    focusableRef.current = Array.from(
+      frameRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    )
+  }, [open, iframeLoaded])
+
   const handleClose = useCallback(() => {
     const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
     document.body.style.position = ''
