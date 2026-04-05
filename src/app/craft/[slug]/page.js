@@ -238,7 +238,7 @@ export default async function CaseStudyPage({ params }) {
   }
 
   return (
-    <main>
+    <main id="main-content">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }} />
       {/* PasswordGate is intentional soft security — the full page content is
           server-rendered and visible in the DOM. The gate exists as a human-facing
@@ -247,7 +247,7 @@ export default async function CaseStudyPage({ params }) {
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <SilentErrorBoundary><BackToTop /></SilentErrorBoundary>
 
-      <div id="main-content" className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
+      <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
         <article className="w-full max-w-[600px] flex flex-col gap-12 items-start tab:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
 
           {/* ── LEFT: main content ── */}

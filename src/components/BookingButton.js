@@ -80,7 +80,8 @@ export default function BookingButton({ static: isStatic = false }) {
     if (open) setIframeLoaded(false)
   }, [open])
 
-  // Refresh focus trap after iframe signals load — elements are stable by then
+  // Build focus trap element list after iframe signals load — single source of truth.
+  // Excludes iframes: Cal.com is sandboxed so Tab cannot cycle within it (dead Tab stops).
   useEffect(() => {
     if (!open || !iframeLoaded || !frameRef.current) return
     focusableRef.current = Array.from(
@@ -109,16 +110,6 @@ export default function BookingButton({ static: isStatic = false }) {
     // rAF: element is in DOM immediately after AnimatePresence mounts it
     const raf = requestAnimationFrame(() => {
       closeButtonRef.current?.focus()
-      // Cache focusable elements once on open — avoids querySelectorAll on every keydown
-      if (frameRef.current) {
-        // Exclude iframes — the Cal.com iframe is sandboxed so keyboard focus
-        // cannot cycle within it; including it in the trap causes dead Tab stops.
-        focusableRef.current = Array.from(
-          frameRef.current.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          )
-        )
-      }
     })
 
     const handleKeyDown = (e) => {
