@@ -70,7 +70,7 @@ src/
 │   └── studio/           # Embedded Sanity Studio
 ├── components/           # React components
 ├── sanity/               # Sanity client, schema types, image helpers
-├── lib/                  # GROQ queries, utilities
+├── lib/                  # GROQ queries, utilities, validation
 ├── hooks/                # Custom React hooks
 └── constants/            # Framer Motion animation configs
 ```
@@ -126,13 +126,15 @@ npx sanity@latest schema deploy
 - **LineWaves** / **LineWavesBackground** — SVG line-wave decorative background
 - **GradientBlinds** — animated gradient overlay
 - **DarkVeil** — dark overlay used for transitions
+- **TestimonialsBackground** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
 - **TextReveal** — scroll-triggered text reveal animation
 
 **Utility**
 - **MotionProvider** — wraps the app with Framer Motion `LazyMotion` provider
+- **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
 - **PasswordGate** — locks protected case studies behind a password
 - **TableOfContents** — in-page navigation for long case studies
-- **ScrollToSection** — smooth-scroll anchor helper
+- **ScrollToSection** — smooth-scroll anchor helper (respects `prefers-reduced-motion`)
 - **CloseButton** — reusable modal/overlay close button
 - **ErrorBoundary** / **SilentErrorBoundary** — React error boundary wrappers
 
@@ -144,6 +146,13 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
 - **Breakpoints** — `tab: 730px`, `desk: 1200px`, `xl: 1440px`
+
+## Constants
+
+- **animations.js** — shared Framer Motion animation configs
+- **inputStyles.js** — shared inline ring/focus styles for form inputs (avoids duplication across components)
+- **layout.js** — layout constants
+- **site.js** — site URL, name, and meta description constants
 
 ## Hooks
 
