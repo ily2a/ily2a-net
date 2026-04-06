@@ -10,13 +10,12 @@ import { FloatingLabelInput } from '@/components/FloatingLabelInput'
 const SESSION_KEY = 'cs_unlocked'
 
 export default function PasswordGate() {
-  const [unlocked, setUnlocked] = useState(false)
+  // Lazy initializer reads sessionStorage synchronously — safe because this
+  // component is loaded with ssr:false, so window/sessionStorage always exist.
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1')
   const [password,  setPassword]  = useState('')
   const [status,    setStatus]    = useState('idle') // idle | checking | error | success
   const [showPass,  setShowPass]  = useState(false)
-  useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY) === '1') setUnlocked(true)
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
