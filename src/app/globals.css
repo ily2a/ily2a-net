@@ -87,7 +87,7 @@ html {
 input, textarea, select, [contenteditable="true"] {
   cursor: text !important;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 input:focus-visible, textarea:focus-visible {
