@@ -2,12 +2,10 @@
 // SPRING_SNAP   — instant button state feedback (hover/press)
 // SPRING_ENTRANCE — hero element entrance (slow, weighted)
 // SPRING_NAV    — navbar slide-up entrance
-// SPRING_CARD   — project card tap response
 
 export const SPRING_SNAP     = { type: 'spring', stiffness: 2000, damping: 110, mass: 1 }
 export const SPRING_ENTRANCE = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
-export const SPRING_CARD     = { type: 'spring', stiffness: 400,  damping: 30 }
 
 // Coordinated entrance delays (seconds) — timed relative to TextReveal sequence.
 // TextReveal animates word-by-word at 0.06s/word.
