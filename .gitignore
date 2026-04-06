@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# local config (machine-specific, not for version control)
+.claude/
+compound-engineering.local.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

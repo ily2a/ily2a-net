@@ -22,7 +22,7 @@ export default function ScrollToSection() {
 
     // Clean the query param from the URL without adding to history
     router.replace('/', { scroll: false })
-  }, [searchParams, router])
+  }, [searchParams, router, prefersReduced])
 
   return null
 }

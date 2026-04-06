@@ -251,6 +251,7 @@ export default function LineWaves({
 
     function update(time) {
       animationFrameId = requestAnimationFrame(update);
+      if (gl.isContextLost()) return;
       const cp = propsRef.current;
 
       // Update uniforms in-place from the latest props ref — no context rebuild needed

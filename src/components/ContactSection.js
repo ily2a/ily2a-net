@@ -6,8 +6,8 @@ import { EMAIL_RE } from '@/lib/validation'
 import { ContactFormButton } from '@/components/ContactFormButton'
 import BookingButton from '@/components/BookingButton'
 import LinkedInButton from '@/components/LinkedInButton'
+import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/FloatingLabelInput'
 import dynamic from 'next/dynamic'
-import { INPUT_RING, INPUT_RING_ERROR, FOCUS_RING, FOCUS_RING_ERROR, INPUT_TRANSITION } from '@/constants/inputStyles'
 
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false })
 
@@ -90,21 +90,11 @@ export default function ContactSection() {
               <div className="flex flex-col gap-3 md:flex-row">
                 {/* Name */}
                 <div className="flex flex-col gap-2 flex-1">
-                  <label htmlFor="name" className="text-label text-text-primary">
-                    Full name
-                  </label>
-                  <motion.input
-                    id="name" name="name" type="text"
-                    placeholder="Jane Doe"
-                    value={form.name}
-                    onChange={handleChange}
+                  <FloatingLabelInput
+                    id="name" name="name" label="Full name"
+                    value={form.name} onChange={handleChange}
                     required autoComplete="name"
-                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
-                    animate={errors.name ? INPUT_RING_ERROR : INPUT_RING}
-                    whileFocus={errors.name ? FOCUS_RING_ERROR : FOCUS_RING}
-                    transition={INPUT_TRANSITION}
-                    aria-invalid={errors.name || undefined}
-                    aria-describedby={errors.name ? 'name-error' : undefined}
+                    hasError={errors.name} errorId="name-error"
                   />
                   {errors.name && (
                     <p id="name-error" className="text-[12px] text-error">Please enter your full name.</p>
@@ -113,21 +103,11 @@ export default function ContactSection() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-2 flex-1">
-                  <label htmlFor="email" className="text-label text-text-primary">
-                    Email
-                  </label>
-                  <motion.input
-                    id="email" name="email" type="email"
-                    placeholder="Email@example.com"
-                    value={form.email}
-                    onChange={handleChange}
+                  <FloatingLabelInput
+                    id="email" name="email" label="Email" type="email"
+                    value={form.email} onChange={handleChange}
                     required autoComplete="email"
-                    className="w-full rounded-[10px] px-4 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
-                    animate={errors.email ? INPUT_RING_ERROR : INPUT_RING}
-                    whileFocus={errors.email ? FOCUS_RING_ERROR : FOCUS_RING}
-                    transition={INPUT_TRANSITION}
-                    aria-invalid={errors.email || undefined}
-                    aria-describedby={errors.email ? 'email-error' : undefined}
+                    hasError={errors.email} errorId="email-error"
                   />
                   {errors.email && (
                     <p id="email-error" className="text-[12px] text-error">Please enter a valid email.</p>
@@ -137,24 +117,11 @@ export default function ContactSection() {
 
               {/* Message */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="message"
-                  className="text-label text-text-primary"
-                >
-                  How can I help you?
-                </label>
-                <motion.textarea
-                  id="message" name="message"
-                  placeholder="Please write a small description of your project or idea"
-                  value={form.message}
-                  onChange={handleChange}
+                <FloatingLabelTextarea
+                  id="message" name="message" label="How can I help you?"
+                  value={form.message} onChange={handleChange}
                   required rows={6}
-                  className="w-full rounded-[10px] px-4 py-3 outline-none resize-y border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
-                  animate={errors.message ? INPUT_RING_ERROR : INPUT_RING}
-                  whileFocus={errors.message ? FOCUS_RING_ERROR : FOCUS_RING}
-                  transition={INPUT_TRANSITION}
-                  aria-invalid={errors.message || undefined}
-                  aria-describedby={errors.message ? 'message-error' : undefined}
+                  hasError={errors.message} errorId="message-error"
                 />
                 {errors.message && (
                   <p id="message-error" className="text-[12px] text-error">Please tell me how I can help.</p>
