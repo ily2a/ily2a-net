@@ -216,22 +216,6 @@ input:focus-visible, textarea:focus-visible {
   @apply text-text-primary/75;
 }
 
-.project-card-mobile {
-  @apply block no-underline;
-}
-
-.project-card-mobile__image {
-  @apply relative aspect-[16/10] w-full rounded-xl overflow-hidden;
-}
-
-.project-card-mobile__tags {
-  @apply absolute bottom-3 left-3 right-3 flex gap-[6px] flex-wrap z-[2] list-none p-0 m-0;
-}
-
-.project-card-mobile__content {
-  @apply pt-[10px] px-1 pb-0 flex flex-col gap-2;
-}
-
 /* ══════════════════════════════════════════════════════════════
    TESTIMONIALS SECTION
    ══════════════════════════════════════════════════════════════ */
