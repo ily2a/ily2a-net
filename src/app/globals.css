@@ -90,6 +90,11 @@ input, textarea, select, [contenteditable="true"] {
   font-size: 14px;
 }
 
+input:focus-visible, textarea:focus-visible {
+  outline: none !important;
+}
+
+
 /* ─── Skeleton Loading ────────────────────────────────────────── */
 .skeleton {
   @apply bg-surface;

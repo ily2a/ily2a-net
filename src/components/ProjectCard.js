@@ -90,7 +90,8 @@ const ProjectCard = memo(function ProjectCard({ project }) {
             <motion.div variants={hoverImgVariants} className="absolute inset-0 hidden tab:block">
               <Image
                 src={imgUrl(project.cardImageHover)}
-                alt={project.title}
+                alt=""
+                aria-hidden="true"
                 fill
                 loading="lazy"
                 sizes="(max-width: 600px) 100vw, 50vw"

@@ -80,6 +80,15 @@ export default function BookingButton({ static: isStatic = false }) {
     if (open) setIframeLoaded(false)
   }, [open])
 
+  // Prevent AT and keyboard from reaching background content while modal is open.
+  // aria-modal alone has inconsistent support in NVDA+Chrome and older JAWS.
+  useEffect(() => {
+    const main = document.getElementById('main-content')
+    if (!main) return
+    main.inert = open
+    return () => { main.inert = false }
+  }, [open])
+
   // Build focus trap element list after iframe signals load — single source of truth.
   // Excludes iframes: Cal.com is sandboxed so Tab cannot cycle within it (dead Tab stops).
   useEffect(() => {

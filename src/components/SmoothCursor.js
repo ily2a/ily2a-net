@@ -65,7 +65,9 @@ export function SmoothCursor() {
       window.removeEventListener('blur',        onBlur)
       if (rafId.current) cancelAnimationFrame(rafId.current)
     }
-  }, [cursorX, cursorY, isEnabled])
+  // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEnabled])
 
   if (!isEnabled || prefersReduced) return null
 

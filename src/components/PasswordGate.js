@@ -1,21 +1,19 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LineWavesBackground from '@/components/LineWavesBackground'
 import FloatingNav from '@/components/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
-import { INPUT_RING, INPUT_RING_ERROR, FOCUS_RING, FOCUS_RING_ERROR, INPUT_TRANSITION } from '@/constants/inputStyles'
+import { FloatingLabelInput } from '@/components/FloatingLabelInput'
 
 const SESSION_KEY = 'cs_unlocked'
 
 export default function PasswordGate() {
   const [unlocked, setUnlocked] = useState(false)
   const [password,  setPassword]  = useState('')
-  const [status,    setStatus]    = useState('idle') // idle | checking | error
+  const [status,    setStatus]    = useState('idle') // idle | checking | error | success
   const [showPass,  setShowPass]  = useState(false)
-  const inputRef = useRef(null)
-
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY) === '1') setUnlocked(true)
   }, [])
@@ -33,11 +31,11 @@ export default function PasswordGate() {
       const data = await res.json()
       if (data.success) {
         sessionStorage.setItem(SESSION_KEY, '1')
-        setUnlocked(true)
+        setStatus('success')
+        setTimeout(() => setUnlocked(true), 800)
       } else {
         setStatus('error')
         setPassword('')
-        inputRef.current?.focus()
       }
     } catch {
       setStatus('error')
@@ -60,57 +58,105 @@ export default function PasswordGate() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.05 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4 w-[calc(100vw-32px)] max-w-[440px] text-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-[calc(100vw-32px)] max-w-[440px] text-center"
           >
+            {/* Lock icon */}
+            <motion.div
+              animate={
+                status === 'error'
+                  ? { x: [0, -8, 8, -6, 6, -3, 3, 0] }
+                  : { x: 0 }
+              }
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+            >
+              <AnimatePresence mode="wait">
+                {status === 'success' ? (
+                  <motion.svg
+                    key="check"
+                    width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    aria-hidden="true"
+                  >
+                    <motion.path
+                      d="M5 13l4 4L19 7"
+                      stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.4, ease: 'easeOut' }}
+                    />
+                  </motion.svg>
+                ) : (
+                  <motion.svg
+                    key={status === 'error' ? 'lock-error' : 'lock'}
+                    width="32" height="32" viewBox="0 0 24 24"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    aria-hidden="true"
+                  >
+                    <motion.rect
+                      x="3" y="11" width="18" height="11" rx="3"
+                      animate={{ fill: status === 'error' ? 'var(--color-error)' : 'var(--color-text-secondary)' }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <motion.path
+                      d="M7 11V7a5 5 0 0 1 10 0v4"
+                      fill="none" strokeWidth="2.5" strokeLinecap="round"
+                      animate={{ stroke: status === 'error' ? 'var(--color-error)' : 'var(--color-text-secondary)' }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <circle cx="12" cy="16.5" r="1.5" fill="var(--color-background)" />
+                  </motion.svg>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
             {/* Heading */}
-            <h1 className="text-intro text-text-primary">
+            <h1 className="text-intro text-text-primary mt-3">
               This one&apos;s locked.
             </h1>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full" noValidate>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full mt-3" noValidate>
               <div className="flex flex-col gap-2 text-left">
-                <label htmlFor="cs-password" className="text-label text-text-primary">
-                  Got the password?
-                </label>
-                <div className="relative">
-                  <motion.input
-                    ref={inputRef}
-                    id="cs-password"
-                    type={showPass ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => { setPassword(e.target.value); setStatus('idle') }}
-                    placeholder="Enter password"
-                    autoFocus
-                    autoComplete="off"
-                    className="w-full rounded-[10px] px-4 py-3 pr-11 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
-                    animate={status === 'error' ? INPUT_RING_ERROR : INPUT_RING}
-                    whileFocus={status === 'error' ? FOCUS_RING_ERROR : FOCUS_RING}
-                    transition={INPUT_TRANSITION}
-                    aria-invalid={status === 'error' || undefined}
-                    aria-describedby={status === 'error' ? 'cs-password-error' : undefined}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPass(v => !v)}
-                    aria-label={showPass ? 'Hide password' : 'Show password'}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-150"
-                  >
-                    {showPass ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                    ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
-                      </svg>
-                    )}
-                  </button>
-                </div>
-                <div aria-live="polite" aria-atomic="true">
+                <FloatingLabelInput
+                  id="cs-password"
+                  label="Got the password?"
+                  name="password"
+                  type={showPass ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setStatus('idle') }}
+                  autoComplete="off"
+                  hasError={status === 'error'}
+                  errorId="cs-password-error"
+                  rightSlot={
+                    <button
+                      type="button"
+                      onClick={() => setShowPass(v => !v)}
+                      aria-label={showPass ? 'Hide password' : 'Show password'}
+                      aria-pressed={showPass}
+                      className="text-text-secondary hover:text-text-primary transition-colors duration-150"
+                    >
+                      {showPass ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                      )}
+                    </button>
+                  }
+                />
+                <div role="alert" aria-atomic="true">
                   {status === 'error' && (
                     <p id="cs-password-error" className="text-[12px] text-error">
                       Incorrect password. Try again.
