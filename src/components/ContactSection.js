@@ -81,7 +81,7 @@ export default function ContactSection() {
 
           {/* Form */}
           <motion.form
-            className="flex flex-col gap-3 w-full md:flex-[2] md:order-1 order-1"
+            className="flex flex-col gap-4 w-full md:flex-[2] md:order-1 order-1"
             onSubmit={handleSubmit}
             noValidate
             {...fadeUp(0.1)}
