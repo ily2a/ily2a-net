@@ -12,7 +12,11 @@ import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-q
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 import TableOfContents from '@/components/TableOfContents'
-import PasswordGate from '@/components/PasswordGate'
+import dynamic from 'next/dynamic'
+
+// ssr: false — PasswordGate reads sessionStorage on init to avoid the
+// one-frame flash of the gate on pages the user has already unlocked.
+const PasswordGate = dynamic(() => import('@/components/PasswordGate'), { ssr: false })
 
 function toId(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
