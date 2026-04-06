@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function TableOfContents({ items }) {
   const [activeId, setActiveId] = useState(null)
+  const prefersReduced = usePrefersReducedMotion()
 
   useEffect(() => {
     if (!items.length) return
@@ -33,6 +35,16 @@ export default function TableOfContents({ items }) {
     }
   }, [items])
 
+  const handleClick = useCallback((e, id) => {
+    e.preventDefault()
+    // Use scrollIntoView via rAF so any pending layout work (lazy images,
+    // ResizeObserver) settles before the target position is calculated.
+    requestAnimationFrame(() => {
+      const el = document.getElementById(id)
+      if (el) el.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
+    })
+  }, [prefersReduced])
+
   if (!items.length) return null
 
   return (
@@ -45,6 +57,7 @@ export default function TableOfContents({ items }) {
           <li key={id}>
             <a
               href={`#${id}`}
+              onClick={(e) => handleClick(e, id)}
               aria-current={activeId === id ? 'location' : undefined}
               className={`block text-toc py-[5px] border-l transition-colors duration-150 ${
                 level === 3 ? 'pl-6' : 'pl-3'
