@@ -133,7 +133,6 @@ input:focus-visible, textarea:focus-visible {
 .text-blockquote { @apply italic text-base leading-[160%] tracking-[0.04em]; }
 
 /* Labels & captions */
-.text-label      { @apply text-[14px] font-medium; }
 .text-caption    { @apply font-medium leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance tracking-[0.04em]; }
 .text-meta       { @apply text-[15px] font-medium tracking-[-0.01em] leading-[1.3]; }
 .text-eyebrow    { @apply font-medium tracking-[0.07em] leading-[150%] text-[11px] uppercase; }

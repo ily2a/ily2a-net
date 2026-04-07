@@ -306,8 +306,6 @@ export default function LineWaves({
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  // Empty dep array: all mutable values are read from propsRef in the loop.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReduced]);
 
   return <div ref={containerRef} className="w-full h-full" />;
