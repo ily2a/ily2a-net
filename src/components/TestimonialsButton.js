@@ -21,7 +21,7 @@ const INNER_STYLES = {
   pressed: {
     background: 'linear-gradient(to bottom, var(--color-background), var(--color-surface))',
     border:     '1px solid var(--color-amethyst-900)',
-    boxShadow:  'inset 0px 3px 3px #000, inset 0px -3px 3px #000, inset -3px 0px 3px #000, inset 3px 0px 3px #000',
+    boxShadow:  'inset 0px 3px 3px var(--color-background), inset 0px -3px 3px var(--color-background), inset -3px 0px 3px var(--color-background), inset 3px 0px 3px var(--color-background)',
   },
 }
 
@@ -40,7 +40,6 @@ export default function TestimonialsButton({ instant = false }) {
           ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
       }
       {...handlers}
-      aria-label="Echoes about me"
       className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-[rgba(13,16,18,0.25)] cursor-pointer border-none"
     >
       <motion.div

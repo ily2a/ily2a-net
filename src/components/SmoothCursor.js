@@ -8,7 +8,7 @@ const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
 const CARD_SELECTOR  = '.project-card'
 const SPRING         = { damping: 38, stiffness: 500, mass: 0.75, restDelta: 0.001 }
 
-export function SmoothCursor() {
+export default function SmoothCursor() {
   const prefersReduced = usePrefersReducedMotion()
   const [isEnabled,  setIsEnabled]  = useState(false)
   const [isVisible,  setIsVisible]  = useState(false)

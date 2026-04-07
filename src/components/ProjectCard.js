@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useState, useEffect } from 'react'
+import { memo, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -44,17 +44,25 @@ const hoverImgVariants = {
 const imgUrl = (source) => urlFor(source).width(800).auto('format').url()
 const onImgError = (e) => { e.currentTarget.style.display = 'none' }
 
+// Subscribe to (hover: none) via useSyncExternalStore so isTouch stays in sync
+// with the media query without a setState-in-effect cascade. SSR snapshot is
+// false so server output matches the desktop default.
+const subscribeHover = (cb) => {
+  const mql = window.matchMedia('(hover: none)')
+  mql.addEventListener('change', cb)
+  return () => mql.removeEventListener('change', cb)
+}
+const getHoverSnapshot     = () => window.matchMedia('(hover: none)').matches
+const getHoverServerSnapshot = () => false
+
 // Single CSS-responsive card — no JS branching, no hydration CLS.
 // Desktop (tab: 730px+): plain image, all info revealed on hover with blur overlay.
 // Mobile (below tab): image with tags inside + title/subtitle below, slight tap scale.
 //
-// whileTap is gated by isTouch (set after mount via matchMedia) so desktop clicks
-// never trigger the scale — only touch devices get the press-down feedback.
-const ProjectCard = memo(function ProjectCard({ project }) {
-  const [isTouch, setIsTouch] = useState(false)
-  useEffect(() => {
-    setIsTouch(window.matchMedia('(hover: none)').matches)
-  }, [])
+// whileTap is gated by isTouch so desktop clicks never trigger the scale —
+// only touch devices get the press-down feedback.
+const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
+  const isTouch = useSyncExternalStore(subscribeHover, getHoverSnapshot, getHoverServerSnapshot)
 
   return (
     <MotionLink
@@ -78,6 +86,7 @@ const ProjectCard = memo(function ProjectCard({ project }) {
               alt={project.title}
               fill
               sizes="(max-width: 600px) 100vw, 50vw"
+              priority={priority}
               className="project-card__img"
               placeholder={project.cardImageDefault.lqip ? 'blur' : 'empty'}
               blurDataURL={project.cardImageDefault.lqip}

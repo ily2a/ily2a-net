@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { EMAIL_RE } from '@/lib/validation'
 import { ContactFormButton } from '@/components/ContactFormButton'
 import BookingButton from '@/components/BookingButton'
 import LinkedInButton from '@/components/LinkedInButton'
 import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/FloatingLabelInput'
+import { useContactForm } from '@/hooks/useContactForm'
 import dynamic from 'next/dynamic'
 
 const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false })
@@ -20,49 +19,11 @@ const fadeUp = (delay = 0) => ({
 })
 
 export default function ContactSection() {
-  const [form, setForm]     = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState('idle') // idle | sending | sent | error | ratelimited
-  const [errors, setErrors] = useState({ name: false, email: false, message: false })
+  const { form, errors, status, handleChange, handleSubmit, reset, resetError } = useContactForm()
   const submitLabel =
     status === 'sending' ? 'Sending…' :
     status === 'sent' ? 'Sent ✓' :
     'Submit'
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: false }))
-    if (status === 'error') setStatus('idle')
-  }
-
-  const validate = () => {
-    const e = {
-      name:    !form.name.trim(),
-      email:   !form.email.trim() || !EMAIL_RE.test(form.email),
-      message: !form.message.trim(),
-    }
-    setErrors(e)
-    return !Object.values(e).some(Boolean)
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validate()) return
-    setStatus('sending')
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (res.status === 429) { setStatus('ratelimited'); return }
-      if (!res.ok) throw new Error()
-      setStatus('sent')
-      setForm({ name: '', email: '', message: '' })
-    } catch {
-      setStatus('error')
-    }
-  }
 
   return (
     <section id="contact" className="w-full flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
@@ -146,7 +107,7 @@ export default function ContactSection() {
                     <p className="text-[13px] text-text-secondary">Message sent successfully.</p>
                     <button
                       type="button"
-                      onClick={() => setStatus('idle')}
+                      onClick={reset}
                       className="text-[13px] underline text-brand"
                     >
                       Send another
@@ -160,7 +121,7 @@ export default function ContactSection() {
                     </p>
                     <button
                       type="button"
-                      onClick={() => { setStatus('idle'); setErrors({ name: false, email: false, message: false }) }}
+                      onClick={resetError}
                       className="text-[13px] underline text-error"
                     >
                       Retry

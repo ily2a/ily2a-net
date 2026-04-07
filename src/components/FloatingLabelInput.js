@@ -41,7 +41,9 @@ function NotchedBorder({ floated, hasError, focused, labelWidth, width, height }
     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
       <motion.path
         d={path} fill="none" strokeWidth="1" strokeLinecap="round"
-        animate={{ stroke, strokeOpacity }} transition={{ duration: 0.2, ease: 'easeOut' }}
+        initial={{ stroke, strokeOpacity }}
+        animate={{ stroke, strokeOpacity }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
       />
     </svg>
   )

@@ -10,6 +10,10 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
     <p className={className}>
       {words.map((word, wi) => (
         <motion.span
+          // Words can repeat in a sentence, so the index is required for
+          // uniqueness. Position is also stable here — the word array is
+          // derived from immutable text and never reordered.
+          // eslint-disable-next-line react/no-array-index-key
           key={`${word}-${wi}`}
           className="inline-block mr-[0.25em]"
           initial={instant ? false : { opacity: 0, filter: 'blur(6px)', y: 8, scale }}

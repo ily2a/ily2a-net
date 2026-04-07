@@ -1,5 +1,5 @@
 import { revalidateTag } from 'next/cache'
-import { timingSafeEqual } from 'crypto'
+import { timingSafeStringEqual } from '@/lib/api'
 
 // POST /api/revalidate
 // Called by a Sanity webhook on document publish/unpublish.
@@ -7,14 +7,13 @@ import { timingSafeEqual } from 'crypto'
 export async function POST(request) {
   const secret   = request.headers.get('x-sanity-webhook-secret')
   const expected = process.env.SANITY_REVALIDATION_SECRET
+  // Treat misconfiguration the same as a bad secret externally — don't leak
+  // server state to unauthenticated callers. Log to the server only.
   if (!expected) {
-    return Response.json({ error: 'Server misconfigured' }, { status: 500 })
+    console.error('[/api/revalidate] SANITY_REVALIDATION_SECRET is not set')
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const authorized =
-    secret && expected &&
-    secret.length === expected.length &&
-    timingSafeEqual(Buffer.from(secret), Buffer.from(expected))
-  if (!authorized) {
+  if (!timingSafeStringEqual(secret, expected)) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

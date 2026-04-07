@@ -279,8 +279,8 @@ export default function BookingButton({ static: isStatic = false }) {
     <>
       <motion.button
         initial={isStatic ? false : { opacity: 0, scale: 0.5 }}
-        animate={isStatic ? {} : { opacity: 1, scale: 1 }}
-        transition={isStatic ? {} : { ...SPRING_ENTRANCE, delay: HERO_BUTTON_DELAY }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ ...SPRING_ENTRANCE, delay: isStatic ? 0 : HERO_BUTTON_DELAY }}
         onClick={handleOpen}
         {...handlers}
         aria-label="Book a call"

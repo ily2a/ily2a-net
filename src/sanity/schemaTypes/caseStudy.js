@@ -1,4 +1,4 @@
-export default {
+const caseStudy = {
   name: 'caseStudy',
   title: 'Case Study',
   type: 'document',
@@ -193,3 +193,5 @@ export default {
 
   ],
 }
+
+export default caseStudy

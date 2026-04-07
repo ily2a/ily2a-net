@@ -24,6 +24,7 @@
   --color-text-subtle:    #36414A;
   --color-brand:          var(--color-amethyst-400);
   --color-error:          #FF2244;
+  --color-success:        #4ade80;
   --color-spotlight:      rgba(255, 255, 255, 0.3);
   --color-shadow:         rgba(0, 0, 0, 0.25);
 

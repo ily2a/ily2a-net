@@ -84,7 +84,7 @@ export default function PasswordGate() {
                   >
                     <motion.path
                       d="M5 13l4 4L19 7"
-                      stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      stroke="var(--color-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
                       transition={{ duration: 0.4, ease: 'easeOut' }}

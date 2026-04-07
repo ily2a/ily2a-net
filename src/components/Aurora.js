@@ -116,7 +116,11 @@ export default function Aurora({
   speed = 1.0,
 }) {
   const propsRef = useRef({ colorStops, amplitude, blend, speed })
-  propsRef.current = { colorStops, amplitude, blend, speed }
+  // Sync props into the ref in an effect (not during render) so the RAF loop
+  // always sees the latest values without violating React's render purity.
+  useEffect(() => {
+    propsRef.current = { colorStops, amplitude, blend, speed }
+  })
 
   const ctnDom = useRef(null)
 
@@ -124,7 +128,14 @@ export default function Aurora({
     const ctn = ctnDom.current
     if (!ctn) return
 
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: true })
+    // antialias:false + capped dpr — fragment-bound shader doesn't benefit from
+    // MSAA and full retina pixel work is wasted on a soft gradient effect.
+    const renderer = new Renderer({
+      alpha: true,
+      premultipliedAlpha: true,
+      antialias: false,
+      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+    })
     const gl = renderer.gl
     gl.clearColor(0, 0, 0, 0)
     gl.enable(gl.BLEND)
@@ -220,6 +231,8 @@ export default function Aurora({
       if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas)
       gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
+  // Effect intentionally runs once on mount; live props are read from
+  // propsRef inside the RAF loop above.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

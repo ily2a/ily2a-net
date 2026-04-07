@@ -33,8 +33,8 @@ export default function CraftSection({
           </p>
         </div>
         <div className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard key={project._id} project={project} />
+          {projects.map((project, i) => (
+            <ProjectCard key={project._id} project={project} priority={i < 2} />
           ))}
         </div>
       </div>

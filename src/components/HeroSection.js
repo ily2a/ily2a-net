@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import BookingButton from '@/components/BookingButton'
 import TestimonialsButton from '@/components/TestimonialsButton'
 import TextReveal from '@/components/TextReveal'
@@ -23,12 +23,13 @@ import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
 const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
 
 function HeroBackground() {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => { setVisible(true) }, [])
   return (
-    <div
+    <motion.div
       aria-hidden="true"
-      className={`absolute inset-0 w-full h-full transition-opacity duration-[800ms] ease-in-out ${visible ? 'opacity-50' : 'opacity-0'}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.5 }}
+      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      className="absolute inset-0 w-full h-full"
     >
       <GradientBlinds
         gradientColors={HERO_COLORS}
@@ -46,7 +47,7 @@ function HeroBackground() {
         autoSpeed={0.35}
         attractRadius={0.35}
       />
-    </div>
+    </motion.div>
   )
 }
 

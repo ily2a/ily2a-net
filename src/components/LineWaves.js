@@ -164,7 +164,12 @@ export default function LineWaves({
   useEffect(() => {
     if (!containerRef.current) return;
     const container = containerRef.current;
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: false });
+    const renderer = new Renderer({
+      alpha: true,
+      premultipliedAlpha: false,
+      antialias: false,
+      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+    });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
 
@@ -232,6 +237,11 @@ export default function LineWaves({
 
     let animationFrameId = 0;
 
+    // Cache hex→vec3 conversion across frames — colors almost never change,
+    // so re-parsing on every RAF tick is wasted regex/parseInt work.
+    let lastColor1 = null, lastColor2 = null, lastColor3 = null;
+    let cachedVec1 = null, cachedVec2 = null, cachedVec3 = null;
+
     const syncUniforms = (cp, time) => {
       program.uniforms.uSpeed.value          = cp.speed;
       program.uniforms.uInnerLines.value     = cp.innerLineCount;
@@ -241,9 +251,12 @@ export default function LineWaves({
       program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
       program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
       program.uniforms.uBrightness.value     = cp.brightness;
-      program.uniforms.uColor1.value         = hexToVec3(cp.color1);
-      program.uniforms.uColor2.value         = hexToVec3(cp.color2);
-      program.uniforms.uColor3.value         = hexToVec3(cp.color3);
+      if (cp.color1 !== lastColor1) { lastColor1 = cp.color1; cachedVec1 = hexToVec3(cp.color1); }
+      if (cp.color2 !== lastColor2) { lastColor2 = cp.color2; cachedVec2 = hexToVec3(cp.color2); }
+      if (cp.color3 !== lastColor3) { lastColor3 = cp.color3; cachedVec3 = hexToVec3(cp.color3); }
+      program.uniforms.uColor1.value         = cachedVec1;
+      program.uniforms.uColor2.value         = cachedVec2;
+      program.uniforms.uColor3.value         = cachedVec3;
       program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
       program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
       program.uniforms.uTime.value           = time;

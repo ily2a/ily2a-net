@@ -22,6 +22,11 @@ const ContentSecurityPolicy = [
   "worker-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",
+  // Modern equivalent of X-Frame-Options; blocks framing by any other origin.
+  "frame-ancestors 'self'",
+  // Restricts where <form action="..."> can submit; prevents injected forms
+  // from POSTing to attacker origins.
+  "form-action 'self'",
 ].join('; ')
 
 // Sanity Studio needs unsafe-eval for its plugin system + broader origins.
@@ -37,6 +42,8 @@ const StudioCSP = [
   "font-src 'self' data: https://cdn.sanity.io",
   "object-src 'none'",
   "base-uri 'self'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
 ].join('; ')
 
 const nextConfig = {
