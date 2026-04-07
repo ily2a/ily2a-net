@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LineWavesBackground from '@/components/LineWavesBackground'
 import FloatingNav from '@/components/FloatingNav'
@@ -10,9 +10,13 @@ import { FloatingLabelInput } from '@/components/FloatingLabelInput'
 const SESSION_KEY = 'cs_unlocked'
 
 export default function PasswordGate() {
-  // Gate only renders when the server confirms the page is locked (cookie absent).
-  // Start locked — the server already checked the cookie, so no flash either way.
   const [unlocked, setUnlocked] = useState(false)
+
+  // Skip gate immediately if the unlock cookie is already present.
+  // Runs client-side only (~one frame), so no server/hydration mismatch.
+  useEffect(() => {
+    if (document.cookie.includes('cs_unlocked=1')) setUnlocked(true)
+  }, [])
   const [password,  setPassword]  = useState('')
   const [status,    setStatus]    = useState('idle') // idle | checking | error | success
   const [showPass,  setShowPass]  = useState(false)

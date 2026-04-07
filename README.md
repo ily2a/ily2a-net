@@ -62,6 +62,11 @@ npm run lint     # Run ESLint
 src/
 ├── app/                  # Next.js App Router pages & API routes
 │   ├── page.js           # Home page
+│   ├── layout.js         # Root layout
+│   ├── error.js          # Error boundary page
+│   ├── loading.js        # Loading UI
+│   ├── not-found.js      # 404 page
+│   ├── sitemap.js        # Dynamic sitemap
 │   ├── craft/            # Project gallery + dynamic case study pages
 │   ├── api/
 │   │   ├── contact/      # Contact form API (Resend)
@@ -70,9 +75,10 @@ src/
 │   └── studio/           # Embedded Sanity Studio
 ├── components/           # React components
 ├── sanity/               # Sanity client, schema types, image helpers
-├── lib/                  # GROQ queries, utilities, validation
+├── lib/                  # GROQ queries (sanity-queries.js), validation
 ├── hooks/                # Custom React hooks
-└── constants/            # Framer Motion animation configs
+├── data/                 # Static data (testimonials.js)
+└── constants/            # Framer Motion animation configs, layout/site constants
 ```
 
 ## Content Management
@@ -112,6 +118,9 @@ npx sanity@latest schema deploy
 **Project Cards**
 - **ProjectCard** — hover card with blur overlay and image swap; handles both desktop and touch layouts
 
+**Forms**
+- **FloatingLabelInput** — text input with floating label animation, used in the contact form
+
 **Buttons & CTAs**
 - **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
 - **BookingButton** — Cal.com booking embed trigger
@@ -126,13 +135,13 @@ npx sanity@latest schema deploy
 - **LineWaves** / **LineWavesBackground** — SVG line-wave decorative background
 - **GradientBlinds** — animated gradient overlay
 - **DarkVeil** — dark overlay used for transitions
-- **TestimonialsBackground** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
+- **TestimonialsBackground.client** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
 - **TextReveal** — scroll-triggered text reveal animation
 
 **Utility**
 - **MotionProvider** — wraps the app with Framer Motion `LazyMotion` provider
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
-- **PasswordGate** — locks protected case studies behind a password
+- **PasswordGate** / **PasswordGate.client** — locks protected case studies behind a password (`.client` is the dynamic-import wrapper for SSR deferral)
 - **TableOfContents** — in-page navigation for long case studies
 - **ScrollToSection** — smooth-scroll anchor helper (respects `prefers-reduced-motion`)
 - **CloseButton** — reusable modal/overlay close button
@@ -150,9 +159,12 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 ## Constants
 
 - **animations.js** — shared Framer Motion animation configs
-- **inputStyles.js** — shared inline ring/focus styles for form inputs (avoids duplication across components)
 - **layout.js** — layout constants
 - **site.js** — site URL, name, and meta description constants
+
+## Data
+
+- **testimonials.js** — static testimonials array (avoids a Sanity round-trip for this rarely-changing content)
 
 ## Hooks
 

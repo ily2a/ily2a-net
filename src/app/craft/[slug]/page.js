@@ -1,5 +1,4 @@
 import { cache } from 'react'
-import { cookies } from 'next/headers'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import SpotlightButton from '@/components/SpotlightButton'
@@ -9,7 +8,7 @@ import BackToTop from '@/components/BackToTop'
 import ContactSection from '@/components/ContactSection'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
-import { CASE_STUDY_BY_SLUG_QUERY } from '@/lib/sanity-queries'
+import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 import TableOfContents from '@/components/TableOfContents'
@@ -40,11 +39,14 @@ const getCaseStudy = cache(async (slug) => {
   }
 })
 
-// Dynamic rendering — needed so cookies() runs on every request for the
-// server-side unlocked check (skips PasswordGate for already-unlocked visitors).
-// generateStaticParams is omitted intentionally; 404s for unknown slugs are
-// handled by notFound() below, and Sanity already serves content on-demand.
-export const dynamic = 'force-dynamic'
+export async function generateStaticParams() {
+  try {
+    const { data } = await sanityFetch({ query: CASE_STUDY_SLUGS_QUERY })
+    return (data ?? []).map(({ slug }) => ({ slug }))
+  } catch {
+    return []
+  }
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
@@ -179,9 +181,6 @@ export default async function CaseStudyPage({ params }) {
   const data = await getCaseStudy(slug)
   if (!data) notFound()
 
-  const cookieStore = await cookies()
-  const alreadyUnlocked = cookieStore.get('cs_unlocked')?.value === '1'
-
   const coverUrl = data.coverImage
     ? urlFor(data.coverImage).width(1400).auto('format').url()
     : null
@@ -244,7 +243,7 @@ export default async function CaseStudyPage({ params }) {
       {/* PasswordGate is intentional soft security — the full page content is
           server-rendered and visible in the DOM. The gate exists as a human-facing
           friction layer (NDA/selective sharing), not as server-enforced access control. */}
-      {data.isPasswordProtected && !alreadyUnlocked && <PasswordGate />}
+      {data.isPasswordProtected && <PasswordGate />}
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <SilentErrorBoundary><BackToTop /></SilentErrorBoundary>
 
