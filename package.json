@@ -27,7 +27,8 @@
   "overrides": {
     "@vercel/frameworks": {
       "js-yaml": "3.14.2"
-    }
+    },
+    "vite": "^7.3.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
