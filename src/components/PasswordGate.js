@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LineWavesBackground from '@/components/LineWavesBackground'
 import FloatingNav from '@/components/FloatingNav'
@@ -10,9 +10,9 @@ import { FloatingLabelInput } from '@/components/FloatingLabelInput'
 const SESSION_KEY = 'cs_unlocked'
 
 export default function PasswordGate() {
-  // Lazy initializer reads sessionStorage synchronously — safe because this
-  // component is loaded with ssr:false, so window/sessionStorage always exist.
-  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1')
+  // Gate only renders when the server confirms the page is locked (cookie absent).
+  // Start locked — the server already checked the cookie, so no flash either way.
+  const [unlocked, setUnlocked] = useState(false)
   const [password,  setPassword]  = useState('')
   const [status,    setStatus]    = useState('idle') // idle | checking | error | success
   const [showPass,  setShowPass]  = useState(false)
@@ -30,6 +30,8 @@ export default function PasswordGate() {
       const data = await res.json()
       if (data.success) {
         sessionStorage.setItem(SESSION_KEY, '1')
+        // Also set cookie so server skips the gate on next navigation/reload
+        document.cookie = 'cs_unlocked=1; path=/; samesite=strict; max-age=604800'
         setStatus('success')
         setTimeout(() => setUnlocked(true), 800)
       } else {
