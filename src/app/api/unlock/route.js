@@ -55,5 +55,18 @@ export async function POST(request) {
   const bytesMatch  = timingSafeEqual(attemptBuf, correctBuf)
   const authorized  = lengthMatch && bytesMatch
 
-  return Response.json({ success: authorized }, { status: authorized ? 200 : 401 })
+  if (!authorized) {
+    return Response.json({ success: false }, { status: 401 })
+  }
+
+  // Set a cookie so the server can skip rendering the gate on return visits,
+  // eliminating the content flash that occurs with client-only sessionStorage.
+  const response = Response.json({ success: true }, { status: 200 })
+  response.headers.set(
+    'Set-Cookie',
+    'cs_unlocked=1; Path=/; SameSite=Strict; Max-Age=604800'
+    // 7 days — long enough to feel persistent, not permanent.
+    // Not HttpOnly so the client can also read it if needed.
+  )
+  return response
 }
