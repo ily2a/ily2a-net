@@ -118,7 +118,7 @@ export default function PasswordGate() {
             </motion.div>
 
             {/* Heading */}
-            <h1 className="text-intro text-text-primary mt-3 [text-indent:0.06em]">
+            <h1 className="text-intro text-text-primary mt-3 [text-indent:0.03em]">
               This one&apos;s locked.
             </h1>
 
