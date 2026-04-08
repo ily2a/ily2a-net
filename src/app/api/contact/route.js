@@ -1,9 +1,8 @@
 import { Resend } from 'resend'
-import { EMAIL_RE } from '@/lib/validation'
+import { EMAIL_RE, CONTACT_MAX as MAX } from '@/lib/validation'
 import { getClientIp, createRateLimiter } from '@/lib/api'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const MAX = { name: 100, email: 254, message: 5000 }
 
 // 5 requests per IP per hour. See lib/api.js for caveats around per-instance state.
 const isRateLimited = createRateLimiter({ limit: 5, windowMs: 60 * 60 * 1000 })

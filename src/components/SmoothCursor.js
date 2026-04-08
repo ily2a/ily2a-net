@@ -29,7 +29,7 @@ export default function SmoothCursor() {
   }, [])
 
   useEffect(() => {
-    if (!isEnabled) return
+    if (!isEnabled || prefersReduced) return
 
     const onPointerMove = (e) => {
       if (e.pointerType === 'touch') return
@@ -67,7 +67,7 @@ export default function SmoothCursor() {
     }
   // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEnabled])
+  }, [isEnabled, prefersReduced])
 
   if (!isEnabled || prefersReduced) return null
 

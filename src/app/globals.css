@@ -39,6 +39,13 @@
     0px 8px 24px rgba(17, 17, 26, 0.05),
     0px 16px 56px rgba(17, 17, 26, 0.05);
 
+  /* Darker, more prominent glass card — used by the contact info card and
+     craft sidebar. Two inset highlights + a deep drop shadow. */
+  --shadow-glass-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+
   /* ─── Breakpoints ─────────────────────────────────────────── */
   --breakpoint-sm:     390px;
   --breakpoint-mobile: 600px;  /* JS-only: compact navbar / stacked hero (between sm and tab) */

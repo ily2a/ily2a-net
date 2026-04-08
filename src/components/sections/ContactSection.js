@@ -6,7 +6,26 @@ import BookingButton from '@/components/buttons/BookingButton'
 import LinkedInButton from '@/components/buttons/LinkedInButton'
 import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/form/FloatingLabelInput'
 import { useContactForm } from '@/hooks/useContactForm'
+import { CONTACT_MAX } from '@/lib/validation'
 import dynamic from 'next/dynamic'
+
+// Per-field, per-error-kind copy. Keeps the JSX below readable and
+// guarantees every validation outcome maps to user-visible text.
+const ERROR_COPY = {
+  name: {
+    required: 'Please enter your full name.',
+    tooLong:  `Name is too long (max ${CONTACT_MAX.name} characters).`,
+  },
+  email: {
+    required: 'Please enter your email.',
+    invalid:  'Please enter a valid email.',
+    tooLong:  `Email is too long (max ${CONTACT_MAX.email} characters).`,
+  },
+  message: {
+    required: 'Please tell me how I can help.',
+    tooLong:  `Message is too long (max ${CONTACT_MAX.message} characters).`,
+  },
+}
 
 const Aurora = dynamic(() => import('@/components/backgrounds/Aurora'), { ssr: false })
 
@@ -55,10 +74,11 @@ export default function ContactSection() {
                     id="name" name="name" label="Full name"
                     value={form.name} onChange={handleChange}
                     required autoComplete="name"
-                    hasError={errors.name} errorId="name-error"
+                    maxLength={CONTACT_MAX.name}
+                    hasError={!!errors.name} errorId="name-error"
                   />
                   {errors.name && (
-                    <p id="name-error" className="text-[12px] text-error">Please enter your full name.</p>
+                    <p id="name-error" className="text-[12px] text-error">{ERROR_COPY.name[errors.name]}</p>
                   )}
                 </div>
 
@@ -68,10 +88,11 @@ export default function ContactSection() {
                     id="email" name="email" label="Email" type="email"
                     value={form.email} onChange={handleChange}
                     required autoComplete="email"
-                    hasError={errors.email} errorId="email-error"
+                    maxLength={CONTACT_MAX.email}
+                    hasError={!!errors.email} errorId="email-error"
                   />
                   {errors.email && (
-                    <p id="email-error" className="text-[12px] text-error">Please enter a valid email.</p>
+                    <p id="email-error" className="text-[12px] text-error">{ERROR_COPY.email[errors.email]}</p>
                   )}
                 </div>
               </div>
@@ -82,10 +103,11 @@ export default function ContactSection() {
                   id="message" name="message" label="How can I help you?"
                   value={form.message} onChange={handleChange}
                   required rows={6}
-                  hasError={errors.message} errorId="message-error"
+                  maxLength={CONTACT_MAX.message}
+                  hasError={!!errors.message} errorId="message-error"
                 />
                 {errors.message && (
-                  <p id="message-error" className="text-[12px] text-error">Please tell me how I can help.</p>
+                  <p id="message-error" className="text-[12px] text-error">{ERROR_COPY.message[errors.message]}</p>
                 )}
               </div>
 
@@ -160,7 +182,7 @@ export default function ContactSection() {
         {/* ── Info card ── */}
         <motion.div
           className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
-          style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
+          style={{ boxShadow: 'var(--shadow-glass-card)' }}
           {...fadeUp(0.15)}
         >
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">

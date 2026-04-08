@@ -74,7 +74,7 @@ function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children
 
 export function FloatingLabelInput({
   id: idProp, label, name, type = 'text', value, onChange,
-  hasError, errorId, autoComplete, required, rightSlot,
+  hasError, errorId, autoComplete, required, rightSlot, maxLength,
 }) {
   const { uid, focused, setFocused, wrapRef, labelRef, wrapDims, labelWidth } = useFloatingLabel()
   const id = idProp ?? uid
@@ -85,7 +85,7 @@ export function FloatingLabelInput({
       <input
         id={id} name={name} type={type} value={value} onChange={onChange}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        required={required} autoComplete={autoComplete} placeholder=""
+        required={required} autoComplete={autoComplete} maxLength={maxLength} placeholder=""
         className={`${INPUT_CLS} ${rightSlot ? 'pr-11' : ''}`}
         aria-invalid={hasError || undefined}
         aria-describedby={hasError ? errorId : undefined}
@@ -103,7 +103,7 @@ export function FloatingLabelInput({
 
 export function FloatingLabelTextarea({
   id: idProp, label, name, value, onChange,
-  hasError, errorId, rows = 6, required,
+  hasError, errorId, rows = 6, required, maxLength,
 }) {
   const { uid, focused, setFocused, wrapRef, labelRef, wrapDims, labelWidth } = useFloatingLabel()
   const id = idProp ?? uid
@@ -114,7 +114,7 @@ export function FloatingLabelTextarea({
       <textarea
         id={id} name={name} value={value} onChange={onChange}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        required={required} rows={rows} placeholder=""
+        required={required} rows={rows} maxLength={maxLength} placeholder=""
         className={`${INPUT_CLS} resize-y`}
         aria-invalid={hasError || undefined}
         aria-describedby={hasError ? errorId : undefined}

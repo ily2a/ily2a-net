@@ -122,7 +122,7 @@ export default async function CaseStudyPage({ params }) {
     "@type": "CreativeWork",
     "name": data.title,
     "description": data.description,
-    "url": `${SITE_URL}/craft/${data.slug.current}`,
+    "url": `${SITE_URL}/craft/${slug}`,
     "author": { "@type": "Person", "name": SITE_NAME, "url": SITE_URL },
     "dateModified": data._updatedAt,
     ...(data.coverImage?.url && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
@@ -255,7 +255,7 @@ function SidebarContent({ metaFields, tags }) {
   return (
     <div
       className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-xl p-6"
-      style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.2), 0 8px 32px rgba(0,0,0,0.3)' }}
+      style={{ boxShadow: 'var(--shadow-glass-card)' }}
     >
       <h3 className="heading-article text-brand">
         Project Details
