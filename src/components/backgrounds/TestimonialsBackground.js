@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-const DarkVeil = dynamic(() => import('@/components/DarkVeil'), {
+const DarkVeil = dynamic(() => import('@/components/backgrounds/DarkVeil'), {
   ssr: false,
   loading: () => (
     <div className="absolute inset-0 bg-gradient-to-br from-background via-amethyst-950 to-amethyst-900" />

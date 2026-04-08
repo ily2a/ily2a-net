@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-const LineWaves = dynamic(() => import('@/components/LineWaves'), { ssr: false });
+const LineWaves = dynamic(() => import('@/components/backgrounds/LineWaves'), { ssr: false });
 
 export default function LineWavesBackground() {
   return (

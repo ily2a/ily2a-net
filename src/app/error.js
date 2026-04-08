@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import FloatingNav from '@/components/FloatingNav'
+import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 
 export default function Error({ error: _error, reset }) {

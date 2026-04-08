@@ -1,14 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ContactFormButton } from '@/components/ContactFormButton'
-import BookingButton from '@/components/BookingButton'
-import LinkedInButton from '@/components/LinkedInButton'
-import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/FloatingLabelInput'
+import { ContactFormButton } from '@/components/buttons/ContactFormButton'
+import BookingButton from '@/components/buttons/BookingButton'
+import LinkedInButton from '@/components/buttons/LinkedInButton'
+import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/form/FloatingLabelInput'
 import { useContactForm } from '@/hooks/useContactForm'
 import dynamic from 'next/dynamic'
 
-const Aurora = dynamic(() => import('@/components/Aurora'), { ssr: false })
+const Aurora = dynamic(() => import('@/components/backgrounds/Aurora'), { ssr: false })
 
 
 const fadeUp = (delay = 0) => ({

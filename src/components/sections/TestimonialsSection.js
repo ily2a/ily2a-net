@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { TESTIMONIALS } from '@/data/testimonials'
-import TestimonialsBackground from '@/components/TestimonialsBackground'
+import TestimonialsBackground from '@/components/backgrounds/TestimonialsBackground'
 
 
 export default function TestimonialsSection() {

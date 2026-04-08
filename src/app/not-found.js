@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import FloatingNav from '@/components/FloatingNav'
+import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
-import LineWavesBackground from '@/components/LineWavesBackground'
+import LineWavesBackground from '@/components/backgrounds/LineWavesBackground'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',

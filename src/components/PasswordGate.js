@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import LineWavesBackground from '@/components/LineWavesBackground'
-import FloatingNav from '@/components/FloatingNav'
+import LineWavesBackground from '@/components/backgrounds/LineWavesBackground'
+import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
-import { FloatingLabelInput } from '@/components/FloatingLabelInput'
+import { FloatingLabelInput } from '@/components/form/FloatingLabelInput'
 
 const SESSION_KEY = 'cs_unlocked'
 

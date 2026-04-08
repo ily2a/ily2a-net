@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import BookingButton from '@/components/BookingButton'
-import TestimonialsButton from '@/components/TestimonialsButton'
+import BookingButton from '@/components/buttons/BookingButton'
+import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/TextReveal'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import dynamic from 'next/dynamic'
 
-const GradientBlinds = dynamic(() => import('@/components/GradientBlinds'), {
+const GradientBlinds = dynamic(() => import('@/components/backgrounds/GradientBlinds'), {
   ssr: false,
   loading: () => (
     <div style={{

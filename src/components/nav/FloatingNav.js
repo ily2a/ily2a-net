@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Navbar from '@/components/Navbar'
+import Navbar from '@/components/nav/Navbar'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import { SPRING_NAV } from '@/constants/animations'

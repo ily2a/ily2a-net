@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import ProjectCard from '@/components/ProjectCard'
-import SpotlightButton from '@/components/SpotlightButton'
+import SpotlightButton from '@/components/buttons/SpotlightButton'
 
 export default function CraftSection({
   projects = [],

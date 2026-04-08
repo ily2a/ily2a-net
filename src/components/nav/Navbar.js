@@ -3,9 +3,9 @@
 import { memo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Logo from '@/components/Logo'
-import NavbarButton from '@/components/NavbarButton'
-import ContactButton from '@/components/ContactButton'
-import MobileContactButton from '@/components/MobileContactButton'
+import NavbarButton from '@/components/buttons/NavbarButton'
+import ContactButton from '@/components/buttons/ContactButton'
+import MobileContactButton from '@/components/buttons/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import CloseButton from '@/components/CloseButton'
+import CloseButton from '@/components/buttons/CloseButton'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
