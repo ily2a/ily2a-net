@@ -27,6 +27,7 @@
 # local config (machine-specific, not for version control)
 .claude/
 compound-engineering.local.md
+todos/
 
 # debug
 npm-debug.log*
