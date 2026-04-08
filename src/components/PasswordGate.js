@@ -119,7 +119,7 @@ export default function PasswordGate() {
 
             {/* Heading */}
             <h1 className="text-intro text-text-primary mt-3">
-              This one&apos;s locked.
+              This one&apos;s locked
             </h1>
 
             {/* Form */}
