@@ -146,7 +146,7 @@ export default function BookingButton({ static: isStatic = false }) {
         handleClose()
       }
       if (e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
-        setIframeHeight(e.data.data.iframeHeight)
+        setIframeHeight(Math.max(200, e.data.data.iframeHeight - 40))
       }
     }
 
@@ -263,24 +263,35 @@ export default function BookingButton({ static: isStatic = false }) {
             )}
 
             {/* allow-same-origin is required by Cal.com for auth/cookie access.
-                Cal.com emits __dimensionChanged postMessages — we drive iframeHeight
-                from state so the iframe hugs its content and the wrapper scrolls. */}
-            <div style={{
-              height:                  '100%',
-              overflowY:               'auto',
-              WebkitOverflowScrolling: 'touch',
-              touchAction:             'pan-y',
-            }}>
+                Mobile/tablet: scrollable wrapper + dynamic height from Cal.com postMessages.
+                Desktop: iframe fills container, overflow:hidden clips the footer bar. */}
+            {isSmall ? (
+              <div style={{
+                height:                  '100%',
+                overflowY:               'auto',
+                WebkitOverflowScrolling: 'touch',
+                touchAction:             'pan-y',
+              }}>
+                <iframe
+                  src="https://cal.com/ily2a/intro?embed=true"
+                  title="Book a call with Ily Ameur"
+                  width="100%"
+                  height={iframeHeight}
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                  onLoad={() => setIframeLoaded(true)}
+                  className="block border-0 w-full"
+                />
+              </div>
+            ) : (
               <iframe
                 src="https://cal.com/ily2a/intro?embed=true"
                 title="Book a call with Ily Ameur"
                 width="100%"
-                height={iframeHeight}
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 onLoad={() => setIframeLoaded(true)}
-                className="block border-0 w-full"
+                className="block border-0 w-full h-[calc(100%+80px)]"
               />
-            </div>
+            )}
           </motion.div>
         </motion.div>
       )}
