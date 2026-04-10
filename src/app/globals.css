@@ -27,6 +27,8 @@
   --color-success:        #4ade80;
   --color-spotlight:      rgba(255, 255, 255, 0.3);
   --color-shadow:         rgba(0, 0, 0, 0.25);
+  --color-glass-bg:       rgba(255, 255, 255, 0.04);
+  --color-glass-border:   rgba(255, 255, 255, 0.08);
 
   /* ─── Font ────────────────────────────────────────────────── */
   --font-sans: 'Satoshi', sans-serif;
@@ -228,7 +230,7 @@ input:focus-visible, textarea:focus-visible {
    ══════════════════════════════════════════════════════════════ */
 
 .testimonial-card {
-  @apply relative overflow-hidden bg-white/[0.04] border border-white/[0.08] p-5 tab:p-6 flex flex-col gap-4;
+  @apply relative overflow-hidden bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   box-shadow:
@@ -247,7 +249,7 @@ input:focus-visible, textarea:focus-visible {
 }
 
 .cap-card {
-  @apply relative overflow-hidden bg-white/[0.04] border border-white/[0.08] p-5 tab:p-6 flex flex-col gap-4;
+  @apply relative overflow-hidden bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   box-shadow:

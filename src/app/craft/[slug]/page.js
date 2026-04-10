@@ -254,7 +254,7 @@ export default async function CaseStudyPage({ params }) {
 function SidebarContent({ metaFields, tags }) {
   return (
     <div
-      className="flex flex-col bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08] rounded-xl p-6"
+      className="flex flex-col bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border rounded-xl p-6"
       style={{ boxShadow: 'var(--shadow-glass-card)' }}
     >
       <h3 className="heading-article text-brand">

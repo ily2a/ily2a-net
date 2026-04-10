@@ -23,16 +23,21 @@ export default function Logo({ isMobile = false, onClick }) {
       {STATES.map((s) => (
         // SVGs don't benefit from Next.js image optimisation; unoptimized skips
         // the image pipeline while still using the <Image> component API.
-        <Image
+        <motion.div
           key={s}
-          src={`/assets/logo-${s}.svg`}
-          alt={state === s ? 'ily2a' : ''}
-          aria-hidden={state !== s || undefined}
-          width={64}
-          height={32}
-          unoptimized
-          className={`block inset-0 pointer-events-none transition-opacity duration-[80ms] ${s === 'default' ? 'relative' : 'absolute'} ${state === s ? 'opacity-100' : 'opacity-0'}`}
-        />
+          animate={{ opacity: state === s ? 1 : 0 }}
+          transition={{ duration: 0.08, ease: 'easeOut' }}
+          className={`block inset-0 pointer-events-none ${s === 'default' ? 'relative' : 'absolute'}`}
+        >
+          <Image
+            src={`/assets/logo-${s}.svg`}
+            alt={state === s ? 'ily2a' : ''}
+            aria-hidden={state !== s || undefined}
+            width={64}
+            height={32}
+            unoptimized
+          />
+        </motion.div>
       ))}
     </motion.button>
   )

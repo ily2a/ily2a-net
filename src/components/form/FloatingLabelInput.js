@@ -59,16 +59,20 @@ function useFloatingLabel() {
   return { uid, focused, setFocused, wrapRef, labelRef, wrapDims, labelWidth: labelDims.w }
 }
 
-function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = 'top-1/2' }) {
+function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = '50%' }) {
   return (
-    <label
+    <motion.label
       htmlFor={htmlFor}
-      className={`absolute left-[14px] font-sans text-base leading-none pointer-events-none select-none origin-top-left transition-all duration-200
-        ${floated ? 'top-0 -translate-y-1/2 scale-[.8]' : `${restingTop} -translate-y-1/2 scale-100`}
-        ${hasError ? 'text-error' : focused ? 'text-brand' : 'text-text-secondary'}`}
+      className="absolute left-[14px] font-sans text-base leading-none pointer-events-none select-none origin-top-left -translate-y-1/2"
+      animate={{
+        top:   floated ? 0 : restingTop,
+        scale: floated ? 0.8 : 1,
+        color: hasError ? 'var(--color-error)' : focused ? 'var(--color-brand)' : 'var(--color-text-secondary)',
+      }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
     >
       <span ref={labelRef}>{children}</span>
-    </label>
+    </motion.label>
   )
 }
 
@@ -120,7 +124,7 @@ export function FloatingLabelTextarea({
         aria-describedby={hasError ? errorId : undefined}
       />
       <NotchedBorder floated={floated} hasError={hasError} focused={focused} labelWidth={labelWidth} width={wrapDims.w} height={wrapDims.h} />
-      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} restingTop="top-[22px]">
+      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} restingTop="22px">
         {label}
       </FloatingLabel>
     </div>

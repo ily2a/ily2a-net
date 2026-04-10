@@ -181,7 +181,7 @@ export default function ContactSection() {
 
         {/* ── Info card ── */}
         <motion.div
-          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-white/[0.04] backdrop-blur-[32px] backdrop-saturate-[180%] border border-white/[0.08]"
+          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
           style={{ boxShadow: 'var(--shadow-glass-card)' }}
           {...fadeUp(0.15)}
         >

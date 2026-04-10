@@ -64,7 +64,7 @@ export default function TableOfContents({ items }) {
               } ${
                 activeId === id
                   ? 'text-text-primary border-brand'
-                  : 'text-text-secondary border-white/[0.08] hover:text-text-primary hover:border-white/25'
+                  : 'text-text-secondary border-glass-border hover:text-text-primary hover:border-white/25'
               }`}
             >
               {label}

@@ -11,7 +11,7 @@ const MotionLink = motion.create(Link)
 const VARIANTS = {
   default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950', height: 'h-11', border: '' },
   dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100', height: 'h-11', border: '' },
-  ghost:   { bg: 'transparent',               text: 'text-white',        height: 'h-9',  border: '' },
+  ghost:   { bg: 'transparent',               text: 'text-text-primary', height: 'h-9',  border: '' },
 }
 
 export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }) {

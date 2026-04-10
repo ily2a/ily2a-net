@@ -10,7 +10,7 @@ import { toId } from '@/lib/portable-text'
 //   ptSection — short context blurbs (Brief / Problem / Goals / Strategy);
 //               no headings, only inline marks
 
-export const ptBase = {
+const ptBase = {
   block: {
     normal: ({ children, value }) => {
       const text = value?.children?.map(c => c.text).join('') ?? ''
