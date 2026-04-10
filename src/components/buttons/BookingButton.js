@@ -29,9 +29,10 @@ const INNER_STYLES = {
 }
 
 export default function BookingButton({ static: isStatic = false }) {
-  const [open, setOpen]             = useState(false)
-  const [mounted, setMounted]       = useState(false)
+  const [open, setOpen]               = useState(false)
+  const [mounted, setMounted]         = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
+  const [iframeHeight, setIframeHeight] = useState(600)
 
   const width    = useWindowWidth()
   const isMobile = width > 0 && width < 810
@@ -144,6 +145,9 @@ export default function BookingButton({ static: isStatic = false }) {
       if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
         handleClose()
       }
+      if (e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
+        setIframeHeight(e.data.data.iframeHeight)
+      }
     }
 
     document.addEventListener('keydown', handleKeyDown)
@@ -179,16 +183,17 @@ export default function BookingButton({ static: isStatic = false }) {
   const isSmall = isMobile || isTablet
 
   const backdropStyle = {
-    position:       'fixed',
-    inset:          0,
-    background:     'var(--color-surface-blur)',
-    backdropFilter: 'blur(4px)',
-    zIndex:         9999,
+    position:        'fixed',
+    inset:           0,
+    background:      'var(--color-surface-blur)',
+    backdropFilter:  'blur(4px)',
+    zIndex:          9999,
+    overscrollBehavior: 'none',
     ...(isSmall && {
       display:        'flex',
       alignItems:     'center',
       justifyContent: 'center',
-      padding:        isMobile ? '16px 20px' : '16px 40px',
+      padding:        isMobile ? '20px' : '40px',
     }),
   }
 
@@ -196,7 +201,7 @@ export default function BookingButton({ static: isStatic = false }) {
     position:       'relative',
     width:          '100%',
     maxWidth:       '860px',
-    height:         'calc(100vh - 128px)',
+    height:         isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
     maxHeight:      '800px',
     background:     'transparent',
     border:         '1px solid var(--color-brand)',
@@ -257,18 +262,25 @@ export default function BookingButton({ static: isStatic = false }) {
               </div>
             )}
 
-            {/* Wrapper clips the cal.com footer bar via overflow:hidden on the parent frame */}
             {/* allow-same-origin is required by Cal.com for auth/cookie access.
-                Security trade-off: accepted because Cal.com is a trusted origin
-                and removing it breaks the booking flow entirely. */}
-            <iframe
-              src="https://cal.com/ily2a/intro?embed=true"
-              title="Book a call with Ily Ameur"
-              width="100%"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              onLoad={() => setIframeLoaded(true)}
-              className="block border-0 w-full h-[calc(100%+80px)]"
-            />
+                Cal.com emits __dimensionChanged postMessages — we drive iframeHeight
+                from state so the iframe hugs its content and the wrapper scrolls. */}
+            <div style={{
+              height:                  '100%',
+              overflowY:               'auto',
+              WebkitOverflowScrolling: 'touch',
+              touchAction:             'pan-y',
+            }}>
+              <iframe
+                src="https://cal.com/ily2a/intro?embed=true"
+                title="Book a call with Ily Ameur"
+                width="100%"
+                height={iframeHeight}
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                onLoad={() => setIframeLoaded(true)}
+                className="block border-0 w-full"
+              />
+            </div>
           </motion.div>
         </motion.div>
       )}
