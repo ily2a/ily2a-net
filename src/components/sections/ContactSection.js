@@ -78,7 +78,7 @@ export default function ContactSection() {
                     hasError={!!errors.name} errorId="name-error"
                   />
                   {errors.name && (
-                    <p id="name-error" className="text-[12px] text-error">{ERROR_COPY.name[errors.name]}</p>
+                    <p id="name-error" className="text-[12px] text-error">{ERROR_COPY.name[errors.name] ?? 'Please check this field.'}</p>
                   )}
                 </div>
 
@@ -92,7 +92,7 @@ export default function ContactSection() {
                     hasError={!!errors.email} errorId="email-error"
                   />
                   {errors.email && (
-                    <p id="email-error" className="text-[12px] text-error">{ERROR_COPY.email[errors.email]}</p>
+                    <p id="email-error" className="text-[12px] text-error">{ERROR_COPY.email[errors.email] ?? 'Please check this field.'}</p>
                   )}
                 </div>
               </div>
@@ -107,7 +107,7 @@ export default function ContactSection() {
                   hasError={!!errors.message} errorId="message-error"
                 />
                 {errors.message && (
-                  <p id="message-error" className="text-[12px] text-error">{ERROR_COPY.message[errors.message]}</p>
+                  <p id="message-error" className="text-[12px] text-error">{ERROR_COPY.message[errors.message] ?? 'Please check this field.'}</p>
                 )}
               </div>
 

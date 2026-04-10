@@ -8,6 +8,24 @@ import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
 
+function releaseScrollLock() {
+  const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
+  document.body.style.position = ''
+  document.body.style.top      = ''
+  document.body.style.width    = ''
+  delete document.body.dataset.scrollY
+  window.scrollTo(0, scrollY)
+}
+
+// Shared frame visual properties — single source of truth for border, blur, etc.
+const FRAME_BASE = {
+  background:     'transparent',
+  border:         '1px solid var(--color-brand)',
+  borderRadius:   '8px',
+  overflow:       'hidden',
+  backdropFilter: 'blur(8px)',
+}
+
 // Defined at module level — same object reference on every render, so
 // Framer Motion's `animate` never re-triggers on unchanged state.
 const INNER_STYLES = {
@@ -34,9 +52,9 @@ export default function BookingButton({ static: isStatic = false }) {
   const [iframeLoaded, setIframeLoaded] = useState(false)
   const [iframeHeight, setIframeHeight] = useState(600)
 
-  const width    = useWindowWidth()
-  const isMobile = width > 0 && width < 810
-  const isTablet = width >= 810 && width < 1200
+  const width          = useWindowWidth()
+  const isMobile       = width > 0 && width < 810
+  const isTablet       = width >= 810 && width < 1200
 
   const { state, handlers } = useButtonState()
 
@@ -76,9 +94,9 @@ export default function BookingButton({ static: isStatic = false }) {
 
   useEffect(() => { setMounted(true) }, [])
 
-  // Reset iframe loading state each time modal opens
+  // Reset iframe state each time modal opens
   useEffect(() => {
-    if (open) setIframeLoaded(false)
+    if (open) { setIframeLoaded(false); setIframeHeight(600) }
   }, [open])
 
   // Prevent AT and keyboard from reaching background content while modal is open.
@@ -102,12 +120,7 @@ export default function BookingButton({ static: isStatic = false }) {
   }, [open, iframeLoaded])
 
   const handleClose = useCallback(() => {
-    const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
-    document.body.style.position = ''
-    document.body.style.top      = ''
-    document.body.style.width    = ''
-    delete document.body.dataset.scrollY
-    window.scrollTo(0, scrollY)
+    releaseScrollLock()
     setOpen(false)
     triggerRef.current?.focus()
     triggerRef.current = null
@@ -146,7 +159,7 @@ export default function BookingButton({ static: isStatic = false }) {
         handleClose()
       }
       if (e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
-        setIframeHeight(Math.max(200, e.data.data.iframeHeight - 40))
+        setIframeHeight(Math.min(3000, Math.max(200, e.data.data.iframeHeight - 40)))
       }
     }
 
@@ -158,14 +171,7 @@ export default function BookingButton({ static: isStatic = false }) {
       cancelAnimationFrame(raf)
       // Safety net: restore scroll if the component unmounts while modal is still open
       // (i.e. handleClose hasn't already cleared the dataset key).
-      if (document.body.dataset.scrollY !== undefined) {
-        const scrollY = parseInt(document.body.dataset.scrollY, 10)
-        document.body.style.position = ''
-        document.body.style.top      = ''
-        document.body.style.width    = ''
-        delete document.body.dataset.scrollY
-        window.scrollTo(0, scrollY)
-      }
+      if (document.body.dataset.scrollY !== undefined) releaseScrollLock()
     }
   }, [open, handleClose])
 
@@ -180,7 +186,7 @@ export default function BookingButton({ static: isStatic = false }) {
     setOpen(true)
   }
 
-  const isSmall = isMobile || isTablet
+  const isNarrowLayout = isMobile || isTablet
 
   const backdropStyle = {
     position:        'fixed',
@@ -189,7 +195,7 @@ export default function BookingButton({ static: isStatic = false }) {
     backdropFilter:  'blur(4px)',
     zIndex:          9999,
     overscrollBehavior: 'none',
-    ...(isSmall && {
+    ...(isNarrowLayout && {
       display:        'flex',
       alignItems:     'center',
       justifyContent: 'center',
@@ -197,28 +203,20 @@ export default function BookingButton({ static: isStatic = false }) {
     }),
   }
 
-  const frameStyle = isSmall ? {
-    position:       'relative',
-    width:          '100%',
-    maxWidth:       '860px',
-    height:         isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
-    maxHeight:      '800px',
-    background:     'transparent',
-    border:         '1px solid var(--color-brand)',
-    borderRadius:   '8px',
-    overflow:       'hidden',
-    backdropFilter: 'blur(8px)',
+  const frameStyle = isNarrowLayout ? {
+    ...FRAME_BASE,
+    position:  'relative',
+    width:     '100%',
+    maxWidth:  '860px',
+    height:    isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
+    maxHeight: '800px',
   } : {
-    position:       'absolute',
-    top:    '64px',
-    bottom: '64px',
-    left:   '160px',
-    right:  '160px',
-    background:     'transparent',
-    border:         '1px solid var(--color-brand)',
-    borderRadius:   '8px',
-    overflow:       'hidden',
-    backdropFilter: 'blur(8px)',
+    ...FRAME_BASE,
+    position: 'absolute',
+    top:      '64px',
+    bottom:   '64px',
+    left:     '160px',
+    right:    '160px',
   }
 
   const overlay = (
@@ -265,7 +263,7 @@ export default function BookingButton({ static: isStatic = false }) {
             {/* allow-same-origin is required by Cal.com for auth/cookie access.
                 Mobile/tablet: scrollable wrapper + dynamic height from Cal.com postMessages.
                 Desktop: iframe fills container, overflow:hidden clips the footer bar. */}
-            {isSmall ? (
+            {isNarrowLayout ? (
               <div style={{
                 height:                  '100%',
                 overflowY:               'auto',
