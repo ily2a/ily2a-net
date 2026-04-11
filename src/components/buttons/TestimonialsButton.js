@@ -40,7 +40,7 @@ export default function TestimonialsButton({ instant = false }) {
           ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
       }
       {...handlers}
-      className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-background/25 cursor-pointer border-none"
+      className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-background/15 cursor-pointer border-none"
     >
       <motion.div
         initial={INNER_STYLES.default}
