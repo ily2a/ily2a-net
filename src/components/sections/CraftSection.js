@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ProjectCard from '@/components/ProjectCard'
 import SpotlightButton from '@/components/buttons/SpotlightButton'
+import { CRAFT_DESCRIPTION } from '@/constants/site'
 
 export default function CraftSection({
   projects = [],
@@ -28,9 +29,7 @@ export default function CraftSection({
               </>
             )}
           </div>
-          <p className="text-md text-text-secondary">
-            End-to-end product design across 10+ industries. Increasingly, I build what I design.
-          </p>
+          <p className="text-md text-text-secondary">{CRAFT_DESCRIPTION}</p>
         </div>
         <div className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
           {projects.map((project, i) => (

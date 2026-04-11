@@ -1,6 +1,7 @@
 import "./globals.css"
 import { Suspense } from "react"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/constants/site"
+import { safeJsonLd } from "@/lib/json-ld"
 import SmoothCursor from "@/components/SmoothCursor"
 import { SanityLive } from "@/sanity/lib/live"
 import MotionProvider from "@/components/MotionProvider"
@@ -15,17 +16,14 @@ const jsonLd = {
   "name": SITE_NAME,
   "jobTitle": "Design Engineer",
   "url": SITE_URL,
-  "description": "I design systems, flows and products. Then build them. End-to-end product design with zero handoff friction.",
+  "description": SITE_DESCRIPTION,
   "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
   "sameAs": ["https://linkedin.com/in/ily2a"],
 }
 
 // Pre-stringified once at module load — JSON-LD content is static, no need to
 // re-serialize and re-escape on every request.
-const jsonLdString = JSON.stringify(jsonLd)
-  .replace(/</g, '\\u003c')
-  .replace(/>/g, '\\u003e')
-  .replace(/&/g, '\\u0026')
+const jsonLdString = safeJsonLd(jsonLd)
 
 export const metadata = {
   title: `${SITE_NAME} : Design Engineer`,

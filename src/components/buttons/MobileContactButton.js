@@ -6,8 +6,12 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function MobileContactButton({ label = 'Contact', onClick }) {
   const [ripples, setRipples] = useState([])
-  const buttonRef = useRef(null)
+  const buttonRef  = useRef(null)
+  const timerRef   = useRef({})
   const prefersReduced = usePrefersReducedMotion()
+
+  // Clean up all pending timers on unmount.
+  useEffect(() => () => Object.values(timerRef.current).forEach(clearTimeout), [])
 
   const triggerRipple = (x, y) => {
     if (prefersReduced) return
@@ -15,7 +19,12 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
     if (!button) return
     const rect = button.getBoundingClientRect()
     const size = Math.max(rect.width, rect.height)
-    setRipples((prev) => [...prev, { x: x - rect.left - size / 2, y: y - rect.top - size / 2, size, key: Date.now() }])
+    const key  = Date.now()
+    setRipples((prev) => [...prev, { x: x - rect.left - size / 2, y: y - rect.top - size / 2, size, key }])
+    timerRef.current[key] = setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.key !== key))
+      delete timerRef.current[key]
+    }, 600)
   }
 
   const handleClick = (e) => {
@@ -32,15 +41,6 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
       triggerRipple(rect.left + rect.width / 2, rect.top + rect.height / 2)
     }
   }
-
-  useEffect(() => {
-    if (ripples.length === 0) return
-    const last = ripples[ripples.length - 1]
-    const timeout = setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.key !== last.key))
-    }, 600)
-    return () => clearTimeout(timeout)
-  }, [ripples])
 
   return (
     <motion.button

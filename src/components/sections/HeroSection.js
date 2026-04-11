@@ -55,34 +55,31 @@ export default function HeroSection({ children }) {
   const introPlayed = useHeroIntroPlayed()
 
   return (
-    <>
-      <section id="hero" className="relative h-screen">
-        <HeroBackground />
-        <div className="relative z-10 flex justify-center pt-[120px] px-5 pb-7 md:pt-[88px] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
-          <div className="w-full max-w-[680px] flex flex-col gap-6">
-            {children}
-            <div className="flex flex-col gap-4">
-              <TextReveal
-                text="Design Engineer : I design systems, flows, and products. Then build them."
-                className="text-intro"
-                instant={introPlayed}
-              />
-              <TextReveal
-                text="End-to-end product design with zero handoff friction."
-                className="text-md"
-                scale={2}
-                initialDelay={HERO_SUBTITLE_DELAY}
-                instant={introPlayed}
-              />
-            </div>
-            <div className="flex gap-3">
-              <BookingButton static={introPlayed} />
-              <TestimonialsButton instant={introPlayed} />
-            </div>
+    <section id="hero" className="relative h-screen">
+      <HeroBackground />
+      <div className="relative z-10 flex justify-center pt-[120px] px-5 pb-7 md:pt-[88px] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
+        <div className="w-full max-w-[680px] flex flex-col gap-6">
+          {children}
+          <div className="flex flex-col gap-4">
+            <TextReveal
+              text="Design Engineer : I design systems, flows, and products. Then build them."
+              className="text-intro"
+              instant={introPlayed}
+            />
+            <TextReveal
+              text="End-to-end product design with zero handoff friction."
+              className="text-md"
+              scale={2}
+              initialDelay={HERO_SUBTITLE_DELAY}
+              instant={introPlayed}
+            />
+          </div>
+          <div className="flex gap-3">
+            <BookingButton static={introPlayed} />
+            <TestimonialsButton instant={introPlayed} />
           </div>
         </div>
-      </section>
-
-    </>
+      </div>
+    </section>
   )
 }

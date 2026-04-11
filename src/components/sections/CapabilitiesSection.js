@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 
 const CARDS = [
@@ -31,37 +32,46 @@ const SKILL_GROUPS = [
   },
 ]
 
-function SpotlightCard({ children, className = '', style, spotlightColor = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)' }) {
-  const divRef = useRef(null)
-  const [isFocused, setIsFocused] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+const SPOTLIGHT_COLOR = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)'
+
+function SpotlightCard({ children }) {
+  const divRef       = useRef(null)
+  const spotRef      = useRef(null)
+  const rafRef       = useRef(0)
+  const isFocusedRef = useRef(false)
   const [opacity, setOpacity] = useState(0)
 
-  const handleMouseMove   = useCallback((e) => {
-    if (!divRef.current || isFocused) return
-    const rect = divRef.current.getBoundingClientRect()
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-  }, [isFocused])
+  const handleMouseMove = useCallback((e) => {
+    if (isFocusedRef.current || rafRef.current) return
+    rafRef.current = requestAnimationFrame(() => {
+      const el = divRef.current
+      if (!el) { rafRef.current = 0; return }
+      const rect = el.getBoundingClientRect()
+      spotRef.current?.style.setProperty('--sx', `${e.clientX - rect.left}px`)
+      spotRef.current?.style.setProperty('--sy', `${e.clientY - rect.top}px`)
+      rafRef.current = 0
+    })
+  }, [])
 
-  const handleFocus       = useCallback(() => { setIsFocused(true);  setOpacity(1) }, [])
-  const handleBlur        = useCallback(() => { setIsFocused(false); setOpacity(0) }, [])
-  const handleMouseEnter  = useCallback(() => setOpacity(1), [])
-  const handleMouseLeave  = useCallback(() => setOpacity(0), [])
+  const handleFocus      = useCallback(() => { isFocusedRef.current = true;  setOpacity(1) }, [])
+  const handleBlur       = useCallback(() => { isFocusedRef.current = false; setOpacity(0) }, [])
+  const handleMouseEnter = useCallback(() => setOpacity(1), [])
+  const handleMouseLeave = useCallback(() => setOpacity(0), [])
 
-  const handleTouchStart  = useCallback((e) => {
+  const handleTouchStart = useCallback((e) => {
     if (!divRef.current) return
     const rect  = divRef.current.getBoundingClientRect()
     const touch = e.touches[0]
-    setPosition({ x: touch.clientX - rect.left, y: touch.clientY - rect.top })
+    spotRef.current?.style.setProperty('--sx', `${touch.clientX - rect.left}px`)
+    spotRef.current?.style.setProperty('--sy', `${touch.clientY - rect.top}px`)
     setOpacity(1)
   }, [])
-  const handleTouchEnd    = useCallback(() => setOpacity(0), [])
+  const handleTouchEnd = useCallback(() => setOpacity(0), [])
 
   return (
     <div
       ref={divRef}
-      className={`cap-card rounded-xl ${className}`}
-      style={style}
+      className="cap-card rounded-xl"
       onMouseMove={handleMouseMove}
       onFocus={handleFocus}
       onBlur={handleBlur}
@@ -70,12 +80,13 @@ function SpotlightCard({ children, className = '', style, spotlightColor = 'colo
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div
+      <motion.div
+        ref={spotRef}
         className="cap-card__spotlight"
-        style={{
-          opacity,
-          background: `radial-gradient(circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 80%)`,
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        style={{ background: `radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), ${SPOTLIGHT_COLOR}, transparent 80%)` }}
       />
       {children}
     </div>

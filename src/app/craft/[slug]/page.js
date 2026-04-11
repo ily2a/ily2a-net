@@ -11,6 +11,7 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
@@ -125,13 +126,13 @@ export default async function CaseStudyPage({ params }) {
     "url": `${SITE_URL}/craft/${slug}`,
     "author": { "@type": "Person", "name": SITE_NAME, "url": SITE_URL },
     "dateModified": data._updatedAt,
-    ...(data.coverImage?.url && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
+    ...(data.coverImage?.url?.startsWith('https://cdn.sanity.io/') && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
     ...(data.client && { "producer": { "@type": "Organization", "name": data.client } }),
   }
 
   return (
     <main id="main-content">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
       {/* PasswordGate is intentional soft security — the full page content is
           server-rendered and visible in the DOM. The gate exists as a human-facing
           friction layer (NDA/selective sharing), not as server-enforced access control. */}

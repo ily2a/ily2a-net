@@ -55,6 +55,9 @@ export function createRateLimiter({ limit, windowMs }) {
  */
 export function timingSafeStringEqual(attempt, expected) {
   if (typeof attempt !== 'string' || typeof expected !== 'string') return false
+  // Fast-path: reject oversized inputs before any heap allocation.
+  // No real password exceeds 1024 chars; this prevents a large-body heap spike.
+  if (attempt.length > 1024) return false
   const expectedBuf = Buffer.from(expected)
   const attemptBuf  = Buffer.alloc(expectedBuf.length)
   Buffer.from(attempt).copy(attemptBuf, 0, 0, expectedBuf.length)

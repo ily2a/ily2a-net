@@ -85,42 +85,51 @@ export default function DarkVeil({
   warpAmount = 0,
   resolutionScale = 1,
 }) {
-  const ref = useRef(null)
+  const ref      = useRef(null)
+  const propsRef = useRef({ hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale })
   const prefersReduced = usePrefersReducedMotion()
+
+  // Shallow sync — keeps propsRef current without touching the GL context.
+  useEffect(() => {
+    propsRef.current = { hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale }
+  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale])
 
   useEffect(() => {
     const canvas = ref.current
-    const parent = canvas.parentElement
+    const parent = canvas?.parentElement
+    if (!canvas || !parent) return
 
     const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
+      dpr: Math.min(window.devicePixelRatio, 1.5),
       canvas,
     })
 
     const gl = renderer.gl
     const geometry = new Triangle(gl)
 
+    const p0 = propsRef.current
     const program = new Program(gl, {
       vertex,
       fragment,
       uniforms: {
         uTime:       { value: 0 },
         uResolution: { value: new Vec2() },
-        uHueShift:   { value: hueShift },
-        uNoise:      { value: noiseIntensity },
-        uScan:       { value: scanlineIntensity },
-        uScanFreq:   { value: scanlineFrequency },
-        uWarp:       { value: warpAmount },
+        uHueShift:   { value: p0.hueShift },
+        uNoise:      { value: p0.noiseIntensity },
+        uScan:       { value: p0.scanlineIntensity },
+        uScanFreq:   { value: p0.scanlineFrequency },
+        uWarp:       { value: p0.warpAmount },
       },
     })
 
     const mesh = new Mesh(gl, { geometry, program })
 
     const resize = () => {
+      const p = propsRef.current
       const w = parent.offsetWidth
       const h = parent.offsetHeight
       if (w === 0 || h === 0) return
-      renderer.setSize(w * resolutionScale, h * resolutionScale)
+      renderer.setSize(w * p.resolutionScale, h * p.resolutionScale)
       // reset CSS so the canvas scales to fill parent regardless of pixel resolution
       canvas.style.width  = '100%'
       canvas.style.height = '100%'
@@ -134,24 +143,25 @@ export default function DarkVeil({
     const start = performance.now()
     let frame = 0
 
-    // Pause the RAF loop when the canvas is scrolled out of view.
     const loop = () => {
-      program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * speed
-      program.uniforms.uHueShift.value = hueShift
-      program.uniforms.uNoise.value    = noiseIntensity
-      program.uniforms.uScan.value     = scanlineIntensity
-      program.uniforms.uScanFreq.value = scanlineFrequency
-      program.uniforms.uWarp.value     = warpAmount
+      const p = propsRef.current
+      program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * p.speed
+      program.uniforms.uHueShift.value = p.hueShift
+      program.uniforms.uNoise.value    = p.noiseIntensity
+      program.uniforms.uScan.value     = p.scanlineIntensity
+      program.uniforms.uScanFreq.value = p.scanlineFrequency
+      program.uniforms.uWarp.value     = p.warpAmount
       renderer.render({ scene: mesh })
       frame = requestAnimationFrame(loop)
     }
 
     const renderStatic = () => {
+      const p = propsRef.current
       program.uniforms.uTime.value     = 0
-      program.uniforms.uHueShift.value = hueShift
+      program.uniforms.uHueShift.value = p.hueShift
       program.uniforms.uNoise.value    = 0
       program.uniforms.uScan.value     = 0
-      program.uniforms.uScanFreq.value = scanlineFrequency
+      program.uniforms.uScanFreq.value = p.scanlineFrequency
       program.uniforms.uWarp.value     = 0
       renderer.render({ scene: mesh })
     }
@@ -184,7 +194,7 @@ export default function DarkVeil({
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale, prefersReduced])
+  }, [prefersReduced])
 
   return (
     <canvas

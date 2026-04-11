@@ -90,7 +90,7 @@ export default function SmoothCursor() {
         style={{
           background: 'color-mix(in srgb, var(--color-amethyst-400) 20%, transparent)',
           border:     '1px solid color-mix(in srgb, var(--color-amethyst-400) 40%, transparent)',
-          boxShadow:  'inset 0 1px 0 0 rgba(255,255,255,0.08), inset 0 -1px 0 0 rgba(255,255,255,0.04)',
+          boxShadow:  'inset 0 1px 0 0 var(--color-glass-border), inset 0 -1px 0 0 var(--color-glass-bg)',
         }}
       >
         <AnimatePresence>
