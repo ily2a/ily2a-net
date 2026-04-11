@@ -44,7 +44,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   const spotlight = (
     <span
       aria-hidden
-      className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+      className="pointer-events-none absolute inset-0"
       style={{ background: 'radial-gradient(circle 80px at var(--mx, 50%) var(--my, 50%), var(--color-spotlight), transparent)' }}
     />
   )
