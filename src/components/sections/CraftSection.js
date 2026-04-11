@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import ProjectCard from '@/components/ProjectCard'
-import SpotlightButton from '@/components/buttons/SpotlightButton'
+import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'
 
 export default function CraftSection({
@@ -24,7 +24,7 @@ export default function CraftSection({
                   <Link href="/craft" className="inline-flex items-center h-9 px-[6px] text-text-primary hover:text-brand active:text-brand transition-colors duration-150 link-label no-underline">View all projects</Link>
                 </div>
                 <div className="hidden tab:block">
-                  <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
+                  <ViewAllProjectsButton />
                 </div>
               </>
             )}

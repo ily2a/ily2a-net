@@ -1,7 +1,8 @@
 import { cache } from 'react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import SpotlightButton from '@/components/buttons/SpotlightButton'
+import HomeButton from '@/components/buttons/HomeButton'
+import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { PortableText } from '@portabletext/react'
 import FloatingNav from '@/components/nav/FloatingNav'
 import BackToTop from '@/components/buttons/BackToTop'
@@ -149,8 +150,8 @@ export default async function CaseStudyPage({ params }) {
             {/* Header */}
             <header className="flex flex-col tab:flex-row tab:justify-between tab:items-center gap-4">
               <div className="flex gap-2 shrink-0 tab:hidden">
-                <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
-                <SpotlightButton href="/">Home</SpotlightButton>
+                <ViewAllProjectsButton />
+                <HomeButton />
               </div>
               <div className="flex flex-col gap-3">
                 <h1 className="heading-page text-text-primary">
@@ -161,8 +162,8 @@ export default async function CaseStudyPage({ params }) {
                 )}
               </div>
               <div className="hidden tab:flex gap-2 shrink-0">
-                <SpotlightButton href="/craft" variant="dark">View all projects</SpotlightButton>
-                <SpotlightButton href="/">Home</SpotlightButton>
+                <ViewAllProjectsButton />
+                <HomeButton />
               </div>
             </header>
 
