@@ -17,7 +17,7 @@ export const TESTIMONIALS = [
   },
   {
     name:   'Gabriel Gaudin',
-    role:   'Product Owner @ Meeting Potes',
+    role:   'Product Owner @ Meeps',
     avatar: '/Avatars/gabriel.jpg',
     quote:
       'Ily was in charge of building the entire design system for our product and he did it brilliantly. This stage was necessary for further development and he was very quickly involved in the project. He reacts quickly to our requests and saved us precious time. Thank you for your work, Ily !',
