@@ -73,7 +73,12 @@ src/
 │   │   ├── revalidate/   # On-demand ISR revalidation webhook
 │   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
-├── components/           # React components
+├── components/           # React components (grouped by role)
+│   ├── backgrounds/      # Visual effect backgrounds
+│   ├── buttons/          # Button and CTA components
+│   ├── form/             # Form inputs
+│   ├── nav/              # Navigation components
+│   └── sections/         # Home page section components
 ├── sanity/               # Sanity client, schema types, image helpers
 ├── lib/                  # GROQ queries (sanity-queries.js), validation
 ├── hooks/                # Custom React hooks
@@ -123,7 +128,9 @@ npx sanity@latest schema deploy
 
 **Buttons & CTAs**
 - **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
-- **BookingButton** — Cal.com booking embed trigger
+- **HomeButton** — hero "home" CTA, extracted from SpotlightButton
+- **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
+- **BookingButton** — Cal.com booking embed trigger with scroll-lock and dynamic iframe height
 - **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
 - **LinkedInButton** — LinkedIn profile link
 - **TestimonialsButton** — opens testimonials modal/section
@@ -133,15 +140,16 @@ npx sanity@latest schema deploy
 - **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
 - **Aurora** — animated aurora background effect
 - **LineWaves** / **LineWavesBackground** — SVG line-wave decorative background
-- **GradientBlinds** — animated gradient overlay
+- **GradientBlinds** — animated gradient overlay (DPR capped at 1.5 for mobile INP)
 - **DarkVeil** — dark overlay used for transitions
-- **TestimonialsBackground.client** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
+- **TestimonialsBackground** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
 - **TextReveal** — scroll-triggered text reveal animation
 
 **Utility**
 - **MotionProvider** — wraps the app with Framer Motion `LazyMotion` provider
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
-- **PasswordGate** / **PasswordGate.client** — locks protected case studies behind a password (`.client` is the dynamic-import wrapper for SSR deferral)
+- **PasswordGate** — locks protected case studies behind a password; uses `sessionStorage` so the gate re-locks on tab close
+- **PortableTextComponents** — Portable Text renderer components for Sanity rich-text fields
 - **TableOfContents** — in-page navigation for long case studies
 - **ScrollToSection** — smooth-scroll anchor helper (respects `prefers-reduced-motion`)
 - **CloseButton** — reusable modal/overlay close button
