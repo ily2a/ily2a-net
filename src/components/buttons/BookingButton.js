@@ -9,12 +9,7 @@ import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
 
 function releaseScrollLock() {
-  const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
-  document.body.style.position = ''
-  document.body.style.top      = ''
-  document.body.style.width    = ''
-  delete document.body.dataset.scrollY
-  window.scrollTo(0, scrollY)
+  document.body.style.overflow = ''
 }
 
 // Shared frame visual properties — single source of truth for border, blur, etc.
@@ -124,7 +119,7 @@ export default function BookingButton({ static: isStatic = false }) {
   const handleClose = useCallback(() => {
     releaseScrollLock()
     setOpen(false)
-    triggerRef.current?.focus()
+    triggerRef.current?.focus({ preventScroll: true })
     triggerRef.current = null
   }, [])
 
@@ -173,20 +168,15 @@ export default function BookingButton({ static: isStatic = false }) {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
-      // Safety net: restore scroll if the component unmounts while modal is still open
-      // (i.e. handleClose hasn't already cleared the dataset key).
-      if (document.body.dataset.scrollY !== undefined) releaseScrollLock()
+      // Safety net: release scroll lock if the component unmounts while modal is still open.
+      releaseScrollLock()
     }
   }, [open, handleClose])
 
   const handleOpen = () => {
     if (open) return
     triggerRef.current = document.activeElement
-    const scrollY = window.scrollY
-    document.body.dataset.scrollY = scrollY
-    document.body.style.position  = 'fixed'
-    document.body.style.top       = `-${scrollY}px`
-    document.body.style.width     = '100%'
+    document.body.style.overflow = 'hidden'
     initCal()
     setOpen(true)
   }
