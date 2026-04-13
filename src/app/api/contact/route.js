@@ -23,9 +23,12 @@ export async function POST(request) {
   const { name, email, message } = body ?? {}
 
   // Sanitize first so length checks measure the value we'll actually send.
-  const safeName    = (name ?? '').replace(/[\r\n]/g, ' ').trim()
-  const safeEmail   = (email ?? '').replace(/[\r\n]/g, ' ').trim()
-  const safeMessage = (message ?? '').replace(/[\r\n]{3,}/g, '\n\n').trim()
+  // Strip CR, LF, and horizontal tab to prevent header injection via the subject line.
+  const safeName    = (name ?? '').replace(/[\r\n\t]/g, ' ').trim()
+  const safeEmail   = (email ?? '').replace(/[\r\n\t]/g, ' ').trim()
+  // Normalise line endings before collapsing runs of blank lines so Windows
+  // CRLF sequences (\r\n) are not double-counted against the {3,} threshold.
+  const safeMessage = (message ?? '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
 
   if (!safeName || !safeEmail || !safeMessage) {
     return Response.json({ error: 'Missing fields' }, { status: 400 })
@@ -39,15 +42,27 @@ export async function POST(request) {
     return Response.json({ error: 'Invalid email' }, { status: 400 })
   }
 
-  const { error } = await resend.emails.send({
+  // Wrap in a timeout so a stalled Resend API doesn't hold the serverless
+  // execution slot open for the full platform timeout (~10s).
+  const sendPromise = resend.emails.send({
     from:    'Contact Form <contact@ily2a.net>',
     to:      'contact@ily2a.net',
     replyTo: safeEmail,
     subject: `New message from ${safeName}`,
     text:    `Name: ${safeName}\nEmail: ${safeEmail}\n\n${safeMessage}`,
   })
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('timeout')), 8000)
+  )
 
-  if (error) {
+  let result
+  try {
+    result = await Promise.race([sendPromise, timeoutPromise])
+  } catch {
+    return Response.json({ error: 'Failed to send message' }, { status: 500 })
+  }
+
+  if (result?.error) {
     return Response.json({ error: 'Failed to send message' }, { status: 500 })
   }
 

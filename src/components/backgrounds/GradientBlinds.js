@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const MAX_COLORS = 8
 
@@ -151,6 +152,8 @@ const GradientBlinds = ({
   autoSpeed = 0.4,
   attractRadius = 0.35,
 }) => {
+  const prefersReduced  = usePrefersReducedMotion()
+
   const containerRef    = useRef(null)
   const rafRef          = useRef(null)
   const programRef      = useRef(null)
@@ -164,13 +167,14 @@ const GradientBlinds = ({
   // ── Loop-read refs ──────────────────────────────────────────────────────────
   // Changing these does NOT recreate the WebGL context — the loop reads from
   // refs so React never needs to tear down/rebuild the renderer on prop changes.
-  const pausedRef         = useRef(paused)
-  const mouseDampeningRef = useRef(mouseDampening)
-  const autoAnimateRef    = useRef(autoAnimate)
-  const autoSpeedRef      = useRef(autoSpeed)
-  const attractRadiusRef  = useRef(attractRadius)
-  const blindCountRef     = useRef(blindCount)
-  const blindMinWidthRef  = useRef(blindMinWidth)
+  const pausedRef            = useRef(paused)
+  const mouseDampeningRef    = useRef(mouseDampening)
+  const autoAnimateRef       = useRef(autoAnimate)
+  const autoSpeedRef         = useRef(autoSpeed)
+  const attractRadiusRef     = useRef(attractRadius)
+  const blindCountRef        = useRef(blindCount)
+  const blindMinWidthRef     = useRef(blindMinWidth)
+  const prefersReducedRef    = useRef(prefersReduced)
 
   useEffect(() => {
     pausedRef.current         = paused
@@ -180,7 +184,19 @@ const GradientBlinds = ({
     attractRadiusRef.current  = attractRadius
     blindCountRef.current     = blindCount
     blindMinWidthRef.current  = blindMinWidth
-  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth])
+    prefersReducedRef.current = prefersReduced
+    // If reduced motion was just enabled, stop the RAF loop and render one
+    // static frame. The loop already checks prefersReducedRef on restart so
+    // disabling reduced motion is handled the next time setActive(true) fires.
+    if (prefersReduced && rafRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+      const renderer = rendererRef.current
+      if (renderer && meshRef.current) {
+        try { renderer.render({ scene: meshRef.current }) } catch {}
+      }
+    }
+  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, prefersReduced])
 
   // ── Uniform update — no context rebuild ────────────────────────────────────
   // Updates shader uniforms in-place whenever visual props change.
@@ -292,7 +308,7 @@ const GradientBlinds = ({
     const setActive = (active) => {
       if (!active) {
         if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
-      } else if (!rafRef.current && !prefersReducedMotion) {
+      } else if (!rafRef.current && !prefersReducedRef.current) {
         rafRef.current = requestAnimationFrame(loop)
       }
     }
@@ -350,8 +366,7 @@ const GradientBlinds = ({
       }
     }
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) {
+    if (prefersReducedRef.current) {
       // Render one static frame then stop — respect accessibility preference
       try { renderer.render({ scene: meshRef.current }) } catch (e) { console.error(e) }
     } else {

@@ -9,7 +9,7 @@ import MobileContactButton from '@/components/buttons/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
-// Hoisted to module level so GlassSurface's useMemo sees a stable reference.
+// Hoisted to module level — avoids recreating style objects on every render.
 const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 0, boxSizing: 'border-box' }
 const GLASS_STYLE_DESKTOP = { maxWidth: 'none',  minWidth: '472px', flexShrink: 0, boxSizing: 'border-box' }
 

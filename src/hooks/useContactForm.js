@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { EMAIL_RE, CONTACT_MAX } from '@/lib/validation'
 
 /**
@@ -22,12 +22,13 @@ export function useContactForm() {
   const [form,   setForm]   = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState('idle')
   const [errors, setErrors] = useState({ name: null, email: null, message: null })
+  const abortRef = useRef(null)
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }))
-    if (status === 'error') setStatus('idle')
+    if (status === 'error' || status === 'ratelimited') setStatus('idle')
   }
 
   const validate = () => {
@@ -53,18 +54,25 @@ export function useContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
+    // Cancel any in-flight request before starting a new one — prevents
+    // duplicate sends if the user submits twice in quick succession.
+    abortRef.current?.abort()
+    abortRef.current = new AbortController()
+    const signal = abortRef.current.signal
     setStatus('sending')
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
+        signal,
       })
       if (res.status === 429) { setStatus('ratelimited'); return }
       if (!res.ok) throw new Error()
       setStatus('sent')
       setForm({ name: '', email: '', message: '' })
-    } catch {
+    } catch (err) {
+      if (err?.name === 'AbortError') return
       setStatus('error')
     }
   }

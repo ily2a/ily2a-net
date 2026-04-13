@@ -7,6 +7,7 @@ import LinkedInButton from '@/components/buttons/LinkedInButton'
 import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/form/FloatingLabelInput'
 import { useContactForm } from '@/hooks/useContactForm'
 import { CONTACT_MAX } from '@/lib/validation'
+import { fadeUp } from '@/constants/animations'
 import dynamic from 'next/dynamic'
 
 // Per-field, per-error-kind copy. Keeps the JSX below readable and
@@ -29,13 +30,9 @@ const ERROR_COPY = {
 
 const Aurora = dynamic(() => import('@/components/backgrounds/Aurora'), { ssr: false })
 
-
-const fadeUp = (delay = 0) => ({
-  initial:     { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport:    { once: true, margin: '-80px' },
-  transition:  { type: 'spring', stiffness: 260, damping: 24, delay },
-})
+// Stable reference — Aurora guards color re-parsing on reference equality,
+// so an inline array literal would trigger re-parses on every form keystroke.
+const AURORA_STOPS = ['#2e2937', '#8479a0', '#b2adc7']
 
 export default function ContactSection() {
   const { form, errors, status, handleChange, handleSubmit, reset, resetError } = useContactForm()
@@ -187,7 +184,7 @@ export default function ContactSection() {
         >
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
             <Aurora
-              colorStops={/* amethyst-950 / amethyst-600 / amethyst-400 */['#2e2937', '#8479a0', '#b2adc7']}
+              colorStops={AURORA_STOPS}
               amplitude={1.2}
               blend={0.6}
               speed={0.5}

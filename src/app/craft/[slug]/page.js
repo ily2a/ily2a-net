@@ -16,7 +16,7 @@ import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
-import { ptBody, ptSection } from '@/components/PortableTextComponents'
+import { makePtBody, ptSection } from '@/components/PortableTextComponents'
 
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.
@@ -100,7 +100,7 @@ export default async function CaseStudyPage({ params }) {
     .filter(block => block._type === 'block' && ['h1', 'h2', 'h3'].includes(block.style))
     .map(block => {
       const text = block.children?.map(c => c.text).join('') ?? ''
-      return { id: toId(text), label: text, level: parseInt(block.style[1]) }
+      return { _key: block._key, id: toId(text), label: text, level: parseInt(block.style[1]) }
     })
     .filter(h => h.label)
 
@@ -109,6 +109,13 @@ export default async function CaseStudyPage({ params }) {
     ...bodyHeadings,
     ...(figmaEmbedUrl ? [{ id: 'prototype', label: 'Prototype', level: 2 }] : []),
   ])
+
+  // Map block._key → deduplicated id so heading renderers in PortableText
+  // produce DOM ids that match the ToC anchors even when two headings share text.
+  const headingIdMap = Object.fromEntries(
+    tocItems.filter(t => t._key).map(t => [t._key, t.id])
+  )
+  const ptBody = makePtBody(headingIdMap)
 
   const metaFields = [
     { label: 'Client',   value: data.client },

@@ -13,3 +13,11 @@ export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  
 export const HERO_SUBTITLE_DELAY = 1.2  // second TextReveal line starts right after first settles
 export const HERO_BUTTON_DELAY   = 2.0  // CTA buttons appear as second text line settles
 export const HERO_NAV_DELAY      = 2.4  // navbar slides up just after buttons
+
+// Scroll-triggered section entrance — pass a delay (seconds) for staggered children.
+export const fadeUp = (delay = 0) => ({
+  initial:     { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport:    { once: true, margin: '-80px' },
+  transition:  { type: 'spring', stiffness: 260, damping: 24, delay },
+})

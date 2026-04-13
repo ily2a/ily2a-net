@@ -88,7 +88,9 @@ export default function BookingButton({ static: isStatic = false }) {
         layout: 'month_view',
       })
     } catch {
-      // Cal.com failed to load — modal still renders the iframe directly
+      // Cal.com failed to load — modal still renders the iframe directly.
+      // Reset the flag so the next open can reattempt initialisation.
+      calInitialized.current = false
     }
   }
 
@@ -159,7 +161,9 @@ export default function BookingButton({ static: isStatic = false }) {
         handleClose()
       }
       if (e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
-        setIframeHeight(Math.min(3000, Math.max(200, e.data.data.iframeHeight - 40)))
+        // Floor raised to 400 — Cal.com fires transient near-zero heights during
+        // reflow; clamping to 200 would collapse the iframe with no recovery affordance.
+        setIframeHeight(Math.min(3000, Math.max(400, e.data.data.iframeHeight - 40)))
       }
     }
 
@@ -176,6 +180,7 @@ export default function BookingButton({ static: isStatic = false }) {
   }, [open, handleClose])
 
   const handleOpen = () => {
+    if (open) return
     triggerRef.current = document.activeElement
     const scrollY = window.scrollY
     document.body.dataset.scrollY = scrollY

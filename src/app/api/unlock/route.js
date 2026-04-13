@@ -17,12 +17,13 @@ export async function POST(request) {
 
   const { password } = body ?? {}
   if (!password || typeof password !== 'string') {
-    return Response.json({ success: false }, { status: 401 })
+    return Response.json({ success: false }, { status: 400 })
   }
 
   const expected = process.env.CASE_STUDY_PASSWORD
   if (!expected) {
-    return Response.json({ success: false }, { status: 401 })
+    console.error('[/api/unlock] CASE_STUDY_PASSWORD is not set')
+    return Response.json({ success: false }, { status: 500 })
   }
 
   if (!timingSafeStringEqual(password.trim(), expected.trim())) {

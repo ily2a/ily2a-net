@@ -30,6 +30,10 @@ export default function PasswordGate() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ password }),
       })
+      if (res.status === 429) {
+        setStatus('ratelimited')
+        return
+      }
       const data = await res.json()
       if (data.success) {
         sessionStorage.setItem(SESSION_KEY, '1')
@@ -164,12 +168,17 @@ export default function PasswordGate() {
                       Incorrect password. Try again.
                     </p>
                   )}
+                  {status === 'ratelimited' && (
+                    <p id="cs-password-error" className="text-[12px] text-error">
+                      Too many attempts — please wait before trying again.
+                    </p>
+                  )}
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={status === 'checking'}
+                disabled={status === 'checking' || status === 'ratelimited'}
                 aria-busy={status === 'checking'}
                 className="gradient-button w-full rounded-[8px] px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
               >
