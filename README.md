@@ -180,6 +180,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useButtonState** — manages hover/active state for custom button components
 - **usePrefersReducedMotion** — reads `prefers-reduced-motion` media query
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
+- **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
 
 ## Deployment
 
