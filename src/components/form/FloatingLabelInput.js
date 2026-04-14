@@ -59,7 +59,7 @@ function useFloatingLabel() {
   return { uid, focused, setFocused, wrapRef, labelRef, wrapDims, labelWidth: labelDims.w }
 }
 
-function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = '50%' }) {
+function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = '50%', required }) {
   return (
     <motion.label
       htmlFor={htmlFor}
@@ -71,7 +71,10 @@ function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children
       }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
-      <span ref={labelRef}>{children}</span>
+      <span ref={labelRef}>
+        {children}
+        {required && <span aria-hidden="true" className="ml-[3px]">*</span>}
+      </span>
     </motion.label>
   )
 }
@@ -98,7 +101,7 @@ export function FloatingLabelInput({
         <div className="absolute right-3 inset-y-0 flex items-center">{rightSlot}</div>
       )}
       <NotchedBorder floated={floated} hasError={hasError} focused={focused} labelWidth={labelWidth} width={wrapDims.w} height={wrapDims.h} />
-      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused}>
+      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} required={required}>
         {label}
       </FloatingLabel>
     </div>
@@ -124,7 +127,7 @@ export function FloatingLabelTextarea({
         aria-describedby={hasError ? errorId : undefined}
       />
       <NotchedBorder floated={floated} hasError={hasError} focused={focused} labelWidth={labelWidth} width={wrapDims.w} height={wrapDims.h} />
-      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} restingTop="22px">
+      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} restingTop="22px" required={required}>
         {label}
       </FloatingLabel>
     </div>

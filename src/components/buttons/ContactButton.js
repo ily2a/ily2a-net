@@ -3,17 +3,20 @@
 import { useRef, useEffect } from 'react'
 import { motion, animate } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function ContactButton({ label = 'Contact', onClick }) {
-  const buttonRef = useRef(null)
-  const animRef   = useRef(null)
-  const angleRef  = useRef(62)
+  const buttonRef      = useRef(null)
+  const animRef        = useRef(null)
+  const angleRef       = useRef(62)
+  const prefersReduced = usePrefersReducedMotion()
 
   useEffect(() => {
     return () => { animRef.current?.stop() }
   }, [])
 
   const animateTo = (targetAngle) => {
+    if (prefersReduced) return
     animRef.current?.stop()
     animRef.current = animate(angleRef.current, targetAngle, {
       duration: 0.4,
@@ -39,7 +42,7 @@ export default function ContactButton({ label = 'Contact', onClick }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       initial="rest"
-      whileHover="hover"
+      whileHover={prefersReduced ? undefined : "hover"}
       whileTap={{ scale: 0.96 }}
       transition={SPRING_SNAP}
       aria-label={label}

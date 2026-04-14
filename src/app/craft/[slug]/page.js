@@ -56,13 +56,15 @@ export async function generateMetadata({ params }) {
       siteName: SITE_NAME,
       locale: 'en_GB',
       type: 'article',
-      images: [{ url: ogImage, width: 1200, height: 630 }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${data.title} — ${SITE_NAME}` }],
+      ...(data._createdAt && { publishedTime: data._createdAt }),
+      ...(data._updatedAt && { modifiedTime: data._updatedAt }),
     },
     twitter: {
       card: 'summary_large_image',
       title: `${data.title} — ${SITE_NAME}`,
       description: data.description,
-      images: [ogImage],
+      images: [{ url: ogImage, alt: `${data.title} — ${SITE_NAME}` }],
     },
   }
 }

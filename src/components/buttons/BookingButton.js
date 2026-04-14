@@ -251,7 +251,7 @@ export default function BookingButton({ static: isStatic = false }) {
             {/* Spinner shown while iframe loads */}
             {!iframeLoaded && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="booking-spinner" />
+                <div role="status" aria-label="Loading calendar" className="booking-spinner" />
               </div>
             )}
 
