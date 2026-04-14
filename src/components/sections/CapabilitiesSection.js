@@ -35,14 +35,13 @@ const SKILL_GROUPS = [
 const SPOTLIGHT_COLOR = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)'
 
 function SpotlightCard({ children }) {
-  const divRef       = useRef(null)
-  const spotRef      = useRef(null)
-  const rafRef       = useRef(0)
-  const isFocusedRef = useRef(false)
+  const divRef  = useRef(null)
+  const spotRef = useRef(null)
+  const rafRef  = useRef(0)
   const [opacity, setOpacity] = useState(0)
 
   const handleMouseMove = useCallback((e) => {
-    if (isFocusedRef.current || rafRef.current) return
+    if (rafRef.current) return
     rafRef.current = requestAnimationFrame(() => {
       const el = divRef.current
       if (!el) { rafRef.current = 0; return }
@@ -53,8 +52,6 @@ function SpotlightCard({ children }) {
     })
   }, [])
 
-  const handleFocus      = useCallback(() => { isFocusedRef.current = true;  setOpacity(1) }, [])
-  const handleBlur       = useCallback(() => { isFocusedRef.current = false; setOpacity(0) }, [])
   const handleMouseEnter = useCallback(() => setOpacity(1), [])
   const handleMouseLeave = useCallback(() => setOpacity(0), [])
 
@@ -73,8 +70,6 @@ function SpotlightCard({ children }) {
       ref={divRef}
       className="cap-card rounded-xl"
       onMouseMove={handleMouseMove}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}

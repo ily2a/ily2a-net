@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
-export default function MobileContactButton({ label = 'Contact', onClick }) {
+export default function MobileContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }) {
   const [ripples, setRipples] = useState([])
   const buttonRef  = useRef(null)
   const timerRef   = useRef({})
@@ -47,6 +47,7 @@ export default function MobileContactButton({ label = 'Contact', onClick }) {
       ref={buttonRef}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
+      aria-current={ariaCurrent}
       whileTap={{ scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
       className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-glass-border bg-surface cursor-pointer overflow-hidden select-none"
