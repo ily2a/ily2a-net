@@ -2,12 +2,12 @@
 
 import dynamic from 'next/dynamic';
 
-const LineWaves = dynamic(() => import('@/components/backgrounds/LineWaves'), { ssr: false });
+const NotFoundPasswordWaves = dynamic(() => import('@/components/backgrounds/NotFoundPasswordWaves'), { ssr: false });
 
-export default function LineWavesBackground() {
+export default function NotFoundPasswordBg() {
   return (
     <div className="absolute inset-0 -z-10 opacity-60">
-      <LineWaves
+      <NotFoundPasswordWaves
         brightness={0.18}
         speed={0.25}
         warpIntensity={0.9}

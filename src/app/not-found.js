@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
-import LineWavesBackground from '@/components/backgrounds/LineWavesBackground'
+import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',
@@ -11,7 +11,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <main className="relative flex items-center justify-center min-h-screen overflow-hidden">
-      <LineWavesBackground />
+      <NotFoundPasswordBg />
 
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
 

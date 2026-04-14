@@ -132,7 +132,7 @@ void main() {
 }
 `;
 
-export default function LineWaves({
+export default function NotFoundPasswordWaves({
   speed = 0.3,
   innerLineCount = 32.0,
   outerLineCount = 36.0,

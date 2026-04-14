@@ -76,7 +76,7 @@ void main(){
 }
 `
 
-export default function DarkVeil({
+export default function TestimonialsVeil({
   hueShift = 0,
   noiseIntensity = 0,
   scanlineIntensity = 0,

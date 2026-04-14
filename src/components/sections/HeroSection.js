@@ -7,7 +7,7 @@ import TextReveal from '@/components/TextReveal'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import dynamic from 'next/dynamic'
 
-const GradientBlinds = dynamic(() => import('@/components/backgrounds/GradientBlinds'), {
+const HeroBg = dynamic(() => import('@/components/backgrounds/HeroBg'), {
   ssr: false,
   loading: () => (
     <div style={{
@@ -31,7 +31,7 @@ function HeroBackground() {
       transition={{ duration: 0.8, ease: 'easeInOut' }}
       className="absolute inset-0 w-full h-full"
     >
-      <GradientBlinds
+      <HeroBg
         gradientColors={HERO_COLORS}
         angle={45}
         noise={0.14}

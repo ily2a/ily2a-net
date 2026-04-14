@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import LineWavesBackground from '@/components/backgrounds/LineWavesBackground'
+import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import { FloatingLabelInput } from '@/components/form/FloatingLabelInput'
@@ -57,7 +57,7 @@ export default function PasswordGate() {
           exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
           className="fixed inset-0 z-[200] overflow-hidden bg-background"
         >
-          <LineWavesBackground />
+          <NotFoundPasswordBg />
           <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
 
           <motion.div

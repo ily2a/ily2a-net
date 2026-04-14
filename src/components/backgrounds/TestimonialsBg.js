@@ -2,17 +2,17 @@
 
 import dynamic from 'next/dynamic'
 
-const DarkVeil = dynamic(() => import('@/components/backgrounds/DarkVeil'), {
+const TestimonialsVeil = dynamic(() => import('@/components/backgrounds/TestimonialsVeil'), {
   ssr: false,
   loading: () => (
     <div className="absolute inset-0 bg-gradient-to-br from-background via-amethyst-950 to-amethyst-900" />
   ),
 })
 
-export default function TestimonialsBackground() {
+export default function TestimonialsBg() {
   return (
     <div aria-hidden="true" className="absolute inset-0 z-0">
-      <DarkVeil
+      <TestimonialsVeil
         hueShift={0}
         speed={0.3}
         warpAmount={0.6}

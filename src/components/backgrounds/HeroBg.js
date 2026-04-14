@@ -131,7 +131,7 @@ const prepStops = stops => {
   return { arr, count }
 }
 
-const GradientBlinds = ({
+const HeroBg = ({
   className = '',
   dpr,
   paused = false,
@@ -411,4 +411,4 @@ const GradientBlinds = ({
   )
 }
 
-export default GradientBlinds
+export default HeroBg

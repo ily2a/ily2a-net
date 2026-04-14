@@ -28,7 +28,7 @@ const ERROR_COPY = {
   },
 }
 
-const Aurora = dynamic(() => import('@/components/backgrounds/Aurora'), { ssr: false })
+const ContactBg = dynamic(() => import('@/components/backgrounds/ContactBg'), { ssr: false })
 
 // Stable reference — Aurora guards color re-parsing on reference equality,
 // so an inline array literal would trigger re-parses on every form keystroke.
@@ -183,7 +183,7 @@ export default function ContactSection() {
           {...fadeUp(0.15)}
         >
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            <Aurora
+            <ContactBg
               colorStops={AURORA_STOPS}
               amplitude={1.2}
               blend={0.6}

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { TESTIMONIALS } from '@/data/testimonials'
-import TestimonialsBackground from '@/components/backgrounds/TestimonialsBackground'
+import TestimonialsBg from '@/components/backgrounds/TestimonialsBg'
 
 
 export default function TestimonialsSection() {
@@ -10,7 +10,7 @@ export default function TestimonialsSection() {
       className="w-full relative overflow-hidden flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20"
     >
       {/* ── WebGL background ── */}
-      <TestimonialsBackground />
+      <TestimonialsBg />
 
       {/* ── Content ── */}
       <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
