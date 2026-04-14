@@ -1,5 +1,6 @@
 import "./globals.css"
 import { Suspense } from "react"
+import localFont from "next/font/local"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/constants/site"
 import { safeJsonLd } from "@/lib/json-ld"
 import SmoothCursor from "@/components/SmoothCursor"
@@ -9,6 +10,17 @@ import ErrorBoundary from "@/components/ErrorBoundary"
 import SilentErrorBoundary from "@/components/SilentErrorBoundary"
 import SpeedInsightsWrapper from "@/components/SpeedInsightsWrapper"
 import { Analytics } from "@vercel/analytics/next"
+
+const satoshi = localFont({
+  src: [
+    { path: '../../public/fonts/Satoshi-Light.woff2',   weight: '300', style: 'normal' },
+    { path: '../../public/fonts/Satoshi-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/Satoshi-Medium.woff2',  weight: '500', style: 'normal' },
+    { path: '../../public/fonts/Satoshi-Bold.woff2',    weight: '700', style: 'normal' },
+  ],
+  variable: '--font-satoshi',
+  display: 'swap',
+})
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -67,13 +79,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" className={satoshi.variable}>
       <head>
-        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.sanity.io" />
-        {/* Single stylesheet fetch — no separate preload needed since the
-            browser discovers and prioritizes <link rel="stylesheet"> in <head>. */}
-        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString }}

@@ -31,7 +31,7 @@
   --color-glass-border:   rgba(255, 255, 255, 0.08);
 
   /* ─── Font ────────────────────────────────────────────────── */
-  --font-sans: 'Satoshi', sans-serif;
+  --font-sans: var(--font-satoshi), sans-serif;
 
   /* ─── Glass Surface ───────────────────────────────────────── */
   --shadow-glass:
