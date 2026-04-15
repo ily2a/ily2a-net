@@ -223,7 +223,7 @@ export default async function CaseStudyPage({ params }) {
                   <h2 id="prototype" className="text-overline text-brand scroll-mt-10">
                     Prototype
                   </h2>
-                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-glass-border shadow-[0_8px_32px_var(--color-shadow-strong)]">
                     <iframe
                       src={figmaEmbedUrl}
                       allowFullScreen

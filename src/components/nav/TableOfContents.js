@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { SPRING_SNAP } from '@/constants/animations'
 
 export default function TableOfContents({ items }) {
   const [activeId, setActiveId] = useState(null)
@@ -55,20 +57,23 @@ export default function TableOfContents({ items }) {
       <ul className="flex flex-col">
         {items.map(({ id, label, level }) => (
           <li key={id}>
-            <a
+            <motion.a
               href={`#${id}`}
               onClick={(e) => handleClick(e, id)}
               aria-current={activeId === id ? 'location' : undefined}
-              className={`block text-toc py-[5px] border-l transition-colors duration-150 ${
-                level === 3 ? 'pl-6' : 'pl-3'
-              } ${
-                activeId === id
-                  ? 'text-text-primary border-brand'
-                  : 'text-text-secondary border-glass-border hover:text-text-primary hover:border-white/25'
-              }`}
+              className={`block text-toc py-[5px] border-l ${level === 3 ? 'pl-6' : 'pl-3'}`}
+              animate={{
+                color: activeId === id ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                borderColor: activeId === id ? 'var(--color-brand)' : 'var(--color-glass-border)',
+              }}
+              whileHover={activeId !== id ? {
+                color: 'var(--color-text-primary)',
+                borderColor: 'var(--color-border-hover)',
+              } : undefined}
+              transition={SPRING_SNAP}
             >
               {label}
-            </a>
+            </motion.a>
           </li>
         ))}
       </ul>

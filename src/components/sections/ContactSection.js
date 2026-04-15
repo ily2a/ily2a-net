@@ -8,6 +8,7 @@ import { FloatingLabelInput, FloatingLabelTextarea } from '@/components/form/Flo
 import { useContactForm } from '@/hooks/useContactForm'
 import { CONTACT_MAX } from '@/lib/validation'
 import { fadeUp } from '@/constants/animations'
+import { AMETHYST } from '@/constants/colors'
 import dynamic from 'next/dynamic'
 
 // Per-field, per-error-kind copy. Keeps the JSX below readable and
@@ -32,7 +33,7 @@ const ContactBg = dynamic(() => import('@/components/backgrounds/ContactBg'), { 
 
 // Stable reference — Aurora guards color re-parsing on reference equality,
 // so an inline array literal would trigger re-parses on every form keystroke.
-const AURORA_STOPS = ['#2e2937', '#8479a0', '#b2adc7']
+const AURORA_STOPS = [AMETHYST[950], AMETHYST[600], AMETHYST[400]]
 
 export default function ContactSection() {
   const { form, errors, status, handleChange, handleSubmit, reset, resetError } = useContactForm()

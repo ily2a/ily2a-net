@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/image'
 import { toId } from '@/lib/portable-text'
+import PortableTextLink from '@/components/PortableTextLink'
 
 // Portable Text component overrides used by case-study pages.
 //
@@ -95,16 +96,7 @@ export function makePtBody(headingIdMap = {}) {
       link:   ({ value, children }) => {
         const href = /^(https?|mailto|tel):/.test(value?.href ?? '') ? value.href : null
         if (!href) return <span className="text-brand">{children}</span>
-        return (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand underline underline-offset-4 transition-opacity hover:opacity-75"
-          >
-            {children}
-          </a>
-        )
+        return <PortableTextLink href={href}>{children}</PortableTextLink>
       },
     },
   }

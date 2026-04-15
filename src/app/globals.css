@@ -27,8 +27,10 @@
   --color-success:        #4ade80;
   --color-spotlight:      rgba(255, 255, 255, 0.3);
   --color-shadow:         rgba(0, 0, 0, 0.25);
+  --color-shadow-strong:  rgba(0, 0, 0, 0.40);
   --color-glass-bg:       rgba(255, 255, 255, 0.04);
   --color-glass-border:   rgba(255, 255, 255, 0.08);
+  --color-border-hover:   rgba(255, 255, 255, 0.25);
 
   /* ─── Font ────────────────────────────────────────────────── */
   --font-sans: var(--font-satoshi), sans-serif;
@@ -290,11 +292,4 @@ input:focus-visible, textarea:focus-visible {
 /* ══════════════════════════════════════════════════════════════
    ANIMATIONS
    ══════════════════════════════════════════════════════════════ */
-
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
 

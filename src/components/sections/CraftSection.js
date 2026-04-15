@@ -1,7 +1,13 @@
+'use client'
+
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import ProjectCard from '@/components/ProjectCard'
 import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'
+import { SPRING_SNAP } from '@/constants/animations'
+
+const MotionLink = motion(Link)
 
 export default function CraftSection({
   projects = [],
@@ -21,7 +27,14 @@ export default function CraftSection({
             {showViewAll && (
               <>
                 <div className="tab:hidden">
-                  <Link href="/craft" className="inline-flex items-center h-9 px-[6px] text-text-primary hover:text-brand active:text-brand transition-colors duration-150 link-label no-underline">View all projects</Link>
+                  <MotionLink
+                    href="/craft"
+                    className="inline-flex items-center h-9 px-[6px] link-label no-underline"
+                    animate={{ color: 'var(--color-text-primary)' }}
+                    whileHover={{ color: 'var(--color-brand)' }}
+                    whileTap={{ color: 'var(--color-brand)' }}
+                    transition={SPRING_SNAP}
+                  >View all projects</MotionLink>
                 </div>
                 <div className="hidden tab:block">
                   <ViewAllProjectsButton />

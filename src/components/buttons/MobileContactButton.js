@@ -1,17 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function MobileContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }) {
   const [ripples, setRipples] = useState([])
   const buttonRef  = useRef(null)
-  const timerRef   = useRef({})
   const prefersReduced = usePrefersReducedMotion()
-
-  // Clean up all pending timers on unmount.
-  useEffect(() => () => Object.values(timerRef.current).forEach(clearTimeout), [])
 
   const triggerRipple = (x, y) => {
     if (prefersReduced) return
@@ -21,10 +17,6 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
     const size = Math.max(rect.width, rect.height)
     const key  = Date.now()
     setRipples((prev) => [...prev, { x: x - rect.left - size / 2, y: y - rect.top - size / 2, size, key }])
-    timerRef.current[key] = setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.key !== key))
-      delete timerRef.current[key]
-    }, 600)
   }
 
   const handleClick = (e) => {
@@ -58,8 +50,12 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
       </span>
       <span className="absolute inset-0 pointer-events-none">
         {!prefersReduced && ripples.map((ripple) => (
-          <span
+          <motion.span
             key={ripple.key}
+            initial={{ scale: 0, opacity: 0.3 }}
+            animate={{ scale: 4, opacity: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            onAnimationComplete={() => setRipples((prev) => prev.filter((r) => r.key !== ripple.key))}
             style={{
               position: 'absolute',
               width: `${ripple.size}px`,
@@ -68,9 +64,6 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
               left: `${ripple.x}px`,
               borderRadius: '50%',
               backgroundColor: 'var(--color-amethyst-100)',
-              opacity: 0.3,
-              transform: 'scale(0)',
-              animation: 'ripple 600ms ease-out forwards',
             }}
           />
         ))}

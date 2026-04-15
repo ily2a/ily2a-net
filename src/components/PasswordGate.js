@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { SPRING_SNAP } from '@/constants/animations'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/SilentErrorBoundary'
@@ -140,12 +141,14 @@ export default function PasswordGate() {
                   hasError={status === 'error'}
                   errorId="cs-password-error"
                   rightSlot={
-                    <button
+                    <motion.button
                       type="button"
                       onClick={() => setShowPass(v => !v)}
                       aria-label={showPass ? 'Hide password' : 'Show password'}
                       aria-pressed={showPass}
-                      className="text-text-secondary hover:text-text-primary transition-colors duration-150"
+                      className="text-text-secondary"
+                      whileHover={{ color: 'var(--color-text-primary)' }}
+                      transition={SPRING_SNAP}
                     >
                       {showPass ? (
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -159,7 +162,7 @@ export default function PasswordGate() {
                           <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                       )}
-                    </button>
+                    </motion.button>
                   }
                 />
                 <div role="alert" aria-atomic="true">

@@ -3,6 +3,7 @@
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { AMETHYST } from '@/constants/colors';
 
 function hexToVec3(hex) {
   const h = hex.replace('#', '');
@@ -141,10 +142,9 @@ export default function NotFoundPasswordBg({
   edgeFadeWidth = 0.0,
   colorCycleSpeed = 0.8,
   brightness = 0.18,
-  // amethyst-400 / 600 / 800
-  color1 = '#b2adc7',
-  color2 = '#8479a0',
-  color3 = '#5a516c',
+  color1 = AMETHYST[400],
+  color2 = AMETHYST[600],
+  color3 = AMETHYST[800],
   enableMouseInteraction = true,
   mouseInfluence = 2.0,
 }) {

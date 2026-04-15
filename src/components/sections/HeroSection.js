@@ -5,6 +5,7 @@ import BookingButton from '@/components/buttons/BookingButton'
 import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/TextReveal'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
+import { AMETHYST } from '@/constants/colors'
 import dynamic from 'next/dynamic'
 
 const HeroBg = dynamic(() => import('@/components/backgrounds/HeroBg'), {
@@ -19,8 +20,7 @@ const HeroBg = dynamic(() => import('@/components/backgrounds/HeroBg'), {
 })
 import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
 
-// amethyst-950 / amethyst-700 / amethyst-400 / amethyst-300
-const HERO_COLORS = ['#2e2937', '#6c6284', '#b2adc7', '#cbc9da']
+const HERO_COLORS = [AMETHYST[950], AMETHYST[700], AMETHYST[400], AMETHYST[300]]
 
 function HeroBackground() {
   return (

@@ -2,6 +2,7 @@
 
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
+import { AMETHYST } from '@/constants/colors'
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -110,7 +111,7 @@ void main() {
 `
 
 export default function ContactBg({
-  colorStops = ['#2e2937', '#6c6284', '#b2adc7'], // amethyst-950 / amethyst-700 / amethyst-400
+  colorStops = [AMETHYST[950], AMETHYST[700], AMETHYST[400]],
   amplitude = 1.0,
   blend = 0.5,
   speed = 1.0,
