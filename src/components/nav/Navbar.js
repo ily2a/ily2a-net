@@ -14,8 +14,7 @@ import { useActiveSection } from '@/hooks/useActiveSection'
 const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 0, boxSizing: 'border-box' }
 const GLASS_STYLE_DESKTOP = { maxWidth: 'none',  minWidth: '472px', flexShrink: 0, boxSizing: 'border-box' }
 
-const VALID_SECTIONS  = new Set(['hero', 'work', 'capabilities', 'contact'])
-const OBSERVED_IDS    = ['work', 'capabilities', 'contact']
+const VALID_SECTIONS = new Set(['hero', 'work', 'capabilities', 'contact'])
 
 const Navbar = memo(function Navbar({ isMobile = false }) {
   const pathname = usePathname()
@@ -23,7 +22,7 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
   const isHome   = pathname === '/'
   const isCraft  = pathname === '/craft' || pathname.startsWith('/craft/')
   const prefersReduced  = usePrefersReducedMotion()
-  const activeSection   = useActiveSection(OBSERVED_IDS)
+  const activeSection   = useActiveSection()
 
   function navTo(sectionId) {
     if (!VALID_SECTIONS.has(sectionId)) return

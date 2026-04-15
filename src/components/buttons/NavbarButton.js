@@ -33,7 +33,7 @@ const mobileStates = {
   pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 
-export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick, ...rest }) {
+export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick, 'aria-current': ariaCurrent, ...rest }) {
   const width    = useWindowWidth()
   const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
   const { state, handlers } = useButtonState({ isMobile })
@@ -46,6 +46,7 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
       {...handlers}
       {...rest}
       aria-label={label}
+      aria-current={ariaCurrent}
       animate={{
         borderColor: styles[state].borderColor,
         background:  styles[state].background,
