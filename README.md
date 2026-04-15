@@ -13,7 +13,7 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 | Email | Resend |
 | Booking | Cal.com embed |
 | WebGL | OGL |
-| Font | Satoshi via Fontshare |
+| Font | Satoshi via `next/font/local` (self-hosted) |
 | Analytics | Vercel Speed Insights + Analytics |
 
 ## Pages
@@ -138,11 +138,11 @@ npx sanity@latest schema deploy
 
 **Visual Effects**
 - **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
-- **Aurora** — animated aurora background effect
-- **LineWaves** / **LineWavesBackground** — SVG line-wave decorative background
-- **GradientBlinds** — animated gradient overlay (DPR capped at 1.5 for mobile INP)
-- **DarkVeil** — dark overlay used for transitions
-- **TestimonialsBackground** — lazy-loaded `DarkVeil` background for the testimonials section with SSR fallback gradient
+- **HeroBg** — WebGL (OGL) shader background for the hero section; DPR capped at 1.5 for mobile INP
+- **ContactBg** — WebGL (OGL) aurora-style background for the contact section
+- **NotFoundPasswordBg** — WebGL (OGL) background shared by the 404 and password-gate pages
+- **TestimonialsBg** — lazy-loaded wrapper that defers `TestimonialsVeil` until needed
+- **TestimonialsVeil** — WebGL (OGL) dark veil overlay for the testimonials section
 - **TextReveal** — scroll-triggered text reveal animation
 
 **Utility**
