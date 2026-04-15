@@ -23,11 +23,11 @@ export default function BackToTop() {
 
   const onMouseMove = (e) => {
     if (rafRef.current) return
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
     const { clientX, clientY } = e
     rafRef.current = requestAnimationFrame(() => {
-      const el = ref.current
-      if (!el) { rafRef.current = 0; return }
-      const rect = el.getBoundingClientRect()
       el.style.setProperty('--mx', `${clientX - rect.left}px`)
       el.style.setProperty('--my', `${clientY - rect.top}px`)
       rafRef.current = 0

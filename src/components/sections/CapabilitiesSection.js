@@ -42,12 +42,13 @@ function SpotlightCard({ children }) {
 
   const handleMouseMove = useCallback((e) => {
     if (rafRef.current) return
+    const el = divRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const { clientX, clientY } = e
     rafRef.current = requestAnimationFrame(() => {
-      const el = divRef.current
-      if (!el) { rafRef.current = 0; return }
-      const rect = el.getBoundingClientRect()
-      spotRef.current?.style.setProperty('--sx', `${e.clientX - rect.left}px`)
-      spotRef.current?.style.setProperty('--sy', `${e.clientY - rect.top}px`)
+      spotRef.current?.style.setProperty('--sx', `${clientX - rect.left}px`)
+      spotRef.current?.style.setProperty('--sy', `${clientY - rect.top}px`)
       rafRef.current = 0
     })
   }, [])

@@ -19,8 +19,8 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
           // eslint-disable-next-line react/no-array-index-key
           key={`${word}-${wi}`}
           className="inline-block mr-[0.25em]"
-          initial={skip ? false : { opacity: 0, filter: 'blur(6px)', y: 8, scale }}
-          animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
+          initial={skip ? false : { opacity: 0, y: 8, scale }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{
             type: 'spring',
             stiffness: 400,

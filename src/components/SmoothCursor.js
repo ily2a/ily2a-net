@@ -75,17 +75,16 @@ export default function SmoothCursor() {
   return (
     <motion.div
       className="fixed z-[9999] pointer-events-none will-change-transform"
-      style={{ left: cursorX, top: cursorY, translateX: '-50%', translateY: '-50%' }}
+      style={{ left: 0, top: 0, x: cursorX, y: cursorY, translateX: '-50%', translateY: '-50%' }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ duration: 0.15 }}
     >
       <motion.div
-        className="flex items-center justify-center overflow-hidden backdrop-blur-[20px] backdrop-saturate-300"
+        className="flex items-center justify-center overflow-hidden backdrop-blur-[20px] backdrop-saturate-300 w-[120px] h-[36px]"
         animate={{
-          width:        isHovering ? 120 : 16,
-          height:       isHovering ? 36  : 16,
-          scale:        isClicking ? 0.8 : 1,
-          borderRadius: isHovering ? 8   : 9999,
+          scaleX:       (isHovering ? 1 : 16 / 120) * (isClicking ? 0.8 : 1),
+          scaleY:       (isHovering ? 1 : 16 / 36)  * (isClicking ? 0.8 : 1),
+          borderRadius: isHovering ? 8 : 9999,
         }}
         transition={{ ease: 'easeInOut', duration: 0.2 }}
         style={{

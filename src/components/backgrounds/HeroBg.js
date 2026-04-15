@@ -161,6 +161,7 @@ const HeroBg = ({
   const geometryRef     = useRef(null)
   const rendererRef     = useRef(null)
   const mouseTargetRef  = useRef([0, 0])
+  const canvasRectRef   = useRef(null)
   const lastTimeRef     = useRef(0)
   const firstResizeRef  = useRef(true)
 
@@ -271,6 +272,7 @@ const HeroBg = ({
 
     const resize = () => {
       const rect = container.getBoundingClientRect()
+      canvasRectRef.current = rect
       renderer.setSize(rect.width, rect.height)
       uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1]
       const bc  = blindCountRef.current
@@ -295,7 +297,8 @@ const HeroBg = ({
     ro.observe(container)
 
     const onPointerMove = e => {
-      const rect = canvas.getBoundingClientRect()
+      const rect = canvasRectRef.current
+      if (!rect) return
       const scale = renderer.dpr || 1
       const x = (e.clientX - rect.left) * scale
       const y = (rect.height - (e.clientY - rect.top)) * scale
