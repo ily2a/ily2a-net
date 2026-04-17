@@ -102,9 +102,6 @@ export function makePtBody(headingIdMap = {}) {
   }
 }
 
-// Convenience export for call sites that don't need id deduplication.
-export const ptBody = makePtBody({})
-
 export const ptSection = {
   ...ptBase,
   marks: {

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { AMETHYST } from '@/constants/colors'
 
 const MAX_COLORS = 8
 
@@ -122,7 +123,7 @@ const hexToRGB = hex => {
   return [r, g, b]
 }
 const prepStops = stops => {
-  const base = (stops && stops.length ? stops : ['#FF9FFC', '#5227FF']).slice(0, MAX_COLORS)
+  const base = (stops && stops.length ? stops : [AMETHYST[950], AMETHYST[400]]).slice(0, MAX_COLORS)
   if (base.length === 1) base.push(base[0])
   while (base.length < MAX_COLORS) base.push(base[base.length - 1])
   const arr = []
