@@ -14,11 +14,14 @@ export function useActiveSection() {
     const elements = IDS.map(id => document.getElementById(id)).filter(Boolean)
     if (!elements.length) return
 
+    const visible = new Set()
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) { setActive(entry.target.id); break }
+          if (entry.isIntersecting) visible.add(entry.target.id)
+          else visible.delete(entry.target.id)
         }
+        setActive(IDS.find(id => visible.has(id)) ?? null)
       },
       { rootMargin: '-10% 0px -40% 0px', threshold: 0 }
     )

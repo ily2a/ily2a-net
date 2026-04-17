@@ -31,7 +31,7 @@ const ERROR_COPY = {
 
 const ContactBg = dynamic(() => import('@/components/backgrounds/ContactBg'), { ssr: false })
 
-// Stable reference — Aurora guards color re-parsing on reference equality,
+// Stable reference — ContactBg guards color re-parsing on reference equality,
 // so an inline array literal would trigger re-parses on every form keystroke.
 const AURORA_STOPS = [AMETHYST[950], AMETHYST[600], AMETHYST[400]]
 

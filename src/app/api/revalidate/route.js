@@ -1,5 +1,5 @@
 import { revalidateTag } from 'next/cache'
-import { timingSafeStringEqual, createRateLimiter } from '@/lib/api'
+import { timingSafeStringEqual, createRateLimiter, getClientIp } from '@/lib/api'
 
 // POST /api/revalidate
 // Called by a Sanity webhook on document publish/unpublish.
@@ -24,7 +24,7 @@ export async function POST(request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (isRateLimited(secret)) {
+  if (isRateLimited(getClientIp(request))) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 

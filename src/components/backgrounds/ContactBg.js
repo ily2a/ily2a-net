@@ -181,9 +181,14 @@ export default function ContactBg({
     let cachedStops = colorStopsArray
     let lastStopsRef = propsRef.current.colorStops
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Track reduced-motion reactively so toggling the OS setting mid-session
+    // pauses/resumes the RAF loop instead of leaving it frozen to mount-time state.
+    const reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let prefersReducedMotion = reducedMotionMq.matches
+    let isVisible = true
+    let tabVisible = !document.hidden
 
-    // Pause/resume helper — used by both IntersectionObserver and visibilitychange.
+    // Pause/resume helper — used by IntersectionObserver, visibilitychange, and reduced-motion.
     let animateId = 0
     const setActive = (active) => {
       if (!active) {
@@ -193,13 +198,22 @@ export default function ContactBg({
       }
     }
 
-    // Pause the RAF loop when the Aurora container is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' })
+    const syncActive = () => setActive(isVisible && tabVisible && !prefersReducedMotion)
+
+    // Pause the RAF loop when the ContactBg container is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => { isVisible = entry.isIntersecting; syncActive() }, { rootMargin: '200px' })
     io.observe(ctn)
 
     // Pause when the tab is hidden to avoid unnecessary GPU work.
-    const onVisibilityChange = () => setActive(!document.hidden)
+    const onVisibilityChange = () => { tabVisible = !document.hidden; syncActive() }
     document.addEventListener('visibilitychange', onVisibilityChange)
+
+    const onReducedMotionChange = (e) => {
+      prefersReducedMotion = e.matches
+      if (prefersReducedMotion) setActive(false)
+      else { syncActive(); if (!animateId) renderer.render({ scene: mesh }) }
+    }
+    reducedMotionMq.addEventListener('change', onReducedMotionChange)
 
     const update = t => {
       animateId = requestAnimationFrame(update)
@@ -227,6 +241,7 @@ export default function ContactBg({
     return () => {
       cancelAnimationFrame(animateId)
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      reducedMotionMq.removeEventListener('change', onReducedMotionChange)
       ro.disconnect()
       io.disconnect()
       if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas)

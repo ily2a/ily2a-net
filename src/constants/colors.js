@@ -1,5 +1,8 @@
-// Amethyst palette hex values — mirrors globals.css @theme tokens.
-// Use these only where CSS variables cannot be used (e.g. WebGL / canvas).
+// Palette hex values — mirrors globals.css @theme tokens.
+// Use these only where CSS variables cannot be used (e.g. WebGL / canvas,
+// Next.js metadata that must be a string at build time).
+export const BACKGROUND = '#0D1012'
+
 export const AMETHYST = {
   50:  '#f6f6f9',
   100: '#eeecf3',

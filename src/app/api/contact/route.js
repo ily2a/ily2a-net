@@ -51,15 +51,22 @@ export async function POST(request) {
     subject: `New message from ${safeName}`,
     text:    `Name: ${safeName}\nEmail: ${safeEmail}\n\n${safeMessage}`,
   })
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('timeout')), 8000)
-  )
+  // Swallow a post-timeout rejection so Node doesn't log an unhandled rejection
+  // when Resend eventually fails after we've already returned the 500.
+  sendPromise.catch(() => {})
+
+  let timeoutId
+  const timeoutPromise = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error('timeout')), 8000)
+  })
 
   let result
   try {
     result = await Promise.race([sendPromise, timeoutPromise])
   } catch {
     return Response.json({ error: 'Failed to send message' }, { status: 500 })
+  } finally {
+    clearTimeout(timeoutId)
   }
 
   if (result?.error) {

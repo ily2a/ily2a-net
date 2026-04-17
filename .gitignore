@@ -26,6 +26,7 @@
 
 # local config (machine-specific, not for version control)
 .claude/
+.context/
 compound-engineering.local.md
 todos/
 

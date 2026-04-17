@@ -64,6 +64,7 @@ export default function BookingButton({ static: isStatic = false }) {
   const frameRef        = useRef(null)    // modal content container for focus trap
   const triggerRef      = useRef(null)    // element that opened the modal — restored on close
   const focusableRef    = useRef([])      // cached focusable elements — queried once on open
+  const isOpeningRef    = useRef(false)   // synchronous open guard — blocks double-click before state settles
 
   const initCal = async () => {
     if (calInitialized.current) return
@@ -124,6 +125,7 @@ export default function BookingButton({ static: isStatic = false }) {
   const handleClose = useCallback(() => {
     releaseScrollLock()
     setOpen(false)
+    isOpeningRef.current = false
     triggerRef.current?.focus({ preventScroll: true })
     triggerRef.current = null
   }, [])
@@ -160,7 +162,9 @@ export default function BookingButton({ static: isStatic = false }) {
       if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
         handleClose()
       }
-      if (e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
+      // Desktop uses a fixed-height iframe; only narrow layouts read iframeHeight,
+      // so skip the state update (and re-render) when it wouldn't be used.
+      if (isNarrowLayout && e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
         // Floor raised to 400 — Cal.com fires transient near-zero heights during
         // reflow; clamping to 200 would collapse the iframe with no recovery affordance.
         setIframeHeight(Math.min(3000, Math.max(400, e.data.data.iframeHeight - 40)))
@@ -180,7 +184,8 @@ export default function BookingButton({ static: isStatic = false }) {
   }, [open, handleClose])
 
   const handleOpen = () => {
-    if (open) return
+    if (open || isOpeningRef.current) return
+    isOpeningRef.current = true
     triggerRef.current = document.activeElement
     const scrollY = window.scrollY
     document.body.dataset.scrollY = String(scrollY)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EMAIL_RE, CONTACT_MAX } from '@/lib/validation'
 
 /**
@@ -23,6 +23,10 @@ export function useContactForm() {
   const [status, setStatus] = useState('idle')
   const [errors, setErrors] = useState({ name: null, email: null, message: null })
   const abortRef = useRef(null)
+
+  // Abort any in-flight submission when the form unmounts (e.g. route change
+  // mid-submit) so the fetch doesn't settle into a no-op state update.
+  useEffect(() => () => abortRef.current?.abort(), [])
 
   const handleChange = (e) => {
     const { name, value } = e.target

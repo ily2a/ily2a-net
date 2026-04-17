@@ -2,6 +2,7 @@ import "./globals.css"
 import { Suspense } from "react"
 import localFont from "next/font/local"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/constants/site"
+import { BACKGROUND } from "@/constants/colors"
 import { safeJsonLd } from "@/lib/json-ld"
 import SmoothCursor from "@/components/SmoothCursor"
 import { SanityLive } from "@/sanity/lib/live"
@@ -38,7 +39,7 @@ const jsonLd = {
 const jsonLdString = safeJsonLd(jsonLd)
 
 export const viewport = {
-  themeColor: '#0D1012',
+  themeColor: BACKGROUND,
 }
 
 export const metadata = {

@@ -64,7 +64,6 @@ export default function SmoothCursor() {
       window.removeEventListener('mouseup',     onMouseUp)
       window.removeEventListener('blur',        onBlur)
       if (rafId.current) cancelAnimationFrame(rafId.current)
-      setIsClicking(false)
     }
   // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
   // eslint-disable-next-line react-hooks/exhaustive-deps
