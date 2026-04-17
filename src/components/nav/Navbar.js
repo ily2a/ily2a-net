@@ -9,6 +9,7 @@ import MobileContactButton from '@/components/buttons/MobileContactButton'
 import GlassSurface from '@/components/GlassSurface'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useActiveSection } from '@/hooks/useActiveSection'
+import { scrollToElement } from '@/lib/scroll'
 
 // Hoisted to module level — avoids recreating style objects on every render.
 const GLASS_STYLE_MOBILE  = { maxWidth: '440px', minWidth: 'auto',  flexShrink: 0, boxSizing: 'border-box' }
@@ -27,13 +28,9 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
   function navTo(sectionId) {
     if (!VALID_SECTIONS.has(sectionId)) return
     if (isHome) {
-      document
-        .getElementById(sectionId)
-        ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
+      scrollToElement(document.getElementById(sectionId), prefersReduced)
     } else if (isCraft && sectionId === 'contact') {
-      document
-        .getElementById('contact')
-        ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
+      scrollToElement(document.getElementById('contact'), prefersReduced)
     } else {
       router.push(`/?scrollTo=${sectionId}`)
     }

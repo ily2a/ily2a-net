@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { scrollToElement } from '@/lib/scroll'
 
 // Defined at module level — same object reference on every render, so
 // Framer Motion's `animate` never re-triggers on unchanged state.
@@ -35,9 +36,7 @@ export default function TestimonialsButton({ instant = false }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ ...SPRING_ENTRANCE, delay: instant ? 0 : HERO_BUTTON_DELAY }}
       onClick={() =>
-        document
-          .getElementById('testimonials')
-          ?.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
+        scrollToElement(document.getElementById('testimonials'), prefersReduced)
       }
       {...handlers}
       className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-background/15 cursor-pointer border-none"

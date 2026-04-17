@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP } from '@/constants/animations'
+import { scrollToElement } from '@/lib/scroll'
 
 export default function TableOfContents({ items }) {
   const [activeId, setActiveId] = useState(null)
@@ -39,11 +40,10 @@ export default function TableOfContents({ items }) {
 
   const handleClick = useCallback((e, id) => {
     e.preventDefault()
-    // Use scrollIntoView via rAF so any pending layout work (lazy images,
-    // ResizeObserver) settles before the target position is calculated.
+    // rAF lets pending layout work (lazy images, ResizeObserver) settle
+    // before the target position is measured.
     requestAnimationFrame(() => {
-      const el = document.getElementById(id)
-      if (el) el.scrollIntoView({ behavior: prefersReduced ? 'instant' : 'smooth' })
+      scrollToElement(document.getElementById(id), prefersReduced)
     })
   }, [prefersReduced])
 
