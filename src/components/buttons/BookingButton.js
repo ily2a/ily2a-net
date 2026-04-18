@@ -5,8 +5,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import CloseButton from '@/components/buttons/CloseButton'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
-import { useButtonState } from '@/hooks/useButtonState'
-import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY } from '@/constants/animations'
+import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 
 function releaseScrollLock() {
   const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
@@ -26,26 +25,6 @@ const FRAME_BASE = {
   backdropFilter: 'blur(8px)',
 }
 
-// Defined at module level — same object reference on every render, so
-// Framer Motion's `animate` never re-triggers on unchanged state.
-const INNER_STYLES = {
-  default: {
-    background: 'linear-gradient(to bottom, var(--color-amethyst-50), var(--color-amethyst-500))',
-    border:     '1px solid var(--color-amethyst-100)',
-    boxShadow:  'none',
-  },
-  hover: {
-    background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-300))',
-    border:     '1px solid var(--color-amethyst-300)',
-    boxShadow:  'none',
-  },
-  pressed: {
-    background: 'linear-gradient(to bottom, var(--color-text-primary), var(--color-amethyst-100))',
-    border:     '1px solid var(--color-brand)',
-    boxShadow:  'inset 0px 3px 3px var(--color-brand), inset 0px -3px 3px var(--color-brand), inset -3px 0px 3px var(--color-brand), inset 3px 0px 3px var(--color-brand)',
-  },
-}
-
 export default function BookingButton({ static: isStatic = false }) {
   const [open, setOpen]               = useState(false)
   const [mounted, setMounted]         = useState(false)
@@ -55,8 +34,6 @@ export default function BookingButton({ static: isStatic = false }) {
   const width          = useWindowWidth()
   const isMobile       = width > 0 && width < 810
   const isTablet       = width >= 810 && width < 1200
-
-  const { state, handlers } = useButtonState()
 
   // Cal.com is initialised lazily — only when the user first opens the modal
   const calInitialized  = useRef(false)
@@ -311,22 +288,26 @@ export default function BookingButton({ static: isStatic = false }) {
     <>
       <motion.button
         initial={isStatic ? false : { opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          boxShadow: '0 10px 30px -10px color-mix(in oklch, var(--color-amethyst-400) 55%, transparent), inset 0 0 0 1px var(--color-spotlight)',
+        }}
+        whileHover={HOVER_LIFT}
+        whileTap={{
+          y: 0,
+          boxShadow: 'inset 0 0 0 1px var(--color-brand), inset 0 3px 6px var(--color-brand), inset 0 -3px 6px var(--color-brand), inset 3px 0 6px var(--color-brand), inset -3px 0 6px var(--color-brand)',
+          transition: SPRING_SNAP,
+        }}
         transition={{ ...SPRING_ENTRANCE, delay: isStatic ? 0 : HERO_BUTTON_DELAY }}
         onClick={handleOpen}
-        {...handlers}
         aria-label="Book a call"
-        className="inline-flex items-center justify-center p-2 w-auto h-14 rounded-[8px] bg-amethyst-200/15 cursor-pointer border-none"
+        style={{
+          background: 'linear-gradient(to bottom, var(--color-amethyst-100), var(--color-amethyst-400))',
+        }}
+        className="inline-flex items-center justify-center h-11 px-4 rounded-[8px] cursor-pointer border-0 text-amethyst-950"
       >
-        <motion.div
-          animate={INNER_STYLES[state]}
-          transition={SPRING_SNAP}
-          className="flex items-center justify-center w-full h-full rounded-[8px] px-4"
-        >
-          <span className="btn-label text-background">
-            Book a call
-          </span>
-        </motion.div>
+        <span className="btn-label leading-none">Book a call</span>
       </motion.button>
 
       {mounted && createPortal(overlay, document.body)}

@@ -7,6 +7,9 @@ export const SPRING_SNAP     = { type: 'spring', stiffness: 2000, damping: 110, 
 export const SPRING_ENTRANCE = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
 
+// Shared micro-lift for button hover — 1px rise gives a tactile hint without disturbing layout.
+export const HOVER_LIFT = { y: -1 }
+
 // Coordinated entrance delays (seconds) — timed relative to TextReveal sequence.
 // TextReveal animates word-by-word at 0.06s/word.
 // First line (12 words) finishes ≈ 1.2s; second line (7 words) finishes ≈ 2.0s.
