@@ -4,7 +4,7 @@ export const TESTIMONIALS = [
     role:   'Creator Product Director @ Genflow',
     avatar: '/Avatars/matt.jpg',
     quote:
-      'I had the pleasure of working with Ily, who joined us to strengthen our design systems and bring more consistency to our UX through the adoption of Tailwind CSS colour scales. From the outset, Ily demonstrated a strong grasp of both design principles and practical implementation. He quickly translated ideas into tangible improvements, elevating the quality and coherence of the projects he worked on. He was also highly effective at collaborating with developers, ensuring that design systems were not only well thought through but also successfully implemented in practice. His ability to bridge the gap between design and engineering, while staying pragmatic and delivery-focused, made an immediate impact on our team. Ily would be a valuable addition to any team looking to level up their design systems and user experience.',
+      'Ily joined us to strengthen our design systems and bring more consistency across our products, and he delivered on both quickly. He has a strong grasp of design principles and practical implementation, translating ideas into concrete improvements that raised the quality and coherence of the projects he worked on. He was also highly effective working with developers, making sure design systems were well thought through and properly built in practice. That ability to work across design and engineering, while staying pragmatic and focused on delivery, made an immediate difference. Ily would be a strong addition to any team looking to raise the bar on design systems and user experience.',
     wide: true,
   },
   {
