@@ -150,6 +150,7 @@ npx sanity@latest schema deploy
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
 - **PasswordGate** — locks protected case studies behind a password; uses `sessionStorage` so the gate re-locks on tab close
 - **PortableTextComponents** — Portable Text renderer components for Sanity rich-text fields
+- **PortableTextLink** — animated external link variant used inside Portable Text
 - **TableOfContents** — in-page navigation for long case studies
 - **ScrollToSection** — smooth-scroll anchor helper (respects `prefers-reduced-motion`)
 - **CloseButton** — reusable modal/overlay close button
@@ -162,12 +163,13 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
-- **Breakpoints** — `tab: 730px`, `desk: 1200px`, `xl: 1440px`
+- **Breakpoints** — `sm: 390px`, `mobile: 600px` (JS-only), `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px`
 
 ## Constants
 
 - **animations.js** — shared Framer Motion animation configs
-- **layout.js** — layout constants
+- **colors.js** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
+- **layout.js** — layout constants (JS-only breakpoints)
 - **site.js** — site URL, name, and meta description constants
 
 ## Data
@@ -180,7 +182,17 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useButtonState** — manages hover/active state for custom button components
 - **usePrefersReducedMotion** — reads `prefers-reduced-motion` media query
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
+- **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
 - **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
+
+## Lib
+
+- **sanity-queries.js** — GROQ queries for case studies and home-page content
+- **api.js** — shared API helpers (rate limiter, IP extraction, constant-time string compare) used by route handlers
+- **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
+- **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
+- **scroll.js** — Framer Motion-based smooth-scroll helper with `prefers-reduced-motion` support
+- **validation.js** — shared form validation
 
 ## Deployment
 
