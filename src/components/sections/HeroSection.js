@@ -55,9 +55,9 @@ export default function HeroSection({ children }) {
   const introPlayed = useHeroIntroPlayed()
 
   return (
-    <section id="hero" className="relative h-[100dvh]">
+    <section id="hero" className="relative h-screen">
       <HeroBackground />
-      <div className="relative z-10 flex justify-center pt-[calc(120px+env(safe-area-inset-top))] px-5 pb-7 md:pt-[calc(88px+env(safe-area-inset-top))] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
+      <div className="relative z-10 flex justify-center pt-[120px] px-5 pb-7 md:pt-[88px] md:px-10 md:pb-6 lg:px-16 lg:pb-16">
         <div className="w-full max-w-[680px] flex flex-col gap-6">
           {children}
           <div className="flex flex-col gap-4">

@@ -13,7 +13,7 @@ export default function FloatingNav({ delay = 0 }) {
   const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
 
   return (
-    <div className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-0 right-0 z-50 flex justify-center pointer-events-none">
+    <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
       <motion.div
         className="pointer-events-auto"
         initial={introPlayed ? false : { y: 150 }}
