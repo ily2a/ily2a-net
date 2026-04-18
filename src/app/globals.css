@@ -88,9 +88,14 @@ html {
   scroll-padding-bottom: 96px;
 }
 
-/* Hide cursor everywhere — custom cursor handles it (desktop only) */
+/* Hide cursor everywhere — custom cursor handles it (desktop only).
+   Gated on body.smooth-cursor-active so reduced-motion users (and any
+   case where SmoothCursor doesn't mount) keep the native cursor. */
 @media (any-hover: hover) and (any-pointer: fine) {
-  *, *::before, *::after {
+  body.smooth-cursor-active,
+  body.smooth-cursor-active *,
+  body.smooth-cursor-active *::before,
+  body.smooth-cursor-active *::after {
     cursor: none !important;
   }
 }
@@ -199,7 +204,7 @@ input:focus-visible, textarea:focus-visible {
 
 .project-card__scrim {
   @apply absolute inset-0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.7) 100%);
 }
 
 .project-card__content {
@@ -233,9 +238,15 @@ input:focus-visible, textarea:focus-visible {
 
 .testimonial-card {
   @apply relative overflow-hidden bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   box-shadow: var(--shadow-glass-card);
+}
+@media (min-width: 730px) {
+  .testimonial-card {
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -249,9 +260,15 @@ input:focus-visible, textarea:focus-visible {
 
 .cap-card {
   @apply relative overflow-hidden bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   box-shadow: var(--shadow-glass-card);
+}
+@media (min-width: 730px) {
+  .cap-card {
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+  }
 }
 
 

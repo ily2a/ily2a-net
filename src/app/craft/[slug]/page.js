@@ -11,7 +11,7 @@ import SilentErrorBoundary from '@/components/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
-import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
 import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/PasswordGate'
@@ -45,13 +45,14 @@ export async function generateMetadata({ params }) {
   const ogImage = data.coverImage?.url
     ? `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`
     : '/og-image.png'
+  const description = data.description || `${data.title} — case study by ${SITE_NAME}. ${CRAFT_DESCRIPTION}`
   return {
     title: `${data.title} — ${SITE_NAME}`,
-    description: data.description,
+    description,
     alternates: { canonical: `${SITE_URL}/craft/${slug}` },
     openGraph: {
       title: `${data.title} — ${SITE_NAME}`,
-      description: data.description,
+      description,
       url: `${SITE_URL}/craft/${slug}`,
       siteName: SITE_NAME,
       locale: 'en_GB',
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }) {
     twitter: {
       card: 'summary_large_image',
       title: `${data.title} — ${SITE_NAME}`,
-      description: data.description,
+      description,
       images: [{ url: ogImage, alt: `${data.title} — ${SITE_NAME}` }],
     },
   }

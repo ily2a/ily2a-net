@@ -234,9 +234,6 @@ export default function BookingButton({ static: isStatic = false }) {
       {open && (
         <motion.div
           key="backdrop"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Book a call with Ily Ameur"
           onClick={handleClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -247,6 +244,9 @@ export default function BookingButton({ static: isStatic = false }) {
           <motion.div
             key="frame"
             ref={frameRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="booking-dialog-title"
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -254,6 +254,7 @@ export default function BookingButton({ static: isStatic = false }) {
             transition={SPRING_SNAP}
             style={frameStyle}
           >
+            <h2 id="booking-dialog-title" className="sr-only">Book a call with Ily Ameur</h2>
             <div style={{
               position: 'absolute',
               top:      '16px',

@@ -69,6 +69,12 @@ export default function SmoothCursor() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEnabled, prefersReduced])
 
+  useEffect(() => {
+    if (!isEnabled || prefersReduced) return
+    document.body.classList.add('smooth-cursor-active')
+    return () => document.body.classList.remove('smooth-cursor-active')
+  }, [isEnabled, prefersReduced])
+
   if (!isEnabled || prefersReduced) return null
 
   return (

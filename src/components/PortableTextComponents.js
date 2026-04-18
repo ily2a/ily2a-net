@@ -82,7 +82,7 @@ export function makePtBody(headingIdMap = {}) {
               blurDataURL={value.lqip}
             />
             {value.caption && (
-              <figcaption className="text-caption text-text-subtle text-center">
+              <figcaption className="text-caption text-text-secondary text-center">
                 {value.caption}
               </figcaption>
             )}

@@ -48,14 +48,14 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
         className="inline-flex items-center justify-center gap-4 w-full h-full py-2 px-6 box-border"
       >
         <Logo isMobile={isMobile} onClick={() => navTo('hero')} />
-        <NavbarButton icon="craft"  label="Craft"  onClick={() => navTo('work')}         aria-current={activeSection === 'work'         ? 'true' : undefined} />
-        <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} aria-current={activeSection === 'capabilities' ? 'true' : undefined} />
+        <NavbarButton icon="craft"  label="Craft"  onClick={() => navTo('work')}         aria-current={activeSection === 'work'         ? 'location' : undefined} />
+        <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} aria-current={activeSection === 'capabilities' ? 'location' : undefined} />
         {isMobile ? (
           <div className="flex-1 min-w-0">
-            <MobileContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'true' : undefined} />
+            <MobileContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'location' : undefined} />
           </div>
         ) : (
-          <ContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'true' : undefined} />
+          <ContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'location' : undefined} />
         )}
       </nav>
     </GlassSurface>

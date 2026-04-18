@@ -76,7 +76,7 @@ export default function ContactSection() {
                     hasError={!!errors.name} errorId="name-error"
                   />
                   {errors.name && (
-                    <p id="name-error" className="text-[12px] text-error">{ERROR_COPY.name[errors.name] ?? 'Please check this field.'}</p>
+                    <p id="name-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.name[errors.name] ?? 'Please check this field.'}</p>
                   )}
                 </div>
 
@@ -90,7 +90,7 @@ export default function ContactSection() {
                     hasError={!!errors.email} errorId="email-error"
                   />
                   {errors.email && (
-                    <p id="email-error" className="text-[12px] text-error">{ERROR_COPY.email[errors.email] ?? 'Please check this field.'}</p>
+                    <p id="email-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.email[errors.email] ?? 'Please check this field.'}</p>
                   )}
                 </div>
               </div>
@@ -105,7 +105,7 @@ export default function ContactSection() {
                   hasError={!!errors.message} errorId="message-error"
                 />
                 {errors.message && (
-                  <p id="message-error" className="text-[12px] text-error">{ERROR_COPY.message[errors.message] ?? 'Please check this field.'}</p>
+                  <p id="message-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.message[errors.message] ?? 'Please check this field.'}</p>
                 )}
               </div>
 
@@ -114,10 +114,9 @@ export default function ContactSection() {
                   type="submit"
                   className="w-full"
                   disabled={status === 'sending' || status === 'sent' || status === 'ratelimited'}
+                  aria-busy={status === 'sending'}
                 >
-                  <span aria-live="polite" aria-atomic="true">
-                    {submitLabel}
-                  </span>
+                  <span>{submitLabel}</span>
                 </ContactFormButton>
               </div>
 

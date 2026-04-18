@@ -123,12 +123,12 @@ export default function PasswordGate() {
             </motion.div>
 
             {/* Heading */}
-            <h1 className="text-intro text-text-primary mt-3 [text-indent:0.03em]">
+            <h1 id="password-gate-heading" className="text-intro text-text-primary mt-3 [text-indent:0.03em]">
               This one&apos;s locked.
             </h1>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full mt-3" noValidate>
+            <form onSubmit={handleSubmit} aria-labelledby="password-gate-heading" className="flex flex-col gap-4 w-full mt-3" noValidate>
               <div className="flex flex-col gap-2 text-left">
                 <FloatingLabelInput
                   id="cs-password"

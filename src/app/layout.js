@@ -29,6 +29,7 @@ const jsonLd = {
   "name": SITE_NAME,
   "jobTitle": "Design Engineer",
   "url": SITE_URL,
+  "image": `${SITE_URL}/og-image.png`,
   "description": SITE_DESCRIPTION,
   "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
   "sameAs": ["https://linkedin.com/in/ily2a"],
