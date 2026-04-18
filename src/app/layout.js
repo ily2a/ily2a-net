@@ -41,7 +41,6 @@ const jsonLdString = safeJsonLd(jsonLd)
 
 export const viewport = {
   themeColor: BACKGROUND,
-  viewportFit: 'cover',
 }
 
 export const metadata = {

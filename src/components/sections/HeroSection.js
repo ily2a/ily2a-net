@@ -29,7 +29,7 @@ function HeroBackground() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.5 }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="fixed inset-0 w-full h-full"
+      className="absolute inset-0 w-full h-full"
     >
       <HeroBg
         gradientColors={HERO_COLORS}

@@ -30,12 +30,11 @@ export default async function Home() {
         <h1 className="heading-hero">Ily Ameur</h1>
       </HeroSection>
 
-      <div className="relative z-10 bg-background">
-        <CraftSection projects={projects} showViewAll />
-        <TestimonialsSection />
-        <CapabilitiesSection />
-        <SilentErrorBoundary><ContactSection /></SilentErrorBoundary>
-      </div>
+      <CraftSection projects={projects} showViewAll />
+
+      <TestimonialsSection />
+      <CapabilitiesSection />
+      <SilentErrorBoundary><ContactSection /></SilentErrorBoundary>
     </main>
   )
 }
