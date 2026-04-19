@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { SPRING_SNAP } from '@/constants/animations'
+import { useSpotlight } from '@/hooks/useSpotlight'
 
 // Module-level: motion.create() is stable and shouldn't re-run on render
 const MotionLink = motion.create(Link)
@@ -15,27 +15,7 @@ const VARIANTS = {
 }
 
 export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }) {
-  const ref    = useRef(null)
-  const rafRef = useRef(0)
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [])
-
-  const onMouseMove = (e) => {
-    if (rafRef.current) return
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const { clientX, clientY } = e
-    rafRef.current = requestAnimationFrame(() => {
-      el.style.setProperty('--mx', `${clientX - rect.left}px`)
-      el.style.setProperty('--my', `${clientY - rect.top}px`)
-      rafRef.current = 0
-    })
-  }
+  const { ref, onMouseMove } = useSpotlight()
 
   const v = VARIANTS[variant] ?? VARIANTS.default
   const baseClass = `relative inline-flex items-center justify-center rounded-[8px] px-4 ${v.height} btn-label ${v.text} ${v.border} overflow-hidden select-none no-underline ${className}`

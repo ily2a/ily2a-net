@@ -1,39 +1,22 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { useSpotlight } from '@/hooks/useSpotlight'
 import { scrollToY } from '@/lib/scroll'
 
 export default function BackToTop() {
   const [visible, setVisible]    = useState(false)
   const prefersReduced           = usePrefersReducedMotion()
-  const ref    = useRef(null)
-  const rafRef = useRef(0)
+  const { ref, onMouseMove }     = useSpotlight()
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  useEffect(() => {
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [])
-
-  const onMouseMove = (e) => {
-    if (rafRef.current) return
-    const { clientX, clientY } = e
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = 0
-      const el = ref.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      el.style.setProperty('--mx', `${clientX - rect.left}px`)
-      el.style.setProperty('--my', `${clientY - rect.top}px`)
-    })
-  }
 
   return (
     <AnimatePresence>
