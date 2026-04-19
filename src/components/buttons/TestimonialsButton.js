@@ -3,17 +3,20 @@
 import { motion } from 'framer-motion'
 import { SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { scrollToElement } from '@/lib/scroll'
 
 export default function TestimonialsButton({ instant = false }) {
   const prefersReduced = usePrefersReducedMotion()
+  const width          = useWindowWidth()
+  const isMobile       = width > 0 && width < 810
 
   return (
     <motion.button
       initial={instant ? false : { opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ ...HOVER_LIFT, borderColor: 'var(--color-border-hover)' }}
-      whileTap={{ y: 0 }}
+      whileTap={isMobile ? { scale: 0.96 } : { y: 0 }}
       transition={{ ...SPRING_ENTRANCE, delay: instant ? 0 : HERO_BUTTON_DELAY }}
       onClick={() =>
         scrollToElement(document.getElementById('testimonials'), prefersReduced)
