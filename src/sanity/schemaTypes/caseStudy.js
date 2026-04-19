@@ -82,6 +82,7 @@ const caseStudy = {
       group: 'meta',
       options: { hotspot: true },
       description: 'Shown on the project card by default',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'cardImageHover',
@@ -90,6 +91,7 @@ const caseStudy = {
       group: 'meta',
       options: { hotspot: true },
       description: 'Shown on hover (desktop) or press (mobile)',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'description',
@@ -111,6 +113,8 @@ const caseStudy = {
       title: 'Display Order',
       type: 'number',
       group: 'meta',
+      description: 'Lower numbers appear first. Use unique values to keep ordering deterministic.',
+      validation: Rule => Rule.integer().min(0),
     },
     {
       name: 'isPasswordProtected',
