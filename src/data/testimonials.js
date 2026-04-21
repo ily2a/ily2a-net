@@ -20,7 +20,7 @@ export const TESTIMONIALS = [
     role:   'Head of Development @ L-mobile',
     avatar: '/Avatars/oliver.jpg',
     quote:
-      'We worked with Ily on our B2B Field Service Management application. He established thorough design principles and helped us understand the real challenges of UI and UX design. He questions existing pieces while offering great new ideas — a dedicated pro who knows his craft and stays current.',
+      'We worked with Ily on our B2B Field Service Management application. He established thorough design principles and helped us understand the real challenges of UI and UX design. He questions existing pieces while offering great new ideas. A dedicated pro who knows his craft and stays current.',
     wide: false,
   },
   {
