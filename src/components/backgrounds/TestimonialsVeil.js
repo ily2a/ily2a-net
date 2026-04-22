@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react'
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { useModalOpen } from '@/hooks/useModalOpen'
 
 const vertex = `
 attribute vec2 position;
@@ -88,6 +89,10 @@ export default function TestimonialsVeil({
   const ref      = useRef(null)
   const propsRef = useRef({ hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale })
   const prefersReduced = usePrefersReducedMotion()
+  const modalOpen      = useModalOpen()
+  const modalOpenRef   = useRef(modalOpen)
+  const intersectingRef = useRef(true)
+  const setActiveRef   = useRef(null)
 
   // Shallow sync — keeps propsRef current without touching the GL context.
   useEffect(() => {
@@ -166,35 +171,52 @@ export default function TestimonialsVeil({
       renderer.render({ scene: mesh })
     }
 
-    // Pause the RAF loop when the canvas is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
+    const setActive = (active) => {
+      if (!active) {
         if (frame) { cancelAnimationFrame(frame); frame = 0 }
-      } else if (!frame && !prefersReduced) {
-        frame = requestAnimationFrame(loop)
-      }
-    }, { rootMargin: '200px' })
-    io.observe(canvas)
-
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        if (frame) { cancelAnimationFrame(frame); frame = 0 }
-      } else if (!frame && !prefersReduced) {
+      } else if (
+        !frame
+        && !prefersReduced
+        && !modalOpenRef.current
+        && intersectingRef.current
+        && !document.hidden
+      ) {
         frame = requestAnimationFrame(loop)
       }
     }
+    setActiveRef.current = setActive
+
+    // Pause the RAF loop when the canvas is scrolled out of view.
+    const io = new IntersectionObserver(([entry]) => {
+      intersectingRef.current = entry.isIntersecting
+      setActive(entry.isIntersecting)
+    }, { rootMargin: '200px' })
+    io.observe(canvas)
+
+    const onVisibilityChange = () => setActive(!document.hidden)
     document.addEventListener('visibilitychange', onVisibilityChange)
 
     if (prefersReduced) renderStatic()
     else loop()
 
     return () => {
+      setActiveRef.current = null
       cancelAnimationFrame(frame)
       ro.disconnect()
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [prefersReduced])
+
+  // Pause/resume when a blocking modal opens or closes — IntersectionObserver
+  // doesn't fire for occluded elements, only off-screen ones.
+  useEffect(() => {
+    modalOpenRef.current = modalOpen
+    const setActive = setActiveRef.current
+    if (!setActive) return
+    if (modalOpen) setActive(false)
+    else setActive(true)
+  }, [modalOpen])
 
   return (
     <canvas

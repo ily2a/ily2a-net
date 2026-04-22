@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { useModalOpen } from '@/hooks/useModalOpen'
 import { AMETHYST } from '@/constants/colors'
 
 const MAX_COLORS = 8
@@ -154,6 +155,7 @@ const HeroBg = ({
   attractRadius = 0.35,
 }) => {
   const prefersReduced  = usePrefersReducedMotion()
+  const modalOpen       = useModalOpen()
 
   const containerRef    = useRef(null)
   const rafRef          = useRef(null)
@@ -177,6 +179,9 @@ const HeroBg = ({
   const blindCountRef        = useRef(blindCount)
   const blindMinWidthRef     = useRef(blindMinWidth)
   const prefersReducedRef    = useRef(prefersReduced)
+  const modalOpenRef         = useRef(modalOpen)
+  const intersectingRef      = useRef(true)
+  const setActiveRef         = useRef(null)
 
   useEffect(() => {
     pausedRef.current         = paused
@@ -199,6 +204,17 @@ const HeroBg = ({
       }
     }
   }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, prefersReduced])
+
+  // Pause/resume when a blocking modal opens or closes. The shader keeps
+  // running behind a fullscreen overlay otherwise — IntersectionObserver
+  // only fires for off-screen elements, not occluded ones.
+  useEffect(() => {
+    modalOpenRef.current = modalOpen
+    const setActive = setActiveRef.current
+    if (!setActive) return
+    if (modalOpen) setActive(false)
+    else setActive(true)
+  }, [modalOpen])
 
   // ── Uniform update — no context rebuild ────────────────────────────────────
   // Updates shader uniforms in-place whenever visual props change.
@@ -308,20 +324,32 @@ const HeroBg = ({
     }
     canvas.addEventListener('pointermove', onPointerMove)
 
-    // Shared pause/resume — used by both visibilitychange and IntersectionObserver.
+    // Shared pause/resume — used by visibilitychange, IntersectionObserver,
+    // and the modal-open signal. Loop runs only when the canvas is visible,
+    // the tab is foreground, and no blocking modal is occluding it.
     const setActive = (active) => {
       if (!active) {
         if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
-      } else if (!rafRef.current && !prefersReducedRef.current) {
+      } else if (
+        !rafRef.current
+        && !prefersReducedRef.current
+        && !modalOpenRef.current
+        && intersectingRef.current
+        && !document.hidden
+      ) {
         rafRef.current = requestAnimationFrame(loop)
       }
     }
+    setActiveRef.current = setActive
 
     const onVisibilityChange = () => setActive(!document.hidden)
     document.addEventListener('visibilitychange', onVisibilityChange)
 
     // Pause the RAF loop when the container is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' })
+    const io = new IntersectionObserver(([entry]) => {
+      intersectingRef.current = entry.isIntersecting
+      setActive(entry.isIntersecting)
+    }, { rootMargin: '200px' })
     io.observe(container)
 
     const loop = t => {
@@ -378,6 +406,7 @@ const HeroBg = ({
     }
 
     return () => {
+      setActiveRef.current = null
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
       document.removeEventListener('visibilitychange', onVisibilityChange)
       canvas.removeEventListener('pointermove', onPointerMove)

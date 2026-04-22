@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import CloseButton from '@/components/buttons/CloseButton'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
+import { pushModalOpen, popModalOpen } from '@/hooks/useModalOpen'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 
 function releaseScrollLock() {
@@ -35,8 +36,10 @@ export default function BookingButton({ static: isStatic = false }) {
   const isMobile       = width > 0 && width < 810
   const isTablet       = width >= 810 && width < 1200
 
-  // Cal.com is initialised lazily — only when the user first opens the modal
+  // Cal.com is initialised lazily. Bundle is prefetched on first hover/focus
+  // so the network + parse cost is off the critical click→paint path.
   const calInitialized  = useRef(false)
+  const calPrefetched   = useRef(false)
   const closeButtonRef  = useRef(null)
   const frameRef        = useRef(null)    // modal content container for focus trap
   const triggerRef      = useRef(null)    // element that opened the modal — restored on close
@@ -72,6 +75,12 @@ export default function BookingButton({ static: isStatic = false }) {
     }
   }
 
+  const prefetchCal = () => {
+    if (calPrefetched.current) return
+    calPrefetched.current = true
+    import('@calcom/embed-react').catch(() => { calPrefetched.current = false })
+  }
+
   useEffect(() => { setMounted(true) }, [])
 
   // Reset iframe state each time modal opens
@@ -101,6 +110,7 @@ export default function BookingButton({ static: isStatic = false }) {
 
   const handleClose = useCallback(() => {
     releaseScrollLock()
+    popModalOpen()
     setOpen(false)
     isOpeningRef.current = false
     triggerRef.current?.focus({ preventScroll: true })
@@ -154,9 +164,13 @@ export default function BookingButton({ static: isStatic = false }) {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
-      // Safety net: restore scroll if the component unmounts while modal is still open
-      // (i.e. handleClose hasn't already cleared the dataset key).
-      if (document.body.dataset.scrollY !== undefined) releaseScrollLock()
+      // Safety net: restore scroll + decrement the modal-open count if the
+      // component unmounts while modal is still open (i.e. handleClose hasn't
+      // already cleared the dataset key).
+      if (document.body.dataset.scrollY !== undefined) {
+        releaseScrollLock()
+        popModalOpen()
+      }
     }
   }, [open, handleClose])
 
@@ -164,13 +178,19 @@ export default function BookingButton({ static: isStatic = false }) {
     if (open || isOpeningRef.current) return
     isOpeningRef.current = true
     triggerRef.current = document.activeElement
+    // Capture scroll position synchronously (need it before React re-renders
+    // and the body style change moves the page), but defer the actual layout
+    // mutation + Cal.com bundle load to RAF so the spinner can paint first.
     const scrollY = window.scrollY
-    document.body.dataset.scrollY = String(scrollY)
-    document.body.style.position  = 'fixed'
-    document.body.style.top       = `-${scrollY}px`
-    document.body.style.width     = '100%'
-    initCal()
+    pushModalOpen()
     setOpen(true)
+    requestAnimationFrame(() => {
+      document.body.dataset.scrollY = String(scrollY)
+      document.body.style.position  = 'fixed'
+      document.body.style.top       = `-${scrollY}px`
+      document.body.style.width     = '100%'
+      initCal()
+    })
   }
 
   const isNarrowLayout = isMobile || isTablet
@@ -301,6 +321,8 @@ export default function BookingButton({ static: isStatic = false }) {
         }}
         transition={{ ...SPRING_ENTRANCE, delay: isStatic ? 0 : HERO_BUTTON_DELAY }}
         onClick={handleOpen}
+        onPointerEnter={prefetchCal}
+        onFocus={prefetchCal}
         aria-label="Book a call"
         style={{
           background: 'linear-gradient(to bottom, var(--color-amethyst-100), var(--color-amethyst-400))',
