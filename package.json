@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "a11y": "axe http://localhost:3000 --tags wcag2a,wcag2aa,wcag21aa,wcag22aa --exit"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
@@ -32,6 +33,7 @@
     "dompurify": "^3.4.0"
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.11.2",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
