@@ -184,6 +184,8 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 - **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
 - **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
+- **useModalOpen** — module-level counter (`pushModalOpen` / `popModalOpen`) that WebGL backgrounds subscribe to so they can pause RAF loops while a blocking modal is open
+- **useSpotlight** — RAF-throttled pointer tracker that writes `--mx` / `--my` CSS variables on the target element, used by buttons that paint a radial spotlight at the cursor
 
 ## Lib
 
