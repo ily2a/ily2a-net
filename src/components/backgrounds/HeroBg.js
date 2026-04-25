@@ -241,9 +241,10 @@ const HeroBg = ({
     if (!container) return
 
     const renderer = new Renderer({
-      // Cap at 1.5 — matching Aurora/LineWaves. On a DPR-3 phone the shader
-      // otherwise renders at 3× (9× pixels), which saturates the GPU and
-      // causes main-thread stalls that destroy mobile INP.
+      // Cap at 1.5 — matches the other WebGL backgrounds (TestimonialsVeil,
+      // ContactBg, NotFoundPasswordBg). On a DPR-3 phone the shader otherwise
+      // renders at 3× (9× pixels), which saturates the GPU and causes
+      // main-thread stalls that destroy mobile INP.
       dpr: dpr ?? Math.min(window.devicePixelRatio || 1, 1.5),
       alpha: true,
       antialias: false, // antialias doubles pixel work on Retina for no visible gain in a shader effect
@@ -341,6 +342,9 @@ const HeroBg = ({
       }
     }
     setActiveRef.current = setActive
+    // Reconcile against modalOpen state captured during the WebGL rebuild —
+    // if the modal toggled while setActiveRef was null, this catches it.
+    if (modalOpenRef.current) setActive(false)
 
     const onVisibilityChange = () => setActive(!document.hidden)
     document.addEventListener('visibilitychange', onVisibilityChange)

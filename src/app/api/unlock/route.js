@@ -26,7 +26,7 @@ export async function POST(request) {
     return Response.json({ success: false }, { status: 500 })
   }
 
-  if (!timingSafeStringEqual(password.trim(), expected.trim())) {
+  if (!timingSafeStringEqual(password, expected)) {
     return Response.json({ success: false }, { status: 401 })
   }
 

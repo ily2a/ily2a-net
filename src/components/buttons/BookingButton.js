@@ -17,24 +17,20 @@ function releaseScrollLock() {
   window.scrollTo(0, scrollY)
 }
 
-// Shared frame visual properties — single source of truth for border, blur, etc.
-const FRAME_BASE = {
-  background:     'transparent',
-  border:         '1px solid var(--color-brand)',
-  borderRadius:   '8px',
-  overflow:       'hidden',
-  backdropFilter: 'blur(8px)',
-}
+// Iframe is considered failed if it hasn't fired onLoad within this window.
+const IFRAME_LOAD_TIMEOUT_MS = 15_000
 
 export default function BookingButton({ static: isStatic = false }) {
   const [open, setOpen]               = useState(false)
   const [mounted, setMounted]         = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
+  const [iframeError, setIframeError]   = useState(false)
   const [iframeHeight, setIframeHeight] = useState(600)
 
   const width          = useWindowWidth()
   const isMobile       = width > 0 && width < 810
   const isTablet       = width >= 810 && width < 1200
+  const isNarrowLayout = isMobile || isTablet
 
   // Cal.com is initialised lazily. Bundle is prefetched on first hover/focus
   // so the network + parse cost is off the critical click→paint path.
@@ -42,9 +38,19 @@ export default function BookingButton({ static: isStatic = false }) {
   const calPrefetched   = useRef(false)
   const closeButtonRef  = useRef(null)
   const frameRef        = useRef(null)    // modal content container for focus trap
+  const iframeRef       = useRef(null)    // iframe element — used to validate postMessage source
   const triggerRef      = useRef(null)    // element that opened the modal — restored on close
   const focusableRef    = useRef([])      // cached focusable elements — queried once on open
   const isOpeningRef    = useRef(false)   // synchronous open guard — blocks double-click before state settles
+  // Tracks whether this component currently contributes to the global modal
+  // counter (useModalOpen). Set sync in handleOpen, cleared in handleClose.
+  // Cleanup pops via this flag — not via dataset.scrollY — because the body-
+  // style mutation runs in rAF, and an unmount between push and rAF would
+  // otherwise leak the count permanently.
+  const modalCounterRef = useRef(false)
+  // Stores the open-rAF handle so unmount can cancel a pending body-style
+  // mutation that hasn't fired yet.
+  const openRafRef      = useRef(null)
 
   const initCal = async () => {
     if (calInitialized.current) return
@@ -85,8 +91,16 @@ export default function BookingButton({ static: isStatic = false }) {
 
   // Reset iframe state each time modal opens
   useEffect(() => {
-    if (open) { setIframeLoaded(false); setIframeHeight(600) }
+    if (open) { setIframeLoaded(false); setIframeError(false); setIframeHeight(600) }
   }, [open])
+
+  // If the iframe doesn't load within the timeout, surface an error UI so the
+  // spinner doesn't hang indefinitely on flaky networks or Cal.com outages.
+  useEffect(() => {
+    if (!open || iframeLoaded || iframeError) return
+    const t = setTimeout(() => setIframeError(true), IFRAME_LOAD_TIMEOUT_MS)
+    return () => clearTimeout(t)
+  }, [open, iframeLoaded, iframeError])
 
   // Prevent AT and keyboard from reaching background content while modal is open.
   // aria-modal alone has inconsistent support in NVDA+Chrome and older JAWS.
@@ -110,7 +124,10 @@ export default function BookingButton({ static: isStatic = false }) {
 
   const handleClose = useCallback(() => {
     releaseScrollLock()
-    popModalOpen()
+    if (modalCounterRef.current) {
+      popModalOpen()
+      modalCounterRef.current = false
+    }
     setOpen(false)
     isOpeningRef.current = false
     triggerRef.current?.focus({ preventScroll: true })
@@ -146,6 +163,9 @@ export default function BookingButton({ static: isStatic = false }) {
     // the iframe (where the keydown listener can't reach).
     const handleCalMessage = (e) => {
       if (e.origin !== 'https://cal.com' && e.origin !== 'https://app.cal.com') return
+      // Validate source identity — origin alone allows any nested iframe on
+      // the page from cal.com to spoof events at this listener.
+      if (iframeRef.current && e.source !== iframeRef.current.contentWindow) return
       if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
         handleClose()
       }
@@ -164,15 +184,25 @@ export default function BookingButton({ static: isStatic = false }) {
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
-      // Safety net: restore scroll + decrement the modal-open count if the
-      // component unmounts while modal is still open (i.e. handleClose hasn't
-      // already cleared the dataset key).
+      // Cancel a pending open-rAF if unmount happens before it fires —
+      // otherwise it would write body styles to a now-orphaned modal.
+      if (openRafRef.current !== null) {
+        cancelAnimationFrame(openRafRef.current)
+        openRafRef.current = null
+      }
+      // Safety net: restore scroll if the body was actually locked, and
+      // decrement the modal-open count if this component still owns one.
+      // The two conditions are independent: a sync push + unmount-before-rAF
+      // leaves modalCounterRef true while dataset.scrollY is still undefined.
       if (document.body.dataset.scrollY !== undefined) {
         releaseScrollLock()
+      }
+      if (modalCounterRef.current) {
         popModalOpen()
+        modalCounterRef.current = false
       }
     }
-  }, [open, handleClose])
+  }, [open, handleClose, isNarrowLayout])
 
   const handleOpen = () => {
     if (open || isOpeningRef.current) return
@@ -182,9 +212,11 @@ export default function BookingButton({ static: isStatic = false }) {
     // and the body style change moves the page), but defer the actual layout
     // mutation + Cal.com bundle load to RAF so the spinner can paint first.
     const scrollY = window.scrollY
+    modalCounterRef.current = true
     pushModalOpen()
     setOpen(true)
-    requestAnimationFrame(() => {
+    openRafRef.current = requestAnimationFrame(() => {
+      openRafRef.current = null
       document.body.dataset.scrollY = String(scrollY)
       document.body.style.position  = 'fixed'
       document.body.style.top       = `-${scrollY}px`
@@ -192,8 +224,6 @@ export default function BookingButton({ static: isStatic = false }) {
       initCal()
     })
   }
-
-  const isNarrowLayout = isMobile || isTablet
 
   const backdropStyle = {
     position:        'fixed',
@@ -211,14 +241,22 @@ export default function BookingButton({ static: isStatic = false }) {
   }
 
   const frameStyle = isNarrowLayout ? {
-    ...FRAME_BASE,
+    background:     'transparent',
+    border:         '1px solid var(--color-brand)',
+    borderRadius:   '8px',
+    overflow:       'hidden',
+    backdropFilter: 'blur(8px)',
     position:  'relative',
     width:     '100%',
     maxWidth:  '860px',
     height:    isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
     maxHeight: '800px',
   } : {
-    ...FRAME_BASE,
+    background:     'transparent',
+    border:         '1px solid var(--color-brand)',
+    borderRadius:   '8px',
+    overflow:       'hidden',
+    backdropFilter: 'blur(8px)',
     position: 'absolute',
     top:      '64px',
     bottom:   '64px',
@@ -262,16 +300,32 @@ export default function BookingButton({ static: isStatic = false }) {
             </div>
 
             {/* Spinner shown while iframe loads */}
-            {!iframeLoaded && (
+            {!iframeLoaded && !iframeError && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div role="status" aria-label="Loading calendar" className="booking-spinner" />
+              </div>
+            )}
+
+            {/* Fallback shown if the iframe fails to load or times out — gives
+                the user a way out instead of an indefinite spinner. */}
+            {iframeError && (
+              <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center text-text-primary">
+                <p className="text-sm">The calendar couldn&apos;t load.</p>
+                <a
+                  href="https://cal.com/ily2a/intro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm underline text-brand"
+                >
+                  Open it in a new tab
+                </a>
               </div>
             )}
 
             {/* allow-same-origin is required by Cal.com for auth/cookie access.
                 Mobile/tablet: scrollable wrapper + dynamic height from Cal.com postMessages.
                 Desktop: iframe fills container, overflow:hidden clips the footer bar. */}
-            {isNarrowLayout ? (
+            {!iframeError && (isNarrowLayout ? (
               <div style={{
                 height:                  '100%',
                 overflowY:               'auto',
@@ -279,25 +333,29 @@ export default function BookingButton({ static: isStatic = false }) {
                 touchAction:             'pan-y',
               }}>
                 <iframe
+                  ref={iframeRef}
                   src="https://cal.com/ily2a/intro?embed=true"
                   title="Book a call with Ily Ameur"
                   width="100%"
                   height={iframeHeight}
                   sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                   onLoad={() => setIframeLoaded(true)}
+                  onError={() => setIframeError(true)}
                   className="block border-0 w-full"
                 />
               </div>
             ) : (
               <iframe
+                ref={iframeRef}
                 src="https://cal.com/ily2a/intro?embed=true"
                 title="Book a call with Ily Ameur"
                 width="100%"
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 onLoad={() => setIframeLoaded(true)}
+                onError={() => setIframeError(true)}
                 className="block border-0 w-full h-[calc(100%+80px)]"
               />
-            )}
+            ))}
           </motion.div>
         </motion.div>
       )}

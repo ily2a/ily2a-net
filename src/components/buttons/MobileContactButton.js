@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { SPRING_SNAP } from '@/constants/animations'
 
 export default function MobileContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }) {
   const [ripples, setRipples] = useState([])
@@ -41,7 +42,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
       onKeyDown={handleKeyDown}
       aria-current={ariaCurrent}
       whileTap={{ scale: 0.96 }}
-      transition={{ type: 'spring', stiffness: 2000, damping: 110, mass: 1 }}
+      transition={SPRING_SNAP}
       className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-glass-border bg-surface cursor-pointer overflow-hidden select-none"
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >

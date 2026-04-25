@@ -36,7 +36,3 @@ export function useModalOpen() {
     () => false,
   )
 }
-
-export function isModalOpen() {
-  return openCount > 0
-}

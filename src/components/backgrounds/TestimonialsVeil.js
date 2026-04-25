@@ -91,6 +91,7 @@ export default function TestimonialsVeil({
   const prefersReduced = usePrefersReducedMotion()
   const modalOpen      = useModalOpen()
   const modalOpenRef   = useRef(modalOpen)
+  const prefersReducedRef = useRef(prefersReduced)
   const intersectingRef = useRef(true)
   const setActiveRef   = useRef(null)
 
@@ -98,6 +99,10 @@ export default function TestimonialsVeil({
   useEffect(() => {
     propsRef.current = { hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale }
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale])
+
+  // Mirror prefersReduced into a ref so setActive can read live state instead
+  // of capturing the value via closure when the GL setup effect runs.
+  useEffect(() => { prefersReducedRef.current = prefersReduced }, [prefersReduced])
 
   useEffect(() => {
     const canvas = ref.current
@@ -176,7 +181,7 @@ export default function TestimonialsVeil({
         if (frame) { cancelAnimationFrame(frame); frame = 0 }
       } else if (
         !frame
-        && !prefersReduced
+        && !prefersReducedRef.current
         && !modalOpenRef.current
         && intersectingRef.current
         && !document.hidden
@@ -185,6 +190,9 @@ export default function TestimonialsVeil({
       }
     }
     setActiveRef.current = setActive
+    // Reconcile against modalOpen state captured during the GL rebuild —
+    // if the modal toggled while setActiveRef was null, this catches it.
+    if (modalOpenRef.current) setActive(false)
 
     // Pause the RAF loop when the canvas is scrolled out of view.
     const io = new IntersectionObserver(([entry]) => {

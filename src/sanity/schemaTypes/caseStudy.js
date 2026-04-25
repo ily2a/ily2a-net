@@ -113,8 +113,18 @@ const caseStudy = {
       title: 'Display Order',
       type: 'number',
       group: 'meta',
-      description: 'Lower numbers appear first. Use unique values to keep ordering deterministic.',
-      validation: Rule => Rule.integer().min(0),
+      description: 'Lower numbers appear first. Must be unique — duplicates make homepage ordering non-deterministic across ISR rebuilds.',
+      validation: Rule => Rule.integer().min(0).custom(async (value, context) => {
+        if (value === undefined || value === null) return true
+        const { document, getClient } = context
+        const client = getClient({ apiVersion: '2024-01-01' })
+        const id = (document?._id ?? '').replace(/^drafts\./, '')
+        const conflict = await client.fetch(
+          '*[_type == "caseStudy" && order == $order && !(_id in [$draft, $published])][0]._id',
+          { order: value, draft: `drafts.${id}`, published: id },
+        )
+        return conflict ? `Order ${value} is already used by another case study` : true
+      }),
     },
     {
       name: 'isPasswordProtected',

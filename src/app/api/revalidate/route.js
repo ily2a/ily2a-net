@@ -1,5 +1,5 @@
 import { revalidateTag } from 'next/cache'
-import { timingSafeStringEqual, createRateLimiter, getClientIp } from '@/lib/api'
+import { timingSafeStringEqual, createRateLimiter } from '@/lib/api'
 
 // POST /api/revalidate
 // Called by a Sanity webhook on document publish/unpublish.
@@ -7,7 +7,10 @@ import { timingSafeStringEqual, createRateLimiter, getClientIp } from '@/lib/api
 
 // Bound authenticated calls — prevents an attacker with a leaked secret from
 // repeatedly draining the Next.js cache and exhausting Sanity API rate limits.
+// Keyed on a fixed string instead of client IP: Sanity's egress IP pool would
+// otherwise share a bucket with attackers, throttling legitimate bulk publishes.
 const isRateLimited = createRateLimiter({ limit: 60, windowMs: 60 * 60 * 1000 })
+const RATE_LIMIT_KEY = 'sanity-webhook'
 
 export async function POST(request) {
   const secret   = request.headers.get('x-sanity-webhook-secret')
@@ -24,7 +27,7 @@ export async function POST(request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  if (isRateLimited(getClientIp(request))) {
+  if (isRateLimited(RATE_LIMIT_KEY)) {
     return Response.json({ error: 'Too many requests' }, { status: 429 })
   }
 
