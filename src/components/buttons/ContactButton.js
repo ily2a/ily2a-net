@@ -45,7 +45,8 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
       whileHover={prefersReduced ? undefined : "hover"}
       whileTap={{ scale: 0.96 }}
       transition={SPRING_SNAP}
-      aria-label={label}
+      // Visible label span below carries the accessible name — adding aria-label
+      // here would override the visible text and drift if either changes.
       aria-current={ariaCurrent}
       className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-[8px] overflow-visible select-none shrink-0 appearance-none border-0 bg-transparent"
       style={{

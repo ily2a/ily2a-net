@@ -45,7 +45,9 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
       onClick={onClick}
       {...handlers}
       {...rest}
-      aria-label={label}
+      // Mobile renders icon-only, so aria-label is required; desktop renders
+      // the visible label span and would otherwise double-name the control.
+      aria-label={isMobile ? label : undefined}
       aria-current={ariaCurrent}
       animate={{
         borderColor: styles[state].borderColor,

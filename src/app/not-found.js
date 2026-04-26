@@ -5,6 +5,7 @@ import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 
 export const metadata = {
   title: '404 — Page not found | Ily Ameur',
+  description: 'The page you tried to reach does not exist. Head back to the homepage.',
   robots: { index: false },
 }
 

@@ -55,6 +55,7 @@ npm run dev      # Dev server with Turbopack
 npm run build    # Production build
 npm start        # Start production server
 npm run lint     # Run ESLint
+npm run a11y     # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
 ## Project Structure
@@ -130,10 +131,10 @@ npx sanity@latest schema deploy
 - **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
-- **BookingButton** — Cal.com booking embed trigger with scroll-lock and dynamic iframe height
+- **BookingButton** — Cal.com booking embed trigger with scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails
 - **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
 - **LinkedInButton** — LinkedIn profile link
-- **TestimonialsButton** — opens testimonials modal/section
+- **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
 - **NavbarButton** — navbar-specific button variant
 
 **Visual Effects**
@@ -150,7 +151,7 @@ npx sanity@latest schema deploy
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
 - **PasswordGate** — locks protected case studies behind a password; uses `sessionStorage` so the gate re-locks on tab close
 - **PortableTextComponents** — Portable Text renderer components for Sanity rich-text fields
-- **PortableTextLink** — animated external link variant used inside Portable Text
+- **PortableTextLink** — animated external link used inside Portable Text; renders an external-link icon and an SR-only "(opens in a new tab)" announcement
 - **TableOfContents** — in-page navigation for long case studies
 - **ScrollToSection** — smooth-scroll anchor helper (respects `prefers-reduced-motion`)
 - **CloseButton** — reusable modal/overlay close button
@@ -190,10 +191,10 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 ## Lib
 
 - **sanity-queries.js** — GROQ queries for case studies and home-page content
-- **api.js** — shared API helpers (rate limiter, IP extraction, constant-time string compare) used by route handlers
+- **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers. `/api/contact` adds a per-payload dedup cache (FNV-1a hash of email + message, 5-min TTL) so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
 - **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
-- **scroll.js** — Framer Motion-based smooth-scroll helper with `prefers-reduced-motion` support
+- **scroll.js** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
 - **validation.js** — shared form validation
 
 ## Deployment

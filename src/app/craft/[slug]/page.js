@@ -136,6 +136,7 @@ export default async function CaseStudyPage({ params }) {
     "description": data.description,
     "url": `${SITE_URL}/craft/${slug}`,
     "author": { "@type": "Person", "name": SITE_NAME, "url": SITE_URL },
+    ...(data._createdAt && { "datePublished": data._createdAt }),
     "dateModified": data._updatedAt,
     ...(data.coverImage?.url?.startsWith('https://cdn.sanity.io/') && { "image": `${data.coverImage.url}?w=1200&auto=format` }),
     ...(data.client && { "producer": { "@type": "Organization", "name": data.client } }),
