@@ -37,9 +37,22 @@ npm install
 
 Create `.env.local` at the project root:
 ```env
+# Sanity (Studio + content fetch)
 NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
 NEXT_PUBLIC_SANITY_DATASET=production
+
+# Resend (contact form)
 RESEND_API_KEY=your_resend_api_key
+
+# Sanity → /api/revalidate webhook secret (must match the secret configured
+# in the Sanity Studio webhook settings — used to authenticate publish events)
+SANITY_REVALIDATION_SECRET=your_webhook_secret
+
+# Password gate for protected case studies (compared at /api/unlock)
+CASE_STUDY_PASSWORD=your_shared_password
+
+# Optional — site URL override (defaults to https://ily2a.net for canonical/OG)
+NEXT_PUBLIC_SITE_URL=https://ily2a.net
 ```
 
 ### 3. Run the dev server
@@ -199,9 +212,28 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 ## Deployment
 
-The site is designed to deploy on [Vercel](https://vercel.com). Set the environment variables in the Vercel project settings before deploying.
+The site is designed to deploy on [Vercel](https://vercel.com). Set every variable from the [environment variables](#2-set-up-environment-variables) section in the Vercel project settings before deploying.
 
-Image optimization is configured for `cdn.sanity.io`. The following redirects are in place:
+Image optimization is configured for `cdn.sanity.io`. The following permanent (308) redirects are in place:
 
 - `/work` → `/craft`
 - `/work/:slug` → `/craft/:slug`
+
+### Security headers and CSP
+
+`next.config.mjs` ships:
+
+- A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site, allowlisting only the third-party origins actually used (Sanity, Cal.com, Figma embeds, Vercel telemetry, Fontshare). The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
+- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src.
+- HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
+
+### Sanity → ISR webhook
+
+`/api/revalidate` is the on-demand revalidation endpoint. To wire it up:
+
+1. In Sanity manage console, add a webhook on the production dataset that fires on `create`/`update`/`delete` for `caseStudy` documents.
+2. Set the webhook URL to `https://<your-domain>/api/revalidate`.
+3. Set the **secret** to the same value as `SANITY_REVALIDATION_SECRET` in your Vercel environment variables.
+4. Set the HTTP header to `x-sanity-webhook-secret: <secret>`.
+
+The route uses constant-time secret comparison and a fixed-key sliding-window rate limit (60/hr) so a leaked secret can't drain the cache or exhaust Sanity API quota.
