@@ -101,11 +101,11 @@ export async function POST(request) {
     from:    'Contact Form <contact@ily2a.net>',
     to:      'contact@ily2a.net',
     replyTo: safeEmail,
-    subject: `New form submission in ily2a.net from ${safeName}`,
+    subject: `New ily2a.net inquiry — ${safeName}`,
     text:    `Name: ${safeName}
 Email: ${safeEmail}
 
-${safeMessage}`,
+Reason: ${safeMessage}`,
   })
   // Swallow a post-timeout rejection so Node doesn't log an unhandled rejection
   // when Resend eventually fails after we've already returned the 500.
