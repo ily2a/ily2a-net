@@ -101,7 +101,7 @@ export async function POST(request) {
     from:    'Contact Form <contact@ily2a.net>',
     to:      'contact@ily2a.net',
     replyTo: safeEmail,
-    subject: `New message from ${safeName}`,
+    subject: `New form submission in ily2a.net from ${safeName}`,
     text:    `Name: ${safeName}
 Email: ${safeEmail}
 
