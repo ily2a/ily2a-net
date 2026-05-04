@@ -7,7 +7,8 @@ export default function TestimonialsSection() {
   return (
     <section
       id="testimonials"
-      className="w-full relative overflow-hidden flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20"
+      tabIndex={-1}
+      className="outline-none w-full relative overflow-hidden flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20"
     >
       {/* ── WebGL background ── */}
       <TestimonialsBg />

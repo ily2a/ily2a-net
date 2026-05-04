@@ -43,7 +43,7 @@ export default function ContactSection() {
     'Submit'
 
   return (
-    <section id="contact" className="w-full flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
+    <section id="contact" tabIndex={-1} className="outline-none w-full flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
       <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
@@ -76,6 +76,7 @@ export default function ContactSection() {
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden="true"
+                aria-label="Leave this field empty"
                 value={form.website ?? ''}
                 onChange={handleChange}
                 style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
@@ -132,8 +133,9 @@ export default function ContactSection() {
                   className="w-full"
                   disabled={status === 'sending' || status === 'sent' || status === 'ratelimited'}
                   aria-busy={status === 'sending'}
+                  aria-describedby="submit-status"
                 >
-                  <span>{submitLabel}</span>
+                  <span id="submit-status">{submitLabel}</span>
                 </ContactFormButton>
               </div>
 

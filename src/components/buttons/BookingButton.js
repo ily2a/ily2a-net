@@ -321,6 +321,13 @@ export default function BookingButton({ static: isStatic = false }) {
               </div>
             )}
 
+            {/* SR-only completion announcement — the spinner gives a
+                "loading" hint but doesn't fire a "ready" message when it
+                disappears. Screen-reader users would otherwise wait silently. */}
+            <div className="sr-only" aria-live="polite">
+              {iframeLoaded && !iframeError ? 'Calendar ready' : ''}
+            </div>
+
             {/* Fallback shown if the iframe fails to load or times out — gives
                 the user a way out instead of an indefinite spinner. */}
             {iframeError && (

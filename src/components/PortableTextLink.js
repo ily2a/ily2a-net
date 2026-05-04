@@ -36,7 +36,7 @@ export default function PortableTextLink({ href, children }) {
     >
       {children}
       <ExternalIcon />
-      <span className="sr-only"> (opens in a new tab)</span>
+      <span className="sr-only">, opens in new tab</span>
     </motion.a>
   )
 }

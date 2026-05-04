@@ -27,10 +27,21 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
 
   function navTo(sectionId) {
     if (!VALID_SECTIONS.has(sectionId)) return
+    const focusSection = (el) => {
+      if (!el) return
+      // preventScroll: true keeps the smooth scroll uninterrupted; focus
+      // moves into the section so keyboard users continue from there.
+      // Section needs tabIndex={-1} to be programmatically focusable.
+      el.focus({ preventScroll: true })
+    }
     if (isHome) {
-      scrollToElement(document.getElementById(sectionId), prefersReduced)
+      const el = document.getElementById(sectionId)
+      scrollToElement(el, prefersReduced)
+      focusSection(el)
     } else if (isCraft && sectionId === 'contact') {
-      scrollToElement(document.getElementById('contact'), prefersReduced)
+      const el = document.getElementById('contact')
+      scrollToElement(el, prefersReduced)
+      focusSection(el)
     } else {
       router.push(`/?scrollTo=${sectionId}`)
     }
@@ -48,14 +59,14 @@ const Navbar = memo(function Navbar({ isMobile = false }) {
         className="inline-flex items-center justify-center gap-4 w-full h-full py-2 px-6 box-border"
       >
         <Logo isMobile={isMobile} onClick={() => navTo('hero')} />
-        <NavbarButton icon="craft"  label="Craft"  onClick={() => navTo('work')}         aria-current={activeSection === 'work'         ? 'location' : undefined} />
-        <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} aria-current={activeSection === 'capabilities' ? 'location' : undefined} />
+        <NavbarButton icon="craft"  label="Craft"  onClick={() => navTo('work')}         aria-current={activeSection === 'work'         ? 'true' : undefined} />
+        <NavbarButton icon="skills" label="Skills" onClick={() => navTo('capabilities')} aria-current={activeSection === 'capabilities' ? 'true' : undefined} />
         {isMobile ? (
           <div className="flex-1 min-w-0">
-            <MobileContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'location' : undefined} />
+            <MobileContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'true' : undefined} />
           </div>
         ) : (
-          <ContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'location' : undefined} />
+          <ContactButton onClick={() => navTo('contact')} aria-current={activeSection === 'contact' ? 'true' : undefined} />
         )}
       </nav>
     </GlassSurface>

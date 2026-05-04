@@ -27,7 +27,8 @@ export default function CraftSection({
   return (
     <section
       id="work"
-      className={`w-full flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20${navOffset ? ' pt-[60px]' : ''}`}
+      tabIndex={-1}
+      className={`outline-none w-full flex justify-center px-4 py-7 tab:px-10 tab:py-8 desk:px-14 desk:py-10 xl:px-20${navOffset ? ' pt-[60px]' : ''}`}
     >
       <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
         <div className="flex flex-col gap-2">
