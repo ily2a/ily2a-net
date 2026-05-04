@@ -19,7 +19,7 @@ import { EMAIL_RE, CONTACT_MAX } from '@/lib/validation'
  *   resetError    — clears status and all error flags (used by "Retry" link)
  */
 export function useContactForm() {
-  const [form,   setForm]   = useState({ name: '', email: '', message: '' })
+  const [form,   setForm]   = useState({ name: '', email: '', message: '', website: '' })
   const [status, setStatus] = useState('idle')
   const [errors, setErrors] = useState({ name: null, email: null, message: null })
   const abortRef = useRef(null)
@@ -72,9 +72,14 @@ export function useContactForm() {
         signal,
       })
       if (res.status === 429) { setStatus('ratelimited'); return }
+      // 413 collapses into the generic error state by design — client-side
+      // validation (CONTACT_MAX) keeps legitimate submissions far below the
+      // server's 16k char cap, so a 413 here would only happen on truly
+      // malformed input. Distinct UI would invite scope creep for an
+      // unreachable path.
       if (!res.ok) throw new Error()
       setStatus('sent')
-      setForm({ name: '', email: '', message: '' })
+      setForm({ name: '', email: '', message: '', website: '' })
     } catch (err) {
       if (err?.name === 'AbortError') return
       setStatus('error')

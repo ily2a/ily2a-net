@@ -204,8 +204,13 @@ export default function TestimonialsVeil({
     const onVisibilityChange = () => setActive(!document.hidden)
     document.addEventListener('visibilitychange', onVisibilityChange)
 
+    // Don't kick off the RAF loop here unconditionally. The reconcile call
+    // above sets `frame` only when the modal is closed (setActive(false) when
+    // open is a no-op at frame===0), so without this guard the loop would
+    // start regardless of modal state on every GL setup re-run (e.g. when
+    // prefersReduced toggles). Mirror the same predicates setActive uses.
     if (prefersReduced) renderStatic()
-    else loop()
+    else if (!modalOpenRef.current && !document.hidden && intersectingRef.current) loop()
 
     return () => {
       setActiveRef.current = null

@@ -405,7 +405,11 @@ const HeroBg = ({
     if (prefersReducedRef.current) {
       // Render one static frame then stop — respect accessibility preference
       try { renderer.render({ scene: meshRef.current }) } catch (e) { console.error(e) }
-    } else {
+    } else if (!modalOpenRef.current && !document.hidden && intersectingRef.current) {
+      // Mirror the gates in setActive — the reconcile call above only stops
+      // the loop, it can't prevent it from starting here. Without this guard
+      // the loop would resume on every GL setup re-run regardless of modal
+      // state, defeating the modal-pause coordination.
       rafRef.current = requestAnimationFrame(loop)
     }
 

@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "a11y": "axe http://localhost:3000 --tags wcag2a,wcag2aa,wcag21aa,wcag22aa --exit"
   },
   "dependencies": {
@@ -39,6 +41,8 @@
     "@tailwindcss/postcss": "^4.2.4",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4.2.4"
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "tailwindcss": "^4.2.4",
+    "vitest": "^3.1.5"
   }
 }

@@ -64,6 +64,23 @@ export default function ContactSection() {
             noValidate
             {...fadeUp(0.1)}
           >
+              {/*
+                Honeypot — hidden from humans (visually + AT) but submitted by
+                most form-filling bots. The server drops any request where this
+                field is non-empty. autoComplete="off" + tabIndex=-1 keep
+                browsers and keyboard users from ever seeing it.
+              */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={form.website ?? ''}
+                onChange={handleChange}
+                style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+              />
+
               {/* Name + Email row */}
               <div className="flex flex-col gap-3 md:flex-row">
                 {/* Name */}

@@ -20,13 +20,25 @@ export function pushModalOpen() {
 }
 
 export function popModalOpen() {
-  openCount = Math.max(0, openCount - 1)
+  // Underflow guard — extra pops are a programmer error (or hot-reload race)
+  // and must not fire a 1→0 notify when the count was already 0. Subscribers
+  // wake heavy WebGL loops on that edge; redundant notifies cause spurious
+  // resumes during a teardown.
+  if (openCount === 0) return
+  openCount -= 1
   if (openCount === 0) notify()
 }
 
-function subscribe(callback) {
+// Exposed for tests and any non-React subscriber that needs to react to the
+// modal-open edge transitions (0→1, 1→0). React components should use the
+// `useModalOpen` hook below.
+export function subscribeToModalOpen(callback) {
   listeners.add(callback)
   return () => listeners.delete(callback)
+}
+
+function subscribe(callback) {
+  return subscribeToModalOpen(callback)
 }
 
 export function useModalOpen() {

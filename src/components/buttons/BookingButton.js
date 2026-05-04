@@ -20,6 +20,21 @@ function releaseScrollLock() {
 // Iframe is considered failed if it hasn't fired onLoad within this window.
 const IFRAME_LOAD_TIMEOUT_MS = 15_000
 
+// Single source of truth for the Cal.com booking URL. Used by both iframe
+// embeds (with ?embed=true) and the error-fallback "open in a new tab" link.
+const CAL_BOOKING_URL = 'https://cal.com/ily2a/intro'
+const CAL_EMBED_URL   = `${CAL_BOOKING_URL}?embed=true`
+
+// Shared style for the iframe frame in both narrow and wide layouts. Position-
+// dependent properties are merged in below; these five never change.
+const FRAME_BASE = {
+  background:     'transparent',
+  border:         '1px solid var(--color-brand)',
+  borderRadius:   '8px',
+  overflow:       'hidden',
+  backdropFilter: 'blur(8px)',
+}
+
 export default function BookingButton({ static: isStatic = false }) {
   const [open, setOpen]               = useState(false)
   const [mounted, setMounted]         = useState(false)
@@ -34,8 +49,12 @@ export default function BookingButton({ static: isStatic = false }) {
 
   // Cal.com is initialised lazily. Bundle is prefetched on first hover/focus
   // so the network + parse cost is off the critical click→paint path.
-  const calInitialized  = useRef(false)
-  const calPrefetched   = useRef(false)
+  const calInitialized   = useRef(false)
+  // prefetchAttempted is sticky — never reset on failure. Repeatedly hovering
+  // the trigger over a flaky network must not retry the dynamic import on
+  // every pointerenter/focus. calInitialized still resets so a click can
+  // reattempt init even after a prefetch failed.
+  const prefetchAttempted = useRef(false)
   const closeButtonRef  = useRef(null)
   const frameRef        = useRef(null)    // modal content container for focus trap
   const iframeRef       = useRef(null)    // iframe element — used to validate postMessage source
@@ -82,9 +101,9 @@ export default function BookingButton({ static: isStatic = false }) {
   }
 
   const prefetchCal = () => {
-    if (calPrefetched.current) return
-    calPrefetched.current = true
-    import('@calcom/embed-react').catch(() => { calPrefetched.current = false })
+    if (prefetchAttempted.current) return
+    prefetchAttempted.current = true
+    import('@calcom/embed-react').catch(() => {})
   }
 
   useEffect(() => { setMounted(true) }, [])
@@ -164,8 +183,12 @@ export default function BookingButton({ static: isStatic = false }) {
     const handleCalMessage = (e) => {
       if (e.origin !== 'https://cal.com' && e.origin !== 'https://app.cal.com') return
       // Validate source identity — origin alone allows any nested iframe on
-      // the page from cal.com to spoof events at this listener.
-      if (iframeRef.current && e.source !== iframeRef.current.contentWindow) return
+      // the page from cal.com to spoof events at this listener. Reject if
+      // the ref is null too: when iframeError tears the iframe out of the
+      // DOM, the listener stays attached for one more render, and a null ref
+      // must not silently pass (would let any cal.com-origin frame trigger
+      // close/dimension-change at this handler).
+      if (!iframeRef.current || e.source !== iframeRef.current.contentWindow) return
       if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
         handleClose()
       }
@@ -241,22 +264,14 @@ export default function BookingButton({ static: isStatic = false }) {
   }
 
   const frameStyle = isNarrowLayout ? {
-    background:     'transparent',
-    border:         '1px solid var(--color-brand)',
-    borderRadius:   '8px',
-    overflow:       'hidden',
-    backdropFilter: 'blur(8px)',
+    ...FRAME_BASE,
     position:  'relative',
     width:     '100%',
     maxWidth:  '860px',
     height:    isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
     maxHeight: '800px',
   } : {
-    background:     'transparent',
-    border:         '1px solid var(--color-brand)',
-    borderRadius:   '8px',
-    overflow:       'hidden',
-    backdropFilter: 'blur(8px)',
+    ...FRAME_BASE,
     position: 'absolute',
     top:      '64px',
     bottom:   '64px',
@@ -312,7 +327,7 @@ export default function BookingButton({ static: isStatic = false }) {
               <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center text-text-primary">
                 <p className="text-sm">The calendar couldn&apos;t load.</p>
                 <a
-                  href="https://cal.com/ily2a/intro"
+                  href={CAL_BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm underline text-brand"
@@ -334,7 +349,7 @@ export default function BookingButton({ static: isStatic = false }) {
               }}>
                 <iframe
                   ref={iframeRef}
-                  src="https://cal.com/ily2a/intro?embed=true"
+                  src={CAL_EMBED_URL}
                   title="Book a call with Ily Ameur"
                   width="100%"
                   height={iframeHeight}

@@ -1,18 +1,26 @@
 import { revalidateTag } from 'next/cache'
-import { timingSafeStringEqual, createRateLimiter } from '@/lib/api'
+import { getClientIp, timingSafeStringEqual, createRateLimiter } from '@/lib/api'
 
 // POST /api/revalidate
 // Called by a Sanity webhook on document publish/unpublish.
 // Requires SANITY_REVALIDATION_SECRET in env and a matching secret in the Sanity webhook config.
 
-// Bound authenticated calls — prevents an attacker with a leaked secret from
-// repeatedly draining the Next.js cache and exhausting Sanity API rate limits.
-// Keyed on a fixed string instead of client IP: Sanity's egress IP pool would
-// otherwise share a bucket with attackers, throttling legitimate bulk publishes.
+// Pre-auth IP throttle — bounds brute-force attempts against the secret before
+// the timing-safe compare runs. Sized loose enough that a misconfigured webhook
+// retry loop won't trip it from a single Sanity egress IP.
+const isPreAuthRateLimited = createRateLimiter({ limit: 20, windowMs: 60 * 60 * 1000 })
+
+// Post-auth quota — prevents a leaked secret from draining Next.js cache and
+// exhausting Sanity API rate limits. Keyed on a fixed string so Sanity's egress
+// IP pool doesn't share a bucket with attackers.
 const isRateLimited = createRateLimiter({ limit: 60, windowMs: 60 * 60 * 1000 })
 const RATE_LIMIT_KEY = 'sanity-webhook'
 
 export async function POST(request) {
+  if (isPreAuthRateLimited(getClientIp(request))) {
+    return Response.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   const secret   = request.headers.get('x-sanity-webhook-secret')
   const expected = process.env.SANITY_REVALIDATION_SECRET
   // Treat misconfiguration the same as a bad secret externally — don't leak
