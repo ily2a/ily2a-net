@@ -2,9 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
-import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'
-import { BREAKPOINTS } from '@/constants/layout'
 
 const states = {
   default: {
@@ -37,10 +35,6 @@ function LinkedInIcon({ color, size = 28 }) {
 
 export default function LinkedInButton() {
   const { state, handlers } = useButtonState()
-  const width    = useWindowWidth()
-  const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
-  const size     = isMobile ? 36 : 60
-  const iconSize = isMobile ? 18 : 28
 
   return (
     <motion.a
@@ -55,10 +49,9 @@ export default function LinkedInButton() {
         boxShadow:   states[state].boxShadow,
       }}
       transition={SPRING_SNAP}
-      className="inline-flex items-center justify-center shrink-0 rounded-[8px] border border-transparent"
-      style={{ width: `${size}px`, height: `${size}px` }}
+      className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-[8px] border border-transparent"
     >
-      <LinkedInIcon color={states[state].iconColor} size={iconSize} />
+      <LinkedInIcon color={states[state].iconColor} size={22} />
     </motion.a>
   )
 }
