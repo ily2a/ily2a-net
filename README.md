@@ -64,11 +64,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 ```bash
-npm run dev      # Dev server with Turbopack
-npm run build    # Production build
-npm start        # Start production server
-npm run lint     # Run ESLint
-npm run a11y     # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
+npm run dev         # Dev server with Turbopack
+npm run build       # Production build
+npm start           # Start production server
+npm run lint        # Run ESLint
+npm test            # Run Vitest once
+npm run test:watch  # Run Vitest in watch mode
+npm run a11y        # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
 ## Project Structure
@@ -204,7 +206,8 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 ## Lib
 
 - **sanity-queries.js** — GROQ queries for case studies and home-page content
-- **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers. `/api/contact` adds a per-payload dedup cache (FNV-1a hash of email + message, 5-min TTL) so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
+- **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
+- **dedup.js** — payload dedup cache (FNV-1a hash + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
 - **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
 - **scroll.js** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
@@ -237,3 +240,20 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 4. Set the HTTP header to `x-sanity-webhook-secret: <secret>`.
 
 The route uses constant-time secret comparison and a fixed-key sliding-window rate limit (60/hr) so a leaked secret can't drain the cache or exhaust Sanity API quota.
+
+## Tests
+
+Vitest is configured with the `node` environment by default ([vitest.config.mjs](vitest.config.mjs)). Tests live next to the code they cover under `__tests__/` folders:
+
+- `src/lib/__tests__/dedup.test.js`
+- `src/lib/__tests__/scroll.test.js`
+- `src/hooks/__tests__/useModalOpen.test.js`
+
+Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
+
+## SEO
+
+- **Sitemap** — generated at build time by [src/app/sitemap.js](src/app/sitemap.js); pulls case study slugs from Sanity
+- **robots.txt** — static, lives at [public/robots.txt](public/robots.txt)
+- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.js](src/app/layout.js); the `WebSite.name` controls Google's site-name display in search results
+- **OG image** — static [public/og-image.png](public/og-image.png) referenced from `metadata.openGraph` and `metadata.twitter`

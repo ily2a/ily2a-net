@@ -25,14 +25,28 @@ const satoshi = localFont({
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "name": SITE_NAME,
-  "jobTitle": "Design Engineer",
-  "url": SITE_URL,
-  "image": `${SITE_URL}/og-image.png`,
-  "description": SITE_DESCRIPTION,
-  "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
-  "sameAs": ["https://linkedin.com/in/ily2a"],
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      "name": "Ily Ameur - Design Engineer Portfolio",
+      "url": SITE_URL,
+      "description": SITE_DESCRIPTION,
+      "inLanguage": "en-GB",
+      "publisher": { "@id": `${SITE_URL}/#person` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      "name": SITE_NAME,
+      "jobTitle": "Design Engineer",
+      "url": SITE_URL,
+      "image": `${SITE_URL}/og-image.png`,
+      "description": SITE_DESCRIPTION,
+      "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
+      "sameAs": ["https://linkedin.com/in/ily2a"],
+    },
+  ],
 }
 
 // Pre-stringified once at module load — JSON-LD content is static, no need to
@@ -61,7 +75,7 @@ export const metadata = {
     title: `${SITE_NAME} : Design Engineer`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    siteName: SITE_NAME,
+    siteName: "Ily Ameur - Design Engineer Portfolio",
     locale: "en_GB",
     type: "website",
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${SITE_NAME} — Design Engineer` }],
