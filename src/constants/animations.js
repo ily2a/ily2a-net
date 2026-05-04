@@ -7,11 +7,9 @@ export const SPRING_SNAP     = { type: 'spring', duration: 0.18, bounce: 0 }
 export const SPRING_ENTRANCE = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
 
-// Custom easing curves — stronger than the built-in CSS/Framer easings.
+// Custom easing curve — stronger than the built-in CSS/Framer easings.
 // EASE_OUT is the canonical UI-entrance curve (starts fast, settles smoothly).
-// EASE_IN_OUT is the on-screen movement curve (acceleration + deceleration).
-export const EASE_OUT    = [0.23, 1, 0.32, 1]
-export const EASE_IN_OUT = [0.77, 0, 0.175, 1]
+export const EASE_OUT = [0.23, 1, 0.32, 1]
 
 // Shared micro-lift for button hover — 1px rise gives a tactile hint without
 // disturbing layout. Kept as `{ y }` (Framer Motion value channel) rather
