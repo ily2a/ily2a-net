@@ -29,6 +29,8 @@
 .context/
 compound-engineering.local.md
 todos/
+skills-lock.json
+.agents/
 
 # debug
 npm-debug.log*
