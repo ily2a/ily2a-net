@@ -46,6 +46,17 @@ export const viewport = {
 export const metadata = {
   title: `${SITE_NAME} : Design Engineer`,
   description: SITE_DESCRIPTION,
+  keywords: [
+    'Design Engineer',
+    'Product Designer',
+    'Design Systems',
+    'UX Design',
+    'Frontend Engineering',
+    'React',
+    'React Native',
+    'Figma',
+    'Ily Ameur',
+  ],
   openGraph: {
     title: `${SITE_NAME} : Design Engineer`,
     description: SITE_DESCRIPTION,

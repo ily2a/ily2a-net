@@ -1,7 +1,12 @@
 {
+  "id": "/",
   "name": "Ily Ameur",
   "short_name": "ily2a",
+  "description": "Design Engineer crafting end-to-end product experiences. Systems thinking, complex flows, and production-ready UI.",
   "start_url": "/",
+  "scope": "/",
+  "lang": "en-GB",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/favicons/web-app-manifest-192x192.png",

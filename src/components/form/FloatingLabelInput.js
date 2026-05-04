@@ -32,7 +32,7 @@ function NotchedBorder({ floated, hasError, focused, labelWidth, width, height }
   const gapStart = LBL_LEFT - GAP_PAD
   const gapEnd   = LBL_LEFT + (floated ? labelWidth * 0.8 : 0) + GAP_PAD
   const stroke        = hasError ? 'var(--color-error)' : 'var(--color-amethyst-400)'
-  const strokeOpacity = hasError ? 1 : focused ? 1 : 0.3
+  const strokeOpacity = hasError ? 1 : focused ? 1 : 0.5
 
   const path = floated
     ? `M ${gapEnd} 0 L ${width-R} 0 Q ${width} 0 ${width} ${R} L ${width} ${height-R} Q ${width} ${height} ${width-R} ${height} L ${R} ${height} Q 0 ${height} 0 ${height-R} L 0 ${R} Q 0 0 ${R} 0 L ${gapStart} 0`

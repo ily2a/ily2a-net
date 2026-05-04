@@ -82,6 +82,23 @@ const nextConfig = {
           { key: 'Content-Security-Policy', value: StudioCSP },
         ],
       },
+      // Long-cache static assets that ship from /public. Filenames are stable
+      // (no Next.js content hash) so updates require a deploy with a renamed
+      // file or cache bust. Fonts get the full year + immutable since they're
+      // truly invariant; favicons get a month since they may rotate during
+      // brand work but rarely.
+      {
+        source: '/fonts/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/favicons/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000' },
+        ],
+      },
       // All other routes — strict CSP + security headers
       {
         source: '/(.*)',

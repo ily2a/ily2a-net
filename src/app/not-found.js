@@ -17,7 +17,7 @@ export default function NotFound() {
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
 
       <div className="flex flex-col items-center gap-6 p-8 text-center">
-        <h1 className="text-intro text-text-primary">
+        <h1 className="heading-page text-text-primary">
           This page faded into the digital ether.<br />
           Hit the homepage and keep exploring.
         </h1>

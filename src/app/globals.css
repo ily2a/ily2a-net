@@ -131,6 +131,18 @@ input:focus-visible, textarea:focus-visible {
   cursor: auto !important;
 }
 
+/* Section landmarks receive programmatic focus from the floating nav. The
+   default outline-offset would extend off-screen for full-width sections, so
+   we use an inset ring that traces just inside the section boundary —
+   visible enough to confirm focus moved, contained enough to not disrupt the
+   page composition. Only applies when the underlying keyboard intent is
+   present (focus-visible heuristic). */
+section:focus-visible {
+  outline: 2px solid var(--color-amethyst-400);
+  outline-offset: -4px;
+  border-radius: 0;
+}
+
 /* ─── Typography Utilities ────────────────────────────────────── */
 
 /* Headings */
