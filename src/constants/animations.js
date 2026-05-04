@@ -13,11 +13,12 @@ export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  
 export const EASE_OUT    = [0.23, 1, 0.32, 1]
 export const EASE_IN_OUT = [0.77, 0, 0.175, 1]
 
-// Shared micro-lift for button hover. The full `transform` string opts into
-// hardware-accelerated compositing; Framer's `y` shorthand runs on
-// requestAnimationFrame on the main thread and can drop frames under load
-// (hero WebGL + bundle parse competing for the main thread).
-export const HOVER_LIFT = { transform: 'translateY(-1px)' }
+// Shared micro-lift for button hover — 1px rise gives a tactile hint without
+// disturbing layout. Kept as `{ y }` (Framer Motion value channel) rather
+// than a literal `transform` string: the full-string form composites on the
+// GPU but overrides any concurrent `scale`/`y`/`x` value channels (entrance
+// animations, whileTap), leaving buttons stuck at the wrong size.
+export const HOVER_LIFT = { y: -1 }
 
 // Coordinated entrance delays (seconds) — timed relative to TextReveal sequence.
 // TextReveal animates word-by-word at 0.06s/word.
