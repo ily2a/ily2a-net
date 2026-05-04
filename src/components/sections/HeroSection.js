@@ -18,7 +18,7 @@ const HeroBg = dynamic(() => import('@/components/backgrounds/HeroBg'), {
     }} />
   ),
 })
-import { HERO_SUBTITLE_DELAY } from '@/constants/animations'
+import { HERO_SUBTITLE_DELAY, EASE_OUT } from '@/constants/animations'
 
 const HERO_COLORS = [AMETHYST[950], AMETHYST[700], AMETHYST[400], AMETHYST[300]]
 
@@ -28,7 +28,7 @@ function HeroBackground() {
       aria-hidden="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.5 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
       className="absolute inset-0 w-full h-full"
     >
       <HeroBg

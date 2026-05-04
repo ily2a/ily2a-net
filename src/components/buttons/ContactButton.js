@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import { motion, animate } from 'framer-motion'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 export default function ContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }) {
@@ -20,7 +20,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
     animRef.current?.stop()
     animRef.current = animate(angleRef.current, targetAngle, {
       duration: 0.4,
-      ease: 'easeOut',
+      ease: EASE_OUT,
       onUpdate: (v) => {
         angleRef.current = v
         // Write directly to a CSS variable — avoids React re-renders at 60fps
@@ -59,25 +59,25 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
       {/* Gradient layers fade in on hover via Framer Motion variants */}
       <motion.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
         className={layerClass}
         style={{ background: gradient }}
       />
       <motion.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} blur`}
         style={{ background: gradient }}
       />
       <motion.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} rotate-180`}
         style={{ background: gradient }}
       />
       <motion.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} blur rotate-180`}
         style={{ background: gradient }}
       />

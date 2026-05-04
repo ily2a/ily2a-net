@@ -1,14 +1,23 @@
 // Shared Framer Motion spring configs
-// SPRING_SNAP   — instant button state feedback (hover/press)
+// SPRING_SNAP   — instant button state feedback (hover/press), Apple-style
 // SPRING_ENTRANCE — hero element entrance (slow, weighted)
 // SPRING_NAV    — navbar slide-up entrance
 
-export const SPRING_SNAP     = { type: 'spring', stiffness: 2000, damping: 110, mass: 1 }
+export const SPRING_SNAP     = { type: 'spring', duration: 0.18, bounce: 0 }
 export const SPRING_ENTRANCE = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
 
-// Shared micro-lift for button hover — 1px rise gives a tactile hint without disturbing layout.
-export const HOVER_LIFT = { y: -1 }
+// Custom easing curves — stronger than the built-in CSS/Framer easings.
+// EASE_OUT is the canonical UI-entrance curve (starts fast, settles smoothly).
+// EASE_IN_OUT is the on-screen movement curve (acceleration + deceleration).
+export const EASE_OUT    = [0.23, 1, 0.32, 1]
+export const EASE_IN_OUT = [0.77, 0, 0.175, 1]
+
+// Shared micro-lift for button hover. The full `transform` string opts into
+// hardware-accelerated compositing; Framer's `y` shorthand runs on
+// requestAnimationFrame on the main thread and can drop frames under load
+// (hero WebGL + bundle parse competing for the main thread).
+export const HOVER_LIFT = { transform: 'translateY(-1px)' }
 
 // Coordinated entrance delays (seconds) — timed relative to TextReveal sequence.
 // TextReveal animates word-by-word at 0.06s/word.

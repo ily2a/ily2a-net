@@ -3,6 +3,19 @@
 import { useRef, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { EASE_OUT } from '@/constants/animations'
+
+// Section-level stagger — children enter 50ms apart so the grid feels alive
+// instead of dropping in as a single block. Whole grid finishes well under
+// the section's likely viewport dwell, so it never blocks interaction.
+const STAGGER_PARENT = {
+  hidden: { opacity: 1 },
+  show:   { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+}
+const STAGGER_CHILD = {
+  hidden: { opacity: 0, y: 12 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
+}
 
 const CARDS = [
   {
@@ -81,7 +94,7 @@ function SpotlightCard({ children }) {
         className="cap-card__spotlight"
         initial={{ opacity: 0 }}
         animate={{ opacity }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{ duration: 0.5, ease: EASE_OUT }}
         style={{ background: `radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), ${SPOTLIGHT_COLOR}, transparent 80%)` }}
       />
       {children}
@@ -125,25 +138,40 @@ export default function CapabilitiesSection() {
         <div className="flex flex-col gap-3">
 
         {/* ── Service cards ── */}
-        <div className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2">
+        <motion.div
+          className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2"
+          variants={STAGGER_PARENT}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+        >
           {CARDS.map((card) => (
-            <SpotlightCard key={card.title}>
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
-                  <h3 className="heading-sub text-text-primary">{card.title}</h3>
+            <motion.div key={card.title} variants={STAGGER_CHILD}>
+              <SpotlightCard>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <Image src={card.icon} alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
+                    <h3 className="heading-sub text-text-primary">{card.title}</h3>
+                  </div>
+                  <hr className="h-[6px] border-0 rounded-sm m-0" style={{ background: card.gradient }} aria-hidden="true" />
                 </div>
-                <hr className="h-[6px] border-0 rounded-sm m-0" style={{ background: card.gradient }} aria-hidden="true" />
-              </div>
-              <p className="text-body-card text-brand">{card.description}</p>
-              <Tags items={card.tags} />
-            </SpotlightCard>
+                <p className="text-body-card text-brand">{card.description}</p>
+                <Tags items={card.tags} />
+              </SpotlightCard>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* ── Skills + Tools ── */}
-        <div className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-[2fr_1fr]">
+        <motion.div
+          className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-[2fr_1fr]"
+          variants={STAGGER_PARENT}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+        >
 
+          <motion.div variants={STAGGER_CHILD}>
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
@@ -161,7 +189,9 @@ export default function CapabilitiesSection() {
               ))}
             </div>
           </SpotlightCard>
+          </motion.div>
 
+          <motion.div variants={STAGGER_CHILD}>
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
@@ -180,8 +210,9 @@ export default function CapabilitiesSection() {
               ))}
             </ul>
           </SpotlightCard>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
         </div>{/* end cards wrapper */}
       </div>

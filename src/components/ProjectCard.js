@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
+import { EASE_OUT } from '@/constants/animations'
 
 const MotionLink = motion.create(Link)
 
@@ -28,17 +29,17 @@ const BLUR_LAYERS = [
 
 const overlayVariants = {
   rest:  { opacity: 0 },
-  hover: { opacity: 1, transition: { duration: 0.2, ease: 'easeOut' } },
+  hover: { opacity: 1, transition: { duration: 0.2, ease: EASE_OUT } },
 }
 
 const contentVariants = {
   rest:  { opacity: 0, y: 12 },
-  hover: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut', delay: 0.1 } },
+  hover: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT, delay: 0.1 } },
 }
 
 const hoverImgVariants = {
   rest:  { opacity: 0 },
-  hover: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+  hover: { opacity: 1, transition: { duration: 0.4, ease: EASE_OUT } },
 }
 
 const imgUrl = (source) => urlFor(source).width(800).auto('format').url()
@@ -70,7 +71,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
       initial="rest"
       whileHover="hover"
       whileTap={isTouch ? { scale: 0.97 } : undefined}
-      transition={{ duration: 0.15, ease: 'easeOut' }}
+      transition={{ duration: 0.15, ease: EASE_OUT }}
       style={{ touchAction: 'manipulation' }}
       className="project-card block no-underline"
     >

@@ -2,6 +2,7 @@
 
 import { useState, useId, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { EASE_OUT } from '@/constants/animations'
 
 const GAP_PAD  = 4
 const LBL_LEFT = 14
@@ -43,7 +44,7 @@ function NotchedBorder({ floated, hasError, focused, labelWidth, width, height }
         d={path} fill="none" strokeWidth="1" strokeLinecap="round"
         initial={{ stroke, strokeOpacity }}
         animate={{ stroke, strokeOpacity }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
+        transition={{ duration: 0.2, ease: EASE_OUT }}
       />
     </svg>
   )
@@ -69,7 +70,7 @@ function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children
         scale: floated ? 0.8 : 1,
         color: hasError ? 'var(--color-error)' : focused ? 'var(--color-brand)' : 'var(--color-text-secondary)',
       }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
+      transition={{ duration: 0.2, ease: EASE_OUT }}
     >
       <span ref={labelRef}>
         {children}

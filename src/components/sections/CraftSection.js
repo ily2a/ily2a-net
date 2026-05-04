@@ -5,9 +5,18 @@ import { motion } from 'framer-motion'
 import ProjectCard from '@/components/ProjectCard'
 import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 
 const MotionLink = motion(Link)
+
+const GRID_STAGGER = {
+  hidden: { opacity: 1 },
+  show:   { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+}
+const CARD_ENTER = {
+  hidden: { opacity: 0, y: 14 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
+}
 
 export default function CraftSection({
   projects = [],
@@ -44,11 +53,19 @@ export default function CraftSection({
           </div>
           <p className="text-md text-text-secondary">{CRAFT_DESCRIPTION}</p>
         </div>
-        <div className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
+        <motion.div
+          className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2"
+          variants={GRID_STAGGER}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+        >
           {projects.map((project, i) => (
-            <ProjectCard key={project._id} project={project} priority={i < 2} />
+            <motion.div key={project._id} variants={CARD_ENTER}>
+              <ProjectCard project={project} priority={i < 2} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

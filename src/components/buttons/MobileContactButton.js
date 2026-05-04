@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 
 export default function MobileContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }) {
   const [ripples, setRipples] = useState([])
@@ -53,9 +53,9 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
         {!prefersReduced && ripples.map((ripple) => (
           <motion.span
             key={ripple.key}
-            initial={{ scale: 0, opacity: 0.3 }}
+            initial={{ scale: 0.4, opacity: 0.35 }}
             animate={{ scale: 4, opacity: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.45, ease: EASE_OUT }}
             onAnimationComplete={() => setRipples((prev) => prev.filter((r) => r.key !== ripple.key))}
             style={{
               position: 'absolute',
