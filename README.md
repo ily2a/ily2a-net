@@ -207,7 +207,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 - **sanity-queries.js** — GROQ queries for case studies and home-page content
 - **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
-- **dedup.js** — payload dedup cache (FNV-1a hash + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
+- **dedup.js** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
 - **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
 - **scroll.js** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
