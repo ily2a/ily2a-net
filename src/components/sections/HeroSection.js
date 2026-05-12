@@ -6,18 +6,7 @@ import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/TextReveal'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import { AMETHYST } from '@/constants/colors'
-import dynamic from 'next/dynamic'
-
-const HeroBg = dynamic(() => import('@/components/backgrounds/HeroBg'), {
-  ssr: false,
-  loading: () => (
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: 'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
-    }} />
-  ),
-})
+import HeroBg from '@/components/backgrounds/HeroBg'
 import { HERO_SUBTITLE_DELAY, EASE_OUT } from '@/constants/animations'
 
 const HERO_COLORS = [AMETHYST[950], AMETHYST[700], AMETHYST[400], AMETHYST[300]]
@@ -30,6 +19,10 @@ function HeroBackground() {
       animate={{ opacity: 0.5 }}
       transition={{ duration: 0.5, ease: EASE_OUT }}
       className="absolute inset-0 w-full h-full"
+      style={{
+        background:
+          'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
+      }}
     >
       <HeroBg
         gradientColors={HERO_COLORS}
