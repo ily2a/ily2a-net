@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import BookingButton from '@/components/buttons/BookingButton'
 import TestimonialsButton from '@/components/buttons/TestimonialsButton'
@@ -12,6 +13,8 @@ import { HERO_SUBTITLE_DELAY, EASE_OUT } from '@/constants/animations'
 const HERO_COLORS = [AMETHYST[950], AMETHYST[700], AMETHYST[400], AMETHYST[300]]
 
 function HeroBackground() {
+  const [bgReady, setBgReady] = useState(false)
+
   return (
     <motion.div
       aria-hidden="true"
@@ -19,11 +22,17 @@ function HeroBackground() {
       animate={{ opacity: 0.5 }}
       transition={{ duration: 0.5, ease: EASE_OUT }}
       className="absolute inset-0 w-full h-full"
-      style={{
-        background:
-          'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
-      }}
     >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full"
+        style={{
+          background:
+            'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
+          opacity: bgReady ? 0 : 1,
+          transition: 'opacity 240ms cubic-bezier(0.23, 1, 0.32, 1)',
+        }}
+      />
       <HeroBg
         gradientColors={HERO_COLORS}
         angle={45}
@@ -39,6 +48,7 @@ function HeroBackground() {
         autoAnimate
         autoSpeed={0.35}
         attractRadius={0.35}
+        onFirstFrame={() => setBgReady(true)}
       />
     </motion.div>
   )

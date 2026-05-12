@@ -137,6 +137,7 @@ const HeroBg = ({
   className = '',
   dpr,
   paused = false,
+  onFirstFrame,
   gradientColors,
   angle = 0,
   noise = 0.3,
@@ -158,6 +159,7 @@ const HeroBg = ({
   const modalOpen       = useModalOpen()
 
   const containerRef    = useRef(null)
+  const didFirstFrameRef = useRef(false)
   const rafRef          = useRef(null)
   const programRef      = useRef(null)
   const meshRef         = useRef(null)
@@ -398,13 +400,25 @@ const HeroBg = ({
       }
 
       if (!pausedRef.current && programRef.current && meshRef.current) {
-        try { renderer.render({ scene: meshRef.current }) } catch (e) { console.error(e) }
+        try {
+          renderer.render({ scene: meshRef.current })
+          if (!didFirstFrameRef.current) {
+            didFirstFrameRef.current = true
+            try { onFirstFrame?.() } catch {}
+          }
+        } catch (e) { console.error(e) }
       }
     }
 
     if (prefersReducedRef.current) {
       // Render one static frame then stop — respect accessibility preference
-      try { renderer.render({ scene: meshRef.current }) } catch (e) { console.error(e) }
+      try {
+        renderer.render({ scene: meshRef.current })
+        if (!didFirstFrameRef.current) {
+          didFirstFrameRef.current = true
+          try { onFirstFrame?.() } catch {}
+        }
+      } catch (e) { console.error(e) }
     } else if (!modalOpenRef.current && !document.hidden && intersectingRef.current) {
       // Mirror the gates in setActive — the reconcile call above only stops
       // the loop, it can't prevent it from starting here. Without this guard
