@@ -23,17 +23,6 @@ function HeroBackground() {
       transition={{ duration: 0.5, ease: EASE_OUT }}
       className="absolute inset-0 w-full h-full"
     >
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full"
-        initial={{ opacity: 1 }}
-        animate={{ opacity: bgReady ? 0 : 1 }}
-        transition={{ duration: 0.24, ease: EASE_OUT }}
-        style={{
-          background:
-            'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
-        }}
-      />
       <HeroBg
         gradientColors={HERO_COLORS}
         angle={45}
@@ -50,6 +39,20 @@ function HeroBackground() {
         autoSpeed={0.35}
         attractRadius={0.35}
         onFirstFrame={() => setBgReady(true)}
+      />
+      {/* Gradient placeholder sits ON TOP of the canvas as a normal-alpha
+          overlay (not a lighten backdrop) so it crossfades away to reveal the
+          canvas without the additive brightness spike that caused a load flash. */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: bgReady ? 0 : 1 }}
+        transition={{ duration: 0.24, ease: EASE_OUT }}
+        style={{
+          background:
+            'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
+        }}
       />
     </motion.div>
   )
