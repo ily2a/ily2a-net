@@ -154,7 +154,7 @@ npx sanity@latest schema deploy
 
 **Visual Effects**
 - **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
-- **HeroBg** — WebGL (OGL) shader background for the hero section; DPR capped at 1.5 for mobile INP
+- **HeroBg** — WebGL (OGL) shader background for the hero section; DPR capped at 1.5 for mobile INP. A CSS gradient placeholder shows until the canvas paints its first frame (`onFirstFrame`), then crossfades out — avoids a late background pop-in on cold load and stays visible as a fallback if WebGL never renders
 - **ContactBg** — WebGL (OGL) aurora-style background for the contact section
 - **NotFoundPasswordBg** — WebGL (OGL) background shared by the 404 and password-gate pages
 - **TestimonialsBg** — lazy-loaded wrapper that defers `TestimonialsVeil` until needed

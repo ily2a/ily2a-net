@@ -23,14 +23,15 @@ function HeroBackground() {
       transition={{ duration: 0.5, ease: EASE_OUT }}
       className="absolute inset-0 w-full h-full"
     >
-      <div
+      <motion.div
         aria-hidden="true"
         className="absolute inset-0 w-full h-full"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: bgReady ? 0 : 1 }}
+        transition={{ duration: 0.24, ease: EASE_OUT }}
         style={{
           background:
             'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
-          opacity: bgReady ? 0 : 1,
-          transition: 'opacity 240ms cubic-bezier(0.23, 1, 0.32, 1)',
         }}
       />
       <HeroBg
