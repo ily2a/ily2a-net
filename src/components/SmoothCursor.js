@@ -33,11 +33,12 @@ export default function SmoothCursor() {
 
     const onPointerMove = (e) => {
       if (e.pointerType === 'touch') return
-      setIsVisible(true)
       if (rafId.current) return
+      const { clientX, clientY } = e
       rafId.current = requestAnimationFrame(() => {
-        cursorX.set(e.clientX)
-        cursorY.set(e.clientY)
+        cursorX.set(clientX)
+        cursorY.set(clientY)
+        setIsVisible(true)
         rafId.current = 0
       })
     }
@@ -79,11 +80,15 @@ export default function SmoothCursor() {
 
   return (
     <motion.div
-      className="fixed z-[9999] pointer-events-none will-change-transform"
-      style={{ left: cursorX, top: cursorY, translateX: '-50%', translateY: '-50%' }}
+      className="fixed top-0 left-0 z-[9999] pointer-events-none will-change-transform"
+      style={{ x: cursorX, y: cursorY }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={{ duration: 0.15 }}
     >
+      {/* Centering lives on its own element: the spring drives the outer
+          element's transform (composited translate3d, off the main thread),
+          so the -50% offset can't share that transform. */}
+      <div className="-translate-x-1/2 -translate-y-1/2">
       <motion.div
         className="flex items-center justify-center overflow-hidden backdrop-blur-[20px] backdrop-saturate-300"
         animate={{
@@ -113,6 +118,7 @@ export default function SmoothCursor() {
           )}
         </AnimatePresence>
       </motion.div>
+      </div>
     </motion.div>
   )
 }
