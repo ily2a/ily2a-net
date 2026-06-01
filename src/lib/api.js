@@ -15,11 +15,16 @@ import { timingSafeEqual } from 'crypto'
  * IS spoofable — bucketing on it is best-effort, not authoritative.
  */
 export function getClientIp(request) {
-  return (
-    request.headers.get('x-real-ip')
-    ?? request.headers.get('x-forwarded-for')?.split(',')[0].trim()
-    ?? 'unknown'
-  )
+  // x-real-ip is platform-set on Vercel and not client-spoofable — trust it
+  // first. x-forwarded-for is a best-effort fallback for non-Vercel hosts and
+  // IS spoofable, so it must not be relied on for authoritative decisions.
+  // Use `||` (not `??`) so a present-but-empty header (e.g. "" or a leading
+  // comma) falls through to 'unknown' instead of bucketing every blank-header
+  // request into a single shared rate-limit key.
+  const realIp = request.headers.get('x-real-ip')
+  if (realIp) return realIp
+  const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+  return forwarded || 'unknown'
 }
 
 /**
