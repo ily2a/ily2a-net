@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 // Tracks pointer position relative to the element and writes it as
 // --mx / --my CSS variables. Used by buttons that paint a radial spotlight
@@ -13,13 +13,27 @@ import { useCallback, useEffect, useRef } from 'react'
 // concurrently writing transforms (modal opens, entrance animations) — with
 // multiple spotlight buttons in-viewport at once, that compounds to several
 // forced reads per frame during hover.
+//
+// `ref` is a callback ref, not a useEffect. A consumer that renders its node
+// conditionally (e.g. BackToTop only mounts the button after scrolling past
+// 400px) attaches the node *after* the hook's first render. A `[]`-dep effect
+// would have run once while ref.current was still null, bailed, and never
+// re-attached — leaving rectRef null and the spotlight frozen at center. The
+// callback ref wires listeners exactly when the node attaches and tears them
+// down when it detaches.
 export function useSpotlight() {
-  const ref     = useRef(null)
-  const rafRef  = useRef(0)
-  const rectRef = useRef(null)
+  const elRef      = useRef(null)
+  const rafRef     = useRef(0)
+  const rectRef    = useRef(null)
+  const cleanupRef = useRef(null)
 
-  useEffect(() => {
-    const el = ref.current
+  const ref = useCallback((el) => {
+    // Detach from a previous node (or on unmount, when el is null).
+    if (cleanupRef.current) {
+      cleanupRef.current()
+      cleanupRef.current = null
+    }
+    elRef.current = el
     if (!el) return
 
     const updateRect = () => { rectRef.current = el.getBoundingClientRect() }
@@ -33,7 +47,7 @@ export function useSpotlight() {
     window.addEventListener('scroll', updateRect, { passive: true })
     window.addEventListener('resize', updateRect)
 
-    return () => {
+    cleanupRef.current = () => {
       ro.disconnect()
       window.removeEventListener('scroll', updateRect)
       window.removeEventListener('resize', updateRect)
@@ -46,7 +60,7 @@ export function useSpotlight() {
     const { clientX, clientY } = e
     rafRef.current = requestAnimationFrame(() => {
       rafRef.current = 0
-      const el   = ref.current
+      const el   = elRef.current
       const rect = rectRef.current
       if (!el || !rect) return
       el.style.setProperty('--mx', `${clientX - rect.left}px`)

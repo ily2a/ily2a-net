@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { SPRING_SNAP } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
+import SpotlightLayer from '@/components/SpotlightLayer'
 
 // Module-level: motion.create() is stable and shouldn't re-run on render
 const MotionLink = motion.create(Link)
@@ -21,13 +22,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   const baseClass = `relative inline-flex items-center justify-center rounded-[8px] px-4 ${v.height} btn-label ${v.text} ${v.border} overflow-hidden select-none no-underline ${className}`
   const baseStyle = { background: v.bg }
 
-  const spotlight = (
-    <span
-      aria-hidden
-      className="pointer-events-none absolute inset-0"
-      style={{ background: 'radial-gradient(circle 80px at var(--mx, 50%) var(--my, 50%), var(--color-spotlight), transparent)' }}
-    />
-  )
+  const spotlight = <SpotlightLayer />
 
   if (href) {
     return (
