@@ -7,6 +7,7 @@ import CloseButton from '@/components/buttons/CloseButton'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { pushModalOpen, popModalOpen } from '@/hooks/useModalOpen'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
+import { BREAKPOINTS } from '@/constants/layout'
 
 function releaseScrollLock() {
   const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
@@ -43,8 +44,8 @@ export default function BookingButton({ static: isStatic = false }) {
   const [iframeHeight, setIframeHeight] = useState(600)
 
   const width          = useWindowWidth()
-  const isMobile       = width > 0 && width < 810
-  const isTablet       = width >= 810 && width < 1200
+  const isMobile       = width > 0 && width < BREAKPOINTS.MD
+  const isTablet       = width >= BREAKPOINTS.MD && width < BREAKPOINTS.LG
   const isNarrowLayout = isMobile || isTablet
 
   // Cal.com is initialised lazily. Bundle is prefetched on first hover/focus

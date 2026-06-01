@@ -4,12 +4,13 @@ import { motion } from 'framer-motion'
 import { SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
+import { BREAKPOINTS } from '@/constants/layout'
 import { scrollToElement } from '@/lib/scroll'
 
 export default function TestimonialsButton({ instant = false }) {
   const prefersReduced = usePrefersReducedMotion()
   const width          = useWindowWidth()
-  const isMobile       = width > 0 && width < 810
+  const isMobile       = width > 0 && width < BREAKPOINTS.MD
 
   return (
     <motion.button

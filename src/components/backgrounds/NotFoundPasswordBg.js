@@ -4,15 +4,7 @@ import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { AMETHYST } from '@/constants/colors';
-
-function hexToVec3(hex) {
-  const h = hex.replace('#', '');
-  return [
-    parseInt(h.slice(0, 2), 16) / 255,
-    parseInt(h.slice(2, 4), 16) / 255,
-    parseInt(h.slice(4, 6), 16) / 255,
-  ];
-}
+import { hexToRgbNormalized } from '@/lib/color';
 
 const vertexShader = `
 attribute vec2 uv;
@@ -218,9 +210,9 @@ export default function NotFoundPasswordBg({
         uEdgeFadeWidth:  { value: p.edgeFadeWidth },
         uColorCycleSpeed:{ value: p.colorCycleSpeed },
         uBrightness:     { value: p.brightness },
-        uColor1:         { value: hexToVec3(p.color1) },
-        uColor2:         { value: hexToVec3(p.color2) },
-        uColor3:         { value: hexToVec3(p.color3) },
+        uColor1:         { value: hexToRgbNormalized(p.color1) },
+        uColor2:         { value: hexToRgbNormalized(p.color2) },
+        uColor3:         { value: hexToRgbNormalized(p.color3) },
         uMouse:          { value: new Float32Array([0.5, 0.5]) },
         uMouseInfluence: { value: p.mouseInfluence },
         uEnableMouse:    { value: p.enableMouseInteraction },
@@ -251,9 +243,9 @@ export default function NotFoundPasswordBg({
       program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
       program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
       program.uniforms.uBrightness.value     = cp.brightness;
-      if (cp.color1 !== lastColor1) { lastColor1 = cp.color1; cachedVec1 = hexToVec3(cp.color1); }
-      if (cp.color2 !== lastColor2) { lastColor2 = cp.color2; cachedVec2 = hexToVec3(cp.color2); }
-      if (cp.color3 !== lastColor3) { lastColor3 = cp.color3; cachedVec3 = hexToVec3(cp.color3); }
+      if (cp.color1 !== lastColor1) { lastColor1 = cp.color1; cachedVec1 = hexToRgbNormalized(cp.color1); }
+      if (cp.color2 !== lastColor2) { lastColor2 = cp.color2; cachedVec2 = hexToRgbNormalized(cp.color2); }
+      if (cp.color3 !== lastColor3) { lastColor3 = cp.color3; cachedVec3 = hexToRgbNormalized(cp.color3); }
       program.uniforms.uColor1.value         = cachedVec1;
       program.uniforms.uColor2.value         = cachedVec2;
       program.uniforms.uColor3.value         = cachedVec3;

@@ -5,6 +5,7 @@ import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useModalOpen } from '@/hooks/useModalOpen'
 import { AMETHYST } from '@/constants/colors'
+import { hexToRgbNormalized } from '@/lib/color'
 
 const MAX_COLORS = 8
 
@@ -116,19 +117,12 @@ void main() {
   gl_FragColor = color;
 }
 `
-const hexToRGB = hex => {
-  const c = hex.replace('#', '').padEnd(6, '0')
-  const r = parseInt(c.slice(0, 2), 16) / 255
-  const g = parseInt(c.slice(2, 4), 16) / 255
-  const b = parseInt(c.slice(4, 6), 16) / 255
-  return [r, g, b]
-}
 const prepStops = stops => {
   const base = (stops && stops.length ? stops : [AMETHYST[950], AMETHYST[400]]).slice(0, MAX_COLORS)
   if (base.length === 1) base.push(base[0])
   while (base.length < MAX_COLORS) base.push(base[base.length - 1])
   const arr = []
-  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[i]))
+  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRgbNormalized(base[i]))
   const count = Math.max(2, Math.min(MAX_COLORS, stops?.length ?? 2))
   return { arr, count }
 }
