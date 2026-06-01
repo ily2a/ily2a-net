@@ -37,6 +37,13 @@ export function subscribeToModalOpen(callback) {
   return () => listeners.delete(callback)
 }
 
+// Current open state, for non-React subscribers (e.g. a WebGL RAF loop set up
+// in a mount-only effect that can't call the hook). subscribeToModalOpen only
+// reports edges, so subscribers read this to learn the value on each notify.
+export function getModalOpen() {
+  return openCount > 0
+}
+
 function subscribe(callback) {
   return subscribeToModalOpen(callback)
 }

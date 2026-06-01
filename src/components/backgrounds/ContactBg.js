@@ -3,6 +3,7 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
 import { AMETHYST } from '@/constants/colors'
+import { subscribeToModalOpen, getModalOpen } from '@/hooks/useModalOpen'
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -187,6 +188,10 @@ export default function ContactBg({
     let prefersReducedMotion = reducedMotionMq.matches
     let isVisible = true
     let tabVisible = !document.hidden
+    // A fullscreen modal (e.g. the Cal.com booking embed) occludes this canvas
+    // without moving it off-screen, so IntersectionObserver won't pause it.
+    // Subscribe to the modal store to pause the loop while covered.
+    let modalOpen = getModalOpen()
 
     // Pause/resume helper — used by IntersectionObserver, visibilitychange, and reduced-motion.
     let animateId = 0
@@ -198,7 +203,9 @@ export default function ContactBg({
       }
     }
 
-    const syncActive = () => setActive(isVisible && tabVisible && !prefersReducedMotion)
+    const syncActive = () => setActive(isVisible && tabVisible && !modalOpen && !prefersReducedMotion)
+
+    const unsubscribeModal = subscribeToModalOpen(() => { modalOpen = getModalOpen(); syncActive() })
 
     // Pause the RAF loop when the ContactBg container is scrolled out of view.
     const io = new IntersectionObserver(([entry]) => { isVisible = entry.isIntersecting; syncActive() }, { rootMargin: '200px' })
@@ -216,8 +223,12 @@ export default function ContactBg({
     reducedMotionMq.addEventListener('change', onReducedMotionChange)
 
     const update = t => {
+      // Stop the loop on context loss instead of rescheduling — the previous
+      // order rescheduled before this check, spinning an empty RAF loop forever
+      // once the GL context was lost. A later resume edge (IO/visibility) can
+      // restart it; if the context is still gone it stops again after one frame.
+      if (!program || gl.isContextLost()) { animateId = 0; return }
       animateId = requestAnimationFrame(update)
-      if (!program || gl.isContextLost()) return
       const p = propsRef.current
       if (p.colorStops !== lastStopsRef) {
         lastStopsRef = p.colorStops
@@ -240,6 +251,7 @@ export default function ContactBg({
 
     return () => {
       cancelAnimationFrame(animateId)
+      unsubscribeModal()
       document.removeEventListener('visibilitychange', onVisibilityChange)
       reducedMotionMq.removeEventListener('change', onReducedMotionChange)
       ro.disconnect()
