@@ -53,6 +53,18 @@ CASE_STUDY_PASSWORD=your_shared_password
 
 # Optional — site URL override (defaults to https://ily2a.net for canonical/OG)
 NEXT_PUBLIC_SITE_URL=https://ily2a.net
+
+# Optional — shared secret that keys the /api/contact dedup cache so all warm
+# serverless instances agree on what's already been sent. Falls back to a
+# per-process random key in dev; set it in production.
+DEDUP_SECRET=your_dedup_secret
+
+# Optional — Sanity read token for the Live Content API (server-side only).
+# Not required for the public published-content fetch.
+SANITY_API_READ_TOKEN=your_sanity_read_token
+
+# Optional — Sanity API version (defaults to a pinned date in src/sanity/env.js)
+NEXT_PUBLIC_SANITY_API_VERSION=2026-03-13
 ```
 
 ### 3. Run the dev server
@@ -154,6 +166,7 @@ npx sanity@latest schema deploy
 
 **Visual Effects**
 - **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
+- **SpotlightLayer** — radial-gradient overlay painted at the `--mx` / `--my` position that `useSpotlight` tracks; the visual half of the cursor-spotlight effect, co-located so the gradient radius/color live in one place (shared by SpotlightButton, BackToTop, …)
 - **HeroBg** — WebGL (OGL) shader background for the hero section; DPR capped at 1.5 for mobile INP. A CSS gradient placeholder shows until the canvas paints its first frame (`onFirstFrame`), then crossfades out — avoids a late background pop-in on cold load and stays visible as a fallback if WebGL never renders
 - **ContactBg** — WebGL (OGL) aurora-style background for the contact section
 - **NotFoundPasswordBg** — WebGL (OGL) background shared by the 404 and password-gate pages
@@ -207,6 +220,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 - **sanity-queries.js** — GROQ queries for case studies and home-page content
 - **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
+- **color.js** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
 - **dedup.js** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
 - **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
@@ -245,8 +259,15 @@ The route uses constant-time secret comparison and a fixed-key sliding-window ra
 
 Vitest is configured with the `node` environment by default ([vitest.config.mjs](vitest.config.mjs)). Tests live next to the code they cover under `__tests__/` folders:
 
+- `src/app/api/__tests__/contact.test.js`
+- `src/app/api/__tests__/revalidate.test.js`
+- `src/app/api/__tests__/unlock.test.js`
+- `src/lib/__tests__/api.test.js`
 - `src/lib/__tests__/dedup.test.js`
+- `src/lib/__tests__/json-ld.test.js`
+- `src/lib/__tests__/portable-text.test.js`
 - `src/lib/__tests__/scroll.test.js`
+- `src/lib/__tests__/validation.test.js`
 - `src/hooks/__tests__/useModalOpen.test.js`
 
 Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
