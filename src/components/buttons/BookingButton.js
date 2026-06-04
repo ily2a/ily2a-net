@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import CloseButton from '@/components/buttons/CloseButton'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
-import { pushModalOpen, popModalOpen } from '@/hooks/useModalOpen'
+import { pushModalOpen, popModalOpen } from '@/lib/modal-store'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 import { BREAKPOINTS } from '@/constants/layout'
 
@@ -370,7 +370,7 @@ export default function BookingButton({ static: isStatic = false }) {
             ) : (
               <iframe
                 ref={iframeRef}
-                src="https://cal.com/ily2a/intro?embed=true"
+                src={CAL_EMBED_URL}
                 title="Book a call with Ily Ameur"
                 width="100%"
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"

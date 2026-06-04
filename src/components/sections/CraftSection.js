@@ -55,7 +55,7 @@ export default function CraftSection({
           <p className="text-md text-text-secondary">{CRAFT_DESCRIPTION}</p>
         </div>
         <motion.div
-          className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2"
+          className="grid grid-cols-1 gap-4 mobile:grid-cols-2"
           variants={GRID_STAGGER}
           initial="hidden"
           whileInView="show"

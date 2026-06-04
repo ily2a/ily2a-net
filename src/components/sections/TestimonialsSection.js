@@ -23,7 +23,7 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 mobile:grid-cols-2">
           {TESTIMONIALS.map(({ name, role, avatar, quote, wide }) => (
             <article
               key={name}

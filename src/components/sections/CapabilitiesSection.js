@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { EASE_OUT } from '@/constants/animations'
+import { useSpotlight } from '@/hooks/useSpotlight'
 
 // Section-level stagger — children enter 50ms apart so the grid feels alive
 // instead of dropping in as a single block. Whole grid finishes well under
@@ -48,54 +49,43 @@ const SKILL_GROUPS = [
 const SPOTLIGHT_COLOR = 'color-mix(in srgb, var(--color-amethyst-400) 13%, transparent)'
 
 function SpotlightCard({ children }) {
-  const divRef  = useRef(null)
-  const spotRef = useRef(null)
-  const rafRef  = useRef(0)
+  // Reuse useSpotlight: it caches the element rect (ResizeObserver + scroll/resize)
+  // so the RAF callback stays layout-read-free, and writes --mx/--my onto the card.
+  // The gradient child inherits those custom properties.
+  const { ref, onMouseMove } = useSpotlight()
   const [opacity, setOpacity] = useState(0)
-
-  const handleMouseMove = useCallback((e) => {
-    if (rafRef.current) return
-    const el = divRef.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const { clientX, clientY } = e
-    rafRef.current = requestAnimationFrame(() => {
-      spotRef.current?.style.setProperty('--sx', `${clientX - rect.left}px`)
-      spotRef.current?.style.setProperty('--sy', `${clientY - rect.top}px`)
-      rafRef.current = 0
-    })
-  }, [])
 
   const handleMouseEnter = useCallback(() => setOpacity(1), [])
   const handleMouseLeave = useCallback(() => setOpacity(0), [])
 
+  // Touch has no hover; set the spotlight position once from the touch point.
+  // e.currentTarget is the card, so no extra ref is needed.
   const handleTouchStart = useCallback((e) => {
-    if (!divRef.current) return
-    const rect  = divRef.current.getBoundingClientRect()
+    const el    = e.currentTarget
+    const rect  = el.getBoundingClientRect()
     const touch = e.touches[0]
-    spotRef.current?.style.setProperty('--sx', `${touch.clientX - rect.left}px`)
-    spotRef.current?.style.setProperty('--sy', `${touch.clientY - rect.top}px`)
+    el.style.setProperty('--mx', `${touch.clientX - rect.left}px`)
+    el.style.setProperty('--my', `${touch.clientY - rect.top}px`)
     setOpacity(1)
   }, [])
   const handleTouchEnd = useCallback(() => setOpacity(0), [])
 
   return (
     <div
-      ref={divRef}
+      ref={ref}
       className="cap-card rounded-xl"
-      onMouseMove={handleMouseMove}
+      onMouseMove={onMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       <motion.div
-        ref={spotRef}
         className="cap-card__spotlight"
         initial={{ opacity: 0 }}
         animate={{ opacity }}
         transition={{ duration: 0.5, ease: EASE_OUT }}
-        style={{ background: `radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), ${SPOTLIGHT_COLOR}, transparent 80%)` }}
+        style={{ background: `radial-gradient(circle at var(--mx, 50%) var(--my, 50%), ${SPOTLIGHT_COLOR}, transparent 80%)` }}
       />
       {children}
     </div>
@@ -139,7 +129,7 @@ export default function CapabilitiesSection() {
 
         {/* ── Service cards ── */}
         <motion.div
-          className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-2"
+          className="grid grid-cols-1 gap-3 mobile:grid-cols-2"
           variants={STAGGER_PARENT}
           initial="hidden"
           whileInView="show"
@@ -164,7 +154,7 @@ export default function CapabilitiesSection() {
 
         {/* ── Skills + Tools ── */}
         <motion.div
-          className="grid grid-cols-1 gap-3 min-[600px]:grid-cols-[2fr_1fr]"
+          className="grid grid-cols-1 gap-3 mobile:grid-cols-[2fr_1fr]"
           variants={STAGGER_PARENT}
           initial="hidden"
           whileInView="show"

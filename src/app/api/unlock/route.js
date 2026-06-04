@@ -1,6 +1,10 @@
 import { getClientIp, createRateLimiter, timingSafeStringEqual } from '@/lib/api'
 
 // 10 attempts per IP per hour — tighter than contact (5/hr) since this is auth.
+// The per-IP throttle is per-instance and IP-trust depends on the platform
+// setting x-real-ip (see getClientIp); on non-Vercel hosts x-forwarded-for is
+// spoofable, so brute-force resistance ultimately rests on CASE_STUDY_PASSWORD
+// being high-entropy. Keep that secret long/random, not a guessable phrase.
 const isRateLimited = createRateLimiter({ limit: 10, windowMs: 60 * 60 * 1000 })
 
 // Hard cap on raw POST body. The expected payload is `{ "password": "..." }`

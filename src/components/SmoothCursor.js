@@ -5,7 +5,10 @@ import { motion, useSpring, AnimatePresence } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
-const CARD_SELECTOR  = '.project-card'
+// Any element can opt into the expanded cursor label by declaring
+// data-cursor-label="…" — an explicit contract instead of reaching into a
+// component's CSS class. ProjectCard sets data-cursor-label="View project".
+const CURSOR_TARGET  = '[data-cursor-label]'
 const SPRING         = { damping: 38, stiffness: 500, mass: 0.75, restDelta: 0.001 }
 
 export default function SmoothCursor() {
@@ -13,6 +16,7 @@ export default function SmoothCursor() {
   const [isEnabled,  setIsEnabled]  = useState(false)
   const [isVisible,  setIsVisible]  = useState(false)
   const [isHovering, setIsHovering] = useState(false)
+  const [hoverLabel, setHoverLabel] = useState('')
   const [isClicking, setIsClicking] = useState(false)
   const rafId = useRef(0)
 
@@ -44,8 +48,10 @@ export default function SmoothCursor() {
     }
 
     const onMouseOver = (e) => {
-      const next = !!e.target.closest(CARD_SELECTOR)
-      setIsHovering(prev => prev === next ? prev : next)
+      const el    = e.target.closest(CURSOR_TARGET)
+      const label = el?.dataset.cursorLabel ?? ''
+      setIsHovering(prev => prev === !!el  ? prev : !!el)
+      setHoverLabel(prev => prev === label ? prev : label)
     }
 
     const onMouseDown = () => setIsClicking(true)
@@ -113,7 +119,7 @@ export default function SmoothCursor() {
               exit={{    opacity: 0, scale: 0.6 }}
               transition={{ ease: 'easeInOut', duration: 0.15 }}
             >
-              View project
+              {hoverLabel}
             </motion.span>
           )}
         </AnimatePresence>

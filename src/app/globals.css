@@ -52,7 +52,7 @@
 
   /* ─── Breakpoints ─────────────────────────────────────────── */
   --breakpoint-sm:     390px;
-  --breakpoint-mobile: 600px;  /* JS-only: compact navbar / stacked hero (between sm and tab) */
+  --breakpoint-mobile: 600px;  /* compact navbar / stacked hero (between sm and tab); also read in JS via BREAKPOINTS */
   --breakpoint-tab:    730px;  /* compact tablet / landscape phone */
   --breakpoint-md:     810px;
   --breakpoint-desk:   1088px; /* compact desktop */

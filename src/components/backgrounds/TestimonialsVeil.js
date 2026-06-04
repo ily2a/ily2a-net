@@ -154,6 +154,10 @@ export default function TestimonialsVeil({
     let frame = 0
 
     const loop = () => {
+      // Stop the loop on context loss instead of rescheduling — otherwise the RAF
+      // spins forever with nothing to render once the GL context is lost. A resume
+      // edge (IO/visibility) restarts it via setActive (gated on !frame).
+      if (gl.isContextLost()) { frame = 0; return }
       const p = propsRef.current
       program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * p.speed
       program.uniforms.uHueShift.value = p.hueShift

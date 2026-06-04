@@ -3,7 +3,7 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
 import { AMETHYST } from '@/constants/colors'
-import { subscribeToModalOpen, getModalOpen } from '@/hooks/useModalOpen'
+import { subscribeToModalOpen, getModalOpen } from '@/lib/modal-store'
 
 const VERT = `#version 300 es
 in vec2 position;

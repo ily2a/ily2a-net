@@ -74,6 +74,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
       transition={{ duration: 0.15, ease: EASE_OUT }}
       style={{ touchAction: 'manipulation' }}
       className="project-card block no-underline"
+      data-cursor-label="View project"
     >
       {/* ── Image + overlay container ── */}
       <div className="relative aspect-[16/10] w-full">

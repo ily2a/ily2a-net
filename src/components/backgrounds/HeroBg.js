@@ -353,6 +353,12 @@ const HeroBg = ({
     io.observe(container)
 
     const loop = t => {
+      // Stop the loop on context loss instead of rescheduling — otherwise the RAF
+      // spins forever running damping math with nothing to render once the GL
+      // context is lost. A later resume edge (IO/visibility/modal) restarts it via
+      // setActive (which gates on !rafRef.current); if the context is still gone
+      // it stops again after one frame.
+      if (!programRef.current || gl.isContextLost()) { rafRef.current = 0; return }
       rafRef.current = requestAnimationFrame(loop)
       const tSec = t * 0.001
       uniforms.iTime.value = tSec

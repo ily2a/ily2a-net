@@ -110,8 +110,13 @@ export default async function CaseStudyPage({ params }) {
   const tocItems = dedupeIds([
     ...contextSections.map(s => ({ id: toId(s.label), label: s.label, level: 2 })),
     ...bodyHeadings,
-    ...(figmaEmbedUrl ? [{ id: 'prototype', label: 'Prototype', level: 2 }] : []),
+    ...(figmaEmbedUrl ? [{ id: 'prototype', label: 'Prototype', level: 2, isPrototype: true }] : []),
   ])
+
+  // The Prototype heading is rendered with a fixed string below, but dedupeIds
+  // may have suffixed its id (e.g. a body heading also slugified to 'prototype').
+  // Read the deduped id back so the rendered h2 and the ToC anchor always match.
+  const prototypeId = tocItems.find(t => t.isPrototype)?.id ?? 'prototype'
 
   // Map block._key → deduplicated id so heading renderers in PortableText
   // produce DOM ids that match the ToC anchors even when two headings share text.
@@ -222,7 +227,7 @@ export default async function CaseStudyPage({ params }) {
 
               {figmaEmbedUrl && (
                 <div className="flex flex-col gap-3">
-                  <h2 id="prototype" className="text-overline text-brand scroll-mt-10">
+                  <h2 id={prototypeId} className="text-overline text-brand scroll-mt-10">
                     Prototype
                   </h2>
                   <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-glass-border shadow-[0_8px_32px_var(--color-shadow-strong)]">

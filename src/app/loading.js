@@ -27,7 +27,7 @@ export default function Loading() {
               <div className="skeleton h-6 w-24 rounded" />
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 min-[600px]:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 mobile:grid-cols-2">
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="skeleton w-full rounded-xl aspect-[16/10]" />
             ))}

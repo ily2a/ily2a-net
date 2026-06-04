@@ -15,6 +15,7 @@ export default function BackToTop() {
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400)
+    onScroll() // sync once: page may mount already scrolled (restoration, hash deep-link)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])

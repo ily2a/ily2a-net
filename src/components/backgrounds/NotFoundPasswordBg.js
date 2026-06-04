@@ -3,6 +3,7 @@
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { getModalOpen, subscribeToModalOpen } from '@/lib/modal-store';
 import { AMETHYST } from '@/constants/colors';
 import { hexToRgbNormalized } from '@/lib/color';
 
@@ -255,8 +256,12 @@ export default function NotFoundPasswordBg({
     };
 
     function update(time) {
+      // Stop on context loss instead of rescheduling — rescheduling before this
+      // check spun an empty RAF loop forever once the GL context was lost. A
+      // resume edge (IO/visibility) restarts it via setActive (gated on
+      // !animationFrameId); if the context is still gone it stops again.
+      if (gl.isContextLost()) { animationFrameId = 0; return; }
       animationFrameId = requestAnimationFrame(update);
-      if (gl.isContextLost()) return;
       const cp = propsRef.current;
 
       // Update uniforms in-place from the latest props ref — no context rebuild needed
@@ -280,7 +285,14 @@ export default function NotFoundPasswordBg({
       renderer.render({ scene: mesh });
     };
 
-    // Pause RAF when scrolled out of view — mirrors ContactBg/HeroBg pattern.
+    // Pause RAF when scrolled out of view, the tab is hidden, or a modal covers
+    // us — mirrors ContactBg/HeroBg. This component renders inside PasswordGate,
+    // whose nav can open a fullscreen booking modal that occludes the canvas
+    // without moving it off-screen, so IntersectionObserver alone won't pause it.
+    let isVisible = true;
+    let tabVisible = !document.hidden;
+    let modalOpen = getModalOpen();
+
     const setActive = (active) => {
       if (!active) {
         if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = 0; }
@@ -288,11 +300,14 @@ export default function NotFoundPasswordBg({
         animationFrameId = requestAnimationFrame(update);
       }
     };
-    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '200px' });
+    const syncActive = () => setActive(isVisible && tabVisible && !modalOpen && !prefersReduced);
+
+    const unsubscribeModal = subscribeToModalOpen(() => { modalOpen = getModalOpen(); syncActive(); });
+
+    const io = new IntersectionObserver(([entry]) => { isVisible = entry.isIntersecting; syncActive(); }, { rootMargin: '200px' });
     io.observe(container);
 
-    // Pause when tab is hidden.
-    const onVisibilityChange = () => setActive(!document.hidden);
+    const onVisibilityChange = () => { tabVisible = !document.hidden; syncActive(); };
     document.addEventListener('visibilitychange', onVisibilityChange);
 
     if (prefersReduced) {
@@ -303,6 +318,7 @@ export default function NotFoundPasswordBg({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      unsubscribeModal();
       document.removeEventListener('visibilitychange', onVisibilityChange);
       ro.disconnect();
       io.disconnect();
