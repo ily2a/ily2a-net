@@ -107,6 +107,39 @@ describe('POST /api/contact', () => {
     await expect(res.json()).resolves.toEqual({ error: 'Failed to send message' })
   })
 
+  it('returns 500 when the send rejects, and preserves the retry (no markSent)', async () => {
+    // A rejected send (network error) must map to 500 AND must not commit the
+    // dedup key — otherwise a transient failure would suppress the user's retry.
+    sendMock.mockRejectedValueOnce(new Error('network'))
+    const body = validBody()
+    const res = await POST(makeReq(body))
+    expect(res.status).toBe(500)
+    await expect(res.json()).resolves.toEqual({ error: 'Failed to send message' })
+
+    // Resubmitting the same payload must attempt a fresh send, not dedupe to success.
+    sendMock.mockResolvedValueOnce({})
+    const retry = await POST(makeReq(body))
+    expect(retry.status).toBe(200)
+    expect(sendMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('returns 500 when the send exceeds the 8s timeout', async () => {
+    vi.useFakeTimers()
+    try {
+      // Send never resolves; the 8s timeout should win the race.
+      let release
+      sendMock.mockReturnValueOnce(new Promise((resolve) => { release = resolve }))
+      const pending = POST(makeReq(validBody()))
+      await vi.advanceTimersByTimeAsync(8000)
+      const res = await pending
+      expect(res.status).toBe(500)
+      await expect(res.json()).resolves.toEqual({ error: 'Failed to send message' })
+      release?.({}) // settle the dangling send (route swallows it)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('dedupes an identical immediate resubmit (200, no second send)', async () => {
     const body = validBody()
     const first = await POST(makeReq(body))

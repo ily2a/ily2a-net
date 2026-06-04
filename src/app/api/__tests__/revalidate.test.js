@@ -62,4 +62,19 @@ describe('POST /api/revalidate', () => {
     const blocked = await POST(makeReq({ secret: 'wrong', ip }))
     expect(blocked.status).toBe(429)
   })
+
+  it('post-auth quota returns 429 after 60 authenticated requests (leaked-secret guard)', async () => {
+    // The post-auth limiter is keyed on a fixed string and is a module singleton,
+    // so import a fresh copy to isolate its counter from the other tests. Use
+    // varying IPs so the pre-auth (20/IP) limiter never trips first.
+    vi.resetModules()
+    const { POST: FreshPOST } = await import('@/app/api/revalidate/route')
+    for (let i = 0; i < 60; i++) {
+      const res = await FreshPOST(makeReq({ secret: SECRET }))
+      expect(res.status).toBe(200)
+    }
+    const blocked = await FreshPOST(makeReq({ secret: SECRET }))
+    expect(blocked.status).toBe(429)
+    await expect(blocked.json()).resolves.toEqual({ error: 'Too many requests' })
+  })
 })
