@@ -18,7 +18,9 @@ export default function SmoothCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [hoverLabel, setHoverLabel] = useState('')
   const [isClicking, setIsClicking] = useState(false)
-  const rafId = useRef(0)
+  const rafId        = useRef(0)
+  const lastPoint    = useRef(null) // last pointer position, for re-checking hover on scroll
+  const scrollRaf    = useRef(0)
 
   const cursorX = useSpring(0, SPRING)
   const cursorY = useSpring(0, SPRING)
@@ -35,8 +37,16 @@ export default function SmoothCursor() {
   useEffect(() => {
     if (!isEnabled || prefersReduced) return
 
+    // Set hover state from whatever element is (or isn't) a cursor target.
+    const setHoverFromTarget = (el) => {
+      const label = el?.dataset.cursorLabel ?? ''
+      setIsHovering(prev => prev === !!el  ? prev : !!el)
+      setHoverLabel(prev => prev === label ? prev : label)
+    }
+
     const onPointerMove = (e) => {
       if (e.pointerType === 'touch') return
+      lastPoint.current = { x: e.clientX, y: e.clientY }
       if (rafId.current) return
       const { clientX, clientY } = e
       rafId.current = requestAnimationFrame(() => {
@@ -47,11 +57,19 @@ export default function SmoothCursor() {
       })
     }
 
-    const onMouseOver = (e) => {
-      const el    = e.target.closest(CURSOR_TARGET)
-      const label = el?.dataset.cursorLabel ?? ''
-      setIsHovering(prev => prev === !!el  ? prev : !!el)
-      setHoverLabel(prev => prev === label ? prev : label)
+    const onMouseOver = (e) => setHoverFromTarget(e.target.closest(CURSOR_TARGET))
+
+    // Scrolling moves content under a stationary cursor without firing mouseover,
+    // so the hover label would otherwise stay stuck after a card scrolls away.
+    // Re-check what's under the last known pointer position. RAF-throttled because
+    // elementFromPoint forces a layout read.
+    const onScroll = () => {
+      if (scrollRaf.current || !lastPoint.current) return
+      scrollRaf.current = requestAnimationFrame(() => {
+        scrollRaf.current = 0
+        const { x, y } = lastPoint.current
+        setHoverFromTarget(document.elementFromPoint(x, y)?.closest(CURSOR_TARGET) ?? null)
+      })
     }
 
     const onMouseDown = () => setIsClicking(true)
@@ -60,6 +78,7 @@ export default function SmoothCursor() {
 
     window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('mouseover',   onMouseOver)
+    window.addEventListener('scroll',      onScroll, { passive: true })
     window.addEventListener('mousedown',   onMouseDown)
     window.addEventListener('mouseup',     onMouseUp)
     window.addEventListener('blur',        onBlur)
@@ -67,10 +86,12 @@ export default function SmoothCursor() {
     return () => {
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('mouseover',   onMouseOver)
+      window.removeEventListener('scroll',      onScroll)
       window.removeEventListener('mousedown',   onMouseDown)
       window.removeEventListener('mouseup',     onMouseUp)
       window.removeEventListener('blur',        onBlur)
       if (rafId.current) cancelAnimationFrame(rafId.current)
+      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current)
     }
   // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
   // eslint-disable-next-line react-hooks/exhaustive-deps
