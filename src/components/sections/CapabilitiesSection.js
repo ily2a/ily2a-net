@@ -21,14 +21,14 @@ const STAGGER_CHILD = {
 const CARDS = [
   {
     title: 'Product Design',
-    icon: '/capabilities icons/cube.png',
+    icon: '/capabilities-icons/cube.png',
     description: 'From discovery to handoff. Complex flows, scalable systems, products that ship.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-400), var(--color-amethyst-700), transparent)',
     tags: ['Mobile & Web Apps', 'SaaS', 'Design Systems', 'Complex Flows', 'End-to-end'],
   },
   {
     title: 'Design Engineering',
-    icon: '/capabilities icons/drop.png',
+    icon: '/capabilities-icons/drop.png',
     description: 'I close the gap between design and code. React components, zero handoff friction.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-600), var(--color-amethyst-900), transparent)',
     tags: ['React', 'React Native', 'Figma-to-code', 'Component Architecture', 'AI-assisted workflows'],
@@ -165,7 +165,7 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <Image src="/capabilities icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
+                <Image src="/capabilities-icons/arrow.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="heading-sub text-text-primary">Skills</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-400 via-amethyst-700 to-transparent" aria-hidden="true" />
@@ -185,7 +185,7 @@ export default function CapabilitiesSection() {
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <Image src="/capabilities icons/brain.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
+                <Image src="/capabilities-icons/brain.png" alt="" aria-hidden="true" width={40} height={40} sizes="40px" className="w-10 h-10 object-contain shrink-0" />
                 <h3 className="heading-sub text-text-primary">Tools</h3>
               </div>
               <hr className="h-[6px] border-0 rounded-sm m-0 bg-gradient-to-r from-amethyst-500 via-amethyst-900 to-transparent" aria-hidden="true" />

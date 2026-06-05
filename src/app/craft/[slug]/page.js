@@ -7,7 +7,7 @@ import { PortableText } from '@portabletext/react'
 import FloatingNav from '@/components/nav/FloatingNav'
 import BackToTop from '@/components/buttons/BackToTop'
 import ContactSection from '@/components/sections/ContactSection'
-import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor } from '@/sanity/lib/image'
@@ -16,7 +16,7 @@ import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
-import { makePtBody, ptSection } from '@/components/PortableTextComponents'
+import { makePtBody, ptSection } from '@/components/portable-text/PortableTextComponents'
 
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.

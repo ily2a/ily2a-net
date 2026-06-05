@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import FloatingNav from '@/components/nav/FloatingNav'
-import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 
 export default function Error({ error: _error, reset }) {
   return (

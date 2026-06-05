@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/image'
 import { toId } from '@/lib/portable-text'
-import PortableTextLink from '@/components/PortableTextLink'
+import PortableTextLink from '@/components/portable-text/PortableTextLink'
 
 // Portable Text component overrides used by case-study pages.
 //

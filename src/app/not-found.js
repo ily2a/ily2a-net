@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import FloatingNav from '@/components/nav/FloatingNav'
-import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 
 export const metadata = {

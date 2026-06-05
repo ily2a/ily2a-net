@@ -14,7 +14,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { SPRING_SNAP } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
-import SpotlightLayer from '@/components/SpotlightLayer'
+import SpotlightLayer from '@/components/effects/SpotlightLayer'
 
 // Module-level: motion.create() is stable and shouldn't re-run on render
 const MotionLink = motion.create(Link)

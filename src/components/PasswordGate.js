@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 import FloatingNav from '@/components/nav/FloatingNav'
-import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { FloatingLabelInput } from '@/components/form/FloatingLabelInput'
 
 const SESSION_KEY = 'cs_unlocked'

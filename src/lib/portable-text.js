@@ -1,5 +1,5 @@
 // Pure helpers for working with Portable Text content. Kept separate from
-// the React component definitions in components/PortableTextComponents.js
+// the React component definitions in components/portable-text/PortableTextComponents.js
 // so server-only code (sitemaps, metadata) can reach for them without
 // pulling React/JSX into a non-render context.
 

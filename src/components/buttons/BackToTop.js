@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useSpotlight } from '@/hooks/useSpotlight'
-import SpotlightLayer from '@/components/SpotlightLayer'
+import SpotlightLayer from '@/components/effects/SpotlightLayer'
 import { scrollToY } from '@/lib/scroll'
 
 export default function BackToTop() {

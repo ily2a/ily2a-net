@@ -1,7 +1,7 @@
 import CraftSection from '@/components/sections/CraftSection'
 import ContactSection from '@/components/sections/ContactSection'
 import FloatingNav from '@/components/nav/FloatingNav'
-import SilentErrorBoundary from '@/components/SilentErrorBoundary'
+import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
 import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
