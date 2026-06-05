@@ -1,9 +1,8 @@
 'use client';
 
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { useEffect, useRef } from 'react';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { getModalOpen, subscribeToModalOpen } from '@/lib/modal-store';
+import { useRef } from 'react';
+import { useWebGLBackground } from '@/hooks/useWebGLBackground';
 import { AMETHYST } from '@/constants/colors';
 import { hexToRgbNormalized } from '@/lib/color';
 
@@ -145,96 +144,87 @@ const MOUSE_INFLUENCE = 2.0;
 
 export default function NotFoundPasswordBg() {
   const containerRef = useRef(null);
-  const prefersReduced = usePrefersReducedMotion();
+  useWebGLBackground(containerRef, setupNotFoundPasswordBg, []);
 
-  // ── Main WebGL setup — runs once on mount ──────────────────────────────────
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: false,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
-    });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
+  return (
+    <div className="absolute inset-0 -z-10 opacity-60">
+      <div ref={containerRef} className="w-full h-full" />
+    </div>
+  );
+}
 
-    let currentMouse = [0.5, 0.5];
-    let targetMouse = [0.5, 0.5];
+// Builds the ogl renderer/program/mesh and returns the lifecycle contract for
+// useWebGLBackground (which owns pause/resume, reduced motion, and context-loss
+// recovery). Static uniforms are set once; render() only advances time and
+// eases the mouse.
+function setupNotFoundPasswordBg(container) {
+  const renderer = new Renderer({
+    alpha: true,
+    premultipliedAlpha: false,
+    antialias: false,
+    dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+  });
+  const gl = renderer.gl;
+  gl.clearColor(0, 0, 0, 0);
 
-    function handleMouseMove(e) {
-      const rect = gl.canvas.getBoundingClientRect();
-      targetMouse = [
-        (e.clientX - rect.left) / rect.width,
-        1.0 - (e.clientY - rect.top) / rect.height,
-      ];
-    }
+  const currentMouse = [0.5, 0.5];
+  let targetMouse = [0.5, 0.5];
 
-    function handleMouseLeave() {
-      targetMouse = [0.5, 0.5];
-    }
+  function handleMouseMove(e) {
+    const rect = gl.canvas.getBoundingClientRect();
+    targetMouse = [
+      (e.clientX - rect.left) / rect.width,
+      1.0 - (e.clientY - rect.top) / rect.height,
+    ];
+  }
+  function handleMouseLeave() {
+    targetMouse = [0.5, 0.5];
+  }
 
-    function resize() {
-      renderer.setSize(container.offsetWidth, container.offsetHeight);
-      if (program) {
-        program.uniforms.uResolution.value = [
-          gl.canvas.width,
-          gl.canvas.height,
-          gl.canvas.width / gl.canvas.height,
-        ];
-      }
-    }
-    const ro = new ResizeObserver(resize);
-    ro.observe(container);
+  const geometry = new Triangle(gl);
+  const program = new Program(gl, {
+    vertex: vertexShader,
+    fragment: fragmentShader,
+    uniforms: {
+      uTime:           { value: 0 },
+      uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+      uSpeed:          { value: SPEED },
+      uInnerLines:     { value: INNER_LINE_COUNT },
+      uOuterLines:     { value: OUTER_LINE_COUNT },
+      uWarpIntensity:  { value: WARP_INTENSITY },
+      uRotation:       { value: (ROTATION_DEG * Math.PI) / 180 },
+      uEdgeFadeWidth:  { value: EDGE_FADE_WIDTH },
+      uColorCycleSpeed:{ value: COLOR_CYCLE_SPEED },
+      uBrightness:     { value: BRIGHTNESS },
+      uColor1:         { value: hexToRgbNormalized(COLOR1) },
+      uColor2:         { value: hexToRgbNormalized(COLOR2) },
+      uColor3:         { value: hexToRgbNormalized(COLOR3) },
+      uMouse:          { value: new Float32Array([0.5, 0.5]) },
+      uMouseInfluence: { value: MOUSE_INFLUENCE },
+      uEnableMouse:    { value: ENABLE_MOUSE_INTERACTION },
+    },
+  });
+  const mesh = new Mesh(gl, { geometry, program });
 
-    const geometry = new Triangle(gl);
+  container.appendChild(gl.canvas);
+  gl.canvas.addEventListener('mousemove', handleMouseMove);
+  gl.canvas.addEventListener('mouseleave', handleMouseLeave);
 
-    let program = new Program(gl, {
-      vertex: vertexShader,
-      fragment: fragmentShader,
-      uniforms: {
-        uTime:           { value: 0 },
-        uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
-        uSpeed:          { value: SPEED },
-        uInnerLines:     { value: INNER_LINE_COUNT },
-        uOuterLines:     { value: OUTER_LINE_COUNT },
-        uWarpIntensity:  { value: WARP_INTENSITY },
-        uRotation:       { value: (ROTATION_DEG * Math.PI) / 180 },
-        uEdgeFadeWidth:  { value: EDGE_FADE_WIDTH },
-        uColorCycleSpeed:{ value: COLOR_CYCLE_SPEED },
-        uBrightness:     { value: BRIGHTNESS },
-        uColor1:         { value: hexToRgbNormalized(COLOR1) },
-        uColor2:         { value: hexToRgbNormalized(COLOR2) },
-        uColor3:         { value: hexToRgbNormalized(COLOR3) },
-        uMouse:          { value: new Float32Array([0.5, 0.5]) },
-        uMouseInfluence: { value: MOUSE_INFLUENCE },
-        uEnableMouse:    { value: ENABLE_MOUSE_INTERACTION },
-      },
-    });
+  function resize() {
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    program.uniforms.uResolution.value = [
+      gl.canvas.width,
+      gl.canvas.height,
+      gl.canvas.width / gl.canvas.height,
+    ];
+  }
 
-    resize();
-
-    const mesh = new Mesh(gl, { geometry, program });
-    container.appendChild(gl.canvas);
-
-    gl.canvas.addEventListener('mousemove', handleMouseMove);
-    gl.canvas.addEventListener('mouseleave', handleMouseLeave);
-
-    let animationFrameId = 0;
-
-    // Static uniforms (colors, line counts, rotation, etc.) are set once above
-    // and never change, so the loop only advances time and eases the mouse.
-    function update(time) {
-      // Stop on context loss instead of rescheduling — rescheduling before this
-      // check spun an empty RAF loop forever once the GL context was lost. A
-      // resume edge (IO/visibility) restarts it via setActive (gated on
-      // !animationFrameId); if the context is still gone it stops again.
-      if (gl.isContextLost()) { animationFrameId = 0; return; }
-      animationFrameId = requestAnimationFrame(update);
-
+  return {
+    canvas: gl.canvas,
+    isContextLost: () => gl.isContextLost(),
+    resize,
+    render(time) {
       program.uniforms.uTime.value = time * 0.001;
-
       if (ENABLE_MOUSE_INTERACTION) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
         currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
@@ -244,62 +234,17 @@ export default function NotFoundPasswordBg() {
         program.uniforms.uMouse.value[0] = 0.5;
         program.uniforms.uMouse.value[1] = 0.5;
       }
-
       renderer.render({ scene: mesh });
-    }
-
-    const renderStatic = () => {
+    },
+    renderStatic() {
       program.uniforms.uTime.value = 0;
       renderer.render({ scene: mesh });
-    };
-
-    // Pause RAF when scrolled out of view, the tab is hidden, or a modal covers
-    // us — mirrors ContactBg/HeroBg. This component renders inside PasswordGate,
-    // whose nav can open a fullscreen booking modal that occludes the canvas
-    // without moving it off-screen, so IntersectionObserver alone won't pause it.
-    let isVisible = true;
-    let tabVisible = !document.hidden;
-    let modalOpen = getModalOpen();
-
-    const setActive = (active) => {
-      if (!active) {
-        if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = 0; }
-      } else if (!animationFrameId && !prefersReduced) {
-        animationFrameId = requestAnimationFrame(update);
-      }
-    };
-    const syncActive = () => setActive(isVisible && tabVisible && !modalOpen && !prefersReduced);
-
-    const unsubscribeModal = subscribeToModalOpen(() => { modalOpen = getModalOpen(); syncActive(); });
-
-    const io = new IntersectionObserver(([entry]) => { isVisible = entry.isIntersecting; syncActive(); }, { rootMargin: '200px' });
-    io.observe(container);
-
-    const onVisibilityChange = () => { tabVisible = !document.hidden; syncActive(); };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-
-    if (prefersReduced) {
-      renderStatic();
-    } else {
-      animationFrameId = requestAnimationFrame(update);
-    }
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      unsubscribeModal();
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-      ro.disconnect();
-      io.disconnect();
+    },
+    dispose() {
       gl.canvas.removeEventListener('mousemove', handleMouseMove);
       gl.canvas.removeEventListener('mouseleave', handleMouseLeave);
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
-    };
-  }, [prefersReduced]);
-
-  return (
-    <div className="absolute inset-0 -z-10 opacity-60">
-      <div ref={containerRef} className="w-full h-full" />
-    </div>
-  );
+    },
+  };
 }

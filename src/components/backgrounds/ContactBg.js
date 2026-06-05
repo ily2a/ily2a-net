@@ -3,7 +3,7 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
 import { AMETHYST } from '@/constants/colors'
-import { subscribeToModalOpen, getModalOpen } from '@/lib/modal-store'
+import { useWebGLBackground } from '@/hooks/useWebGLBackground'
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -125,113 +125,64 @@ export default function ContactBg({
   })
 
   const ctnDom = useRef(null)
+  useWebGLBackground(ctnDom, (container) => setupContactBg(container, propsRef), [])
 
-  useEffect(() => {
-    const ctn = ctnDom.current
-    if (!ctn) return
+  return <div ref={ctnDom} className="w-full h-full" />
+}
 
-    // antialias:false + capped dpr — fragment-bound shader doesn't benefit from
-    // MSAA and full retina pixel work is wasted on a soft gradient effect.
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
-    })
-    const gl = renderer.gl
-    gl.clearColor(0, 0, 0, 0)
-    gl.enable(gl.BLEND)
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
-    gl.canvas.style.backgroundColor = 'transparent'
+// Builds the ogl aurora renderer/program/mesh and returns the lifecycle contract
+// for useWebGLBackground. Live props are read from propsRef inside render().
+function setupContactBg(container, propsRef) {
+  // antialias:false + capped dpr — fragment-bound shader doesn't benefit from
+  // MSAA and full retina pixel work is wasted on a soft gradient effect.
+  const renderer = new Renderer({
+    alpha: true,
+    premultipliedAlpha: true,
+    antialias: false,
+    dpr: Math.min(window.devicePixelRatio || 1, 1.5),
+  })
+  const gl = renderer.gl
+  gl.clearColor(0, 0, 0, 0)
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
+  gl.canvas.style.backgroundColor = 'transparent'
 
-    let program
+  const geometry = new Triangle(gl)
+  if (geometry.attributes.uv) delete geometry.attributes.uv
 
-    function resize() {
-      if (!ctn) return
-      const width = ctn.offsetWidth
-      const height = ctn.offsetHeight
-      renderer.setSize(width, height)
-      if (program) program.uniforms.uResolution.value = [width, height]
-    }
-    const ro = new ResizeObserver(resize)
-    ro.observe(ctn)
+  let lastStops = propsRef.current.colorStops
+  let cachedStops = lastStops.map(hex => { const c = new Color(hex); return [c.r, c.g, c.b] })
 
-    const geometry = new Triangle(gl)
-    if (geometry.attributes.uv) delete geometry.attributes.uv
+  const program = new Program(gl, {
+    vertex: VERT,
+    fragment: FRAG,
+    uniforms: {
+      uTime:       { value: 0 },
+      uAmplitude:  { value: propsRef.current.amplitude },
+      uColorStops: { value: cachedStops },
+      uResolution: { value: [container.offsetWidth, container.offsetHeight] },
+      uBlend:      { value: propsRef.current.blend },
+    },
+  })
 
-    const colorStopsArray = colorStops.map(hex => {
-      const c = new Color(hex)
-      return [c.r, c.g, c.b]
-    })
+  const mesh = new Mesh(gl, { geometry, program })
+  container.appendChild(gl.canvas)
 
-    program = new Program(gl, {
-      vertex: VERT,
-      fragment: FRAG,
-      uniforms: {
-        uTime:       { value: 0 },
-        uAmplitude:  { value: amplitude },
-        uColorStops: { value: colorStopsArray },
-        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uBlend:      { value: blend },
-      },
-    })
+  function resize() {
+    const width = container.offsetWidth
+    const height = container.offsetHeight
+    renderer.setSize(width, height)
+    program.uniforms.uResolution.value = [width, height]
+  }
 
-    const mesh = new Mesh(gl, { geometry, program })
-    ctn.appendChild(gl.canvas)
-
-    let cachedStops = colorStopsArray
-    let lastStopsRef = propsRef.current.colorStops
-
-    // Track reduced-motion reactively so toggling the OS setting mid-session
-    // pauses/resumes the RAF loop instead of leaving it frozen to mount-time state.
-    const reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let prefersReducedMotion = reducedMotionMq.matches
-    let isVisible = true
-    let tabVisible = !document.hidden
-    // A fullscreen modal (e.g. the Cal.com booking embed) occludes this canvas
-    // without moving it off-screen, so IntersectionObserver won't pause it.
-    // Subscribe to the modal store to pause the loop while covered.
-    let modalOpen = getModalOpen()
-
-    // Pause/resume helper — used by IntersectionObserver, visibilitychange, and reduced-motion.
-    let animateId = 0
-    const setActive = (active) => {
-      if (!active) {
-        if (animateId) { cancelAnimationFrame(animateId); animateId = 0 }
-      } else if (!animateId && !prefersReducedMotion) {
-        animateId = requestAnimationFrame(update)
-      }
-    }
-
-    const syncActive = () => setActive(isVisible && tabVisible && !modalOpen && !prefersReducedMotion)
-
-    const unsubscribeModal = subscribeToModalOpen(() => { modalOpen = getModalOpen(); syncActive() })
-
-    // Pause the RAF loop when the ContactBg container is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => { isVisible = entry.isIntersecting; syncActive() }, { rootMargin: '200px' })
-    io.observe(ctn)
-
-    // Pause when the tab is hidden to avoid unnecessary GPU work.
-    const onVisibilityChange = () => { tabVisible = !document.hidden; syncActive() }
-    document.addEventListener('visibilitychange', onVisibilityChange)
-
-    const onReducedMotionChange = (e) => {
-      prefersReducedMotion = e.matches
-      if (prefersReducedMotion) setActive(false)
-      else { syncActive(); if (!animateId) renderer.render({ scene: mesh }) }
-    }
-    reducedMotionMq.addEventListener('change', onReducedMotionChange)
-
-    const update = t => {
-      // Stop the loop on context loss instead of rescheduling — the previous
-      // order rescheduled before this check, spinning an empty RAF loop forever
-      // once the GL context was lost. A later resume edge (IO/visibility) can
-      // restart it; if the context is still gone it stops again after one frame.
-      if (!program || gl.isContextLost()) { animateId = 0; return }
-      animateId = requestAnimationFrame(update)
+  return {
+    canvas: gl.canvas,
+    isContextLost: () => gl.isContextLost(),
+    resize,
+    render(t) {
       const p = propsRef.current
-      if (p.colorStops !== lastStopsRef) {
-        lastStopsRef = p.colorStops
+      if (p.colorStops !== lastStops) {
+        lastStops = p.colorStops
         cachedStops = p.colorStops.map(hex => { const c = new Color(hex); return [c.r, c.g, c.b] })
       }
       program.uniforms.uTime.value = t * 0.001 * (p.speed ?? 1.0)
@@ -239,30 +190,13 @@ export default function ContactBg({
       program.uniforms.uBlend.value = p.blend ?? 0.5
       program.uniforms.uColorStops.value = cachedStops
       renderer.render({ scene: mesh })
-    }
-
-    if (prefersReducedMotion) {
-      // Render one static frame then stop — respect accessibility preference.
+    },
+    renderStatic() {
       renderer.render({ scene: mesh })
-    } else {
-      animateId = requestAnimationFrame(update)
-    }
-    resize()
-
-    return () => {
-      cancelAnimationFrame(animateId)
-      unsubscribeModal()
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-      reducedMotionMq.removeEventListener('change', onReducedMotionChange)
-      ro.disconnect()
-      io.disconnect()
-      if (ctn && gl.canvas.parentNode === ctn) ctn.removeChild(gl.canvas)
+    },
+    dispose() {
+      if (gl.canvas.parentNode === container) container.removeChild(gl.canvas)
       gl.getExtension('WEBGL_lose_context')?.loseContext()
-    }
-  // Effect intentionally runs once on mount; live props are read from
-  // propsRef inside the RAF loop above.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return <div ref={ctnDom} className="w-full h-full" />
+    },
+  }
 }

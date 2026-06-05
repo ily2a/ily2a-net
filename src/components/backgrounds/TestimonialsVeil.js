@@ -2,8 +2,7 @@
 
 import { useRef, useEffect } from 'react'
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl'
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { useModalOpen } from '@/hooks/useModalOpen'
+import { useWebGLBackground } from '@/hooks/useWebGLBackground'
 
 const vertex = `
 attribute vec2 position;
@@ -86,78 +85,70 @@ export default function TestimonialsVeil({
   warpAmount = 0,
   resolutionScale = 1,
 }) {
-  const ref      = useRef(null)
+  const containerRef = useRef(null)
   const propsRef = useRef({ hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale })
-  const prefersReduced = usePrefersReducedMotion()
-  const modalOpen      = useModalOpen()
-  const modalOpenRef   = useRef(modalOpen)
-  const prefersReducedRef = useRef(prefersReduced)
-  const intersectingRef = useRef(true)
-  const setActiveRef   = useRef(null)
 
   // Shallow sync — keeps propsRef current without touching the GL context.
   useEffect(() => {
     propsRef.current = { hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale }
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale])
 
-  // Mirror prefersReduced into a ref so setActive can read live state instead
-  // of capturing the value via closure when the GL setup effect runs.
-  useEffect(() => { prefersReducedRef.current = prefersReduced }, [prefersReduced])
+  useWebGLBackground(containerRef, (container) => setupTestimonialsVeil(container, propsRef), [])
 
-  useEffect(() => {
-    const canvas = ref.current
-    const parent = canvas?.parentElement
-    if (!canvas || !parent) return
+  return (
+    <div
+      ref={containerRef}
+      aria-hidden="true"
+      className="absolute inset-0 w-full h-full"
+    />
+  )
+}
 
-    const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 1.5),
-      canvas,
-    })
+// Builds the ogl CPPN renderer/program/mesh and returns the lifecycle contract
+// for useWebGLBackground. Live props are read from propsRef inside render().
+function setupTestimonialsVeil(container, propsRef) {
+  const renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio, 1.5) })
+  const gl = renderer.gl
+  const geometry = new Triangle(gl)
 
-    const gl = renderer.gl
-    const geometry = new Triangle(gl)
+  const p0 = propsRef.current
+  const program = new Program(gl, {
+    vertex,
+    fragment,
+    uniforms: {
+      uTime:       { value: 0 },
+      uResolution: { value: new Vec2() },
+      uHueShift:   { value: p0.hueShift },
+      uNoise:      { value: p0.noiseIntensity },
+      uScan:       { value: p0.scanlineIntensity },
+      uScanFreq:   { value: p0.scanlineFrequency },
+      uWarp:       { value: p0.warpAmount },
+    },
+  })
+  const mesh = new Mesh(gl, { geometry, program })
 
-    const p0 = propsRef.current
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        uTime:       { value: 0 },
-        uResolution: { value: new Vec2() },
-        uHueShift:   { value: p0.hueShift },
-        uNoise:      { value: p0.noiseIntensity },
-        uScan:       { value: p0.scanlineIntensity },
-        uScanFreq:   { value: p0.scanlineFrequency },
-        uWarp:       { value: p0.warpAmount },
-      },
-    })
+  container.appendChild(gl.canvas)
+  gl.canvas.style.display = 'block'
 
-    const mesh = new Mesh(gl, { geometry, program })
+  function resize() {
+    const p = propsRef.current
+    const w = container.offsetWidth
+    const h = container.offsetHeight
+    if (w === 0 || h === 0) return
+    renderer.setSize(w * p.resolutionScale, h * p.resolutionScale)
+    // reset CSS so the canvas scales to fill parent regardless of pixel resolution
+    gl.canvas.style.width  = '100%'
+    gl.canvas.style.height = '100%'
+    program.uniforms.uResolution.value.set(w, h)
+  }
 
-    const resize = () => {
-      const p = propsRef.current
-      const w = parent.offsetWidth
-      const h = parent.offsetHeight
-      if (w === 0 || h === 0) return
-      renderer.setSize(w * p.resolutionScale, h * p.resolutionScale)
-      // reset CSS so the canvas scales to fill parent regardless of pixel resolution
-      canvas.style.width  = '100%'
-      canvas.style.height = '100%'
-      program.uniforms.uResolution.value.set(w, h)
-    }
+  const start = performance.now()
 
-    const ro = new ResizeObserver(resize)
-    ro.observe(parent)
-    resize()
-
-    const start = performance.now()
-    let frame = 0
-
-    const loop = () => {
-      // Stop the loop on context loss instead of rescheduling — otherwise the RAF
-      // spins forever with nothing to render once the GL context is lost. A resume
-      // edge (IO/visibility) restarts it via setActive (gated on !frame).
-      if (gl.isContextLost()) { frame = 0; return }
+  return {
+    canvas: gl.canvas,
+    isContextLost: () => gl.isContextLost(),
+    resize,
+    render() {
       const p = propsRef.current
       program.uniforms.uTime.value     = ((performance.now() - start) / 1000) * p.speed
       program.uniforms.uHueShift.value = p.hueShift
@@ -166,10 +157,8 @@ export default function TestimonialsVeil({
       program.uniforms.uScanFreq.value = p.scanlineFrequency
       program.uniforms.uWarp.value     = p.warpAmount
       renderer.render({ scene: mesh })
-      frame = requestAnimationFrame(loop)
-    }
-
-    const renderStatic = () => {
+    },
+    renderStatic() {
       const p = propsRef.current
       program.uniforms.uTime.value     = 0
       program.uniforms.uHueShift.value = p.hueShift
@@ -178,68 +167,10 @@ export default function TestimonialsVeil({
       program.uniforms.uScanFreq.value = p.scanlineFrequency
       program.uniforms.uWarp.value     = 0
       renderer.render({ scene: mesh })
-    }
-
-    const setActive = (active) => {
-      if (!active) {
-        if (frame) { cancelAnimationFrame(frame); frame = 0 }
-      } else if (
-        !frame
-        && !prefersReducedRef.current
-        && !modalOpenRef.current
-        && intersectingRef.current
-        && !document.hidden
-      ) {
-        frame = requestAnimationFrame(loop)
-      }
-    }
-    setActiveRef.current = setActive
-    // Reconcile against modalOpen state captured during the GL rebuild —
-    // if the modal toggled while setActiveRef was null, this catches it.
-    if (modalOpenRef.current) setActive(false)
-
-    // Pause the RAF loop when the canvas is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => {
-      intersectingRef.current = entry.isIntersecting
-      setActive(entry.isIntersecting)
-    }, { rootMargin: '200px' })
-    io.observe(canvas)
-
-    const onVisibilityChange = () => setActive(!document.hidden)
-    document.addEventListener('visibilitychange', onVisibilityChange)
-
-    // Don't kick off the RAF loop here unconditionally. The reconcile call
-    // above sets `frame` only when the modal is closed (setActive(false) when
-    // open is a no-op at frame===0), so without this guard the loop would
-    // start regardless of modal state on every GL setup re-run (e.g. when
-    // prefersReduced toggles). Mirror the same predicates setActive uses.
-    if (prefersReduced) renderStatic()
-    else if (!modalOpenRef.current && !document.hidden && intersectingRef.current) loop()
-
-    return () => {
-      setActiveRef.current = null
-      cancelAnimationFrame(frame)
-      ro.disconnect()
-      io.disconnect()
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-    }
-  }, [prefersReduced])
-
-  // Pause/resume when a blocking modal opens or closes — IntersectionObserver
-  // doesn't fire for occluded elements, only off-screen ones.
-  useEffect(() => {
-    modalOpenRef.current = modalOpen
-    const setActive = setActiveRef.current
-    if (!setActive) return
-    if (modalOpen) setActive(false)
-    else setActive(true)
-  }, [modalOpen])
-
-  return (
-    <canvas
-      ref={ref}
-      aria-hidden="true"
-      className="absolute inset-0 w-full h-full"
-    />
-  )
+    },
+    dispose() {
+      if (gl.canvas.parentNode === container) container.removeChild(gl.canvas)
+      gl.getExtension('WEBGL_lose_context')?.loseContext()
+    },
+  }
 }

@@ -2,8 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { useModalOpen } from '@/hooks/useModalOpen'
+import { useWebGLBackground } from '@/hooks/useWebGLBackground'
 import { AMETHYST } from '@/constants/colors'
 import { hexToRgbNormalized } from '@/lib/color'
 
@@ -149,12 +148,8 @@ const HeroBg = ({
   autoSpeed = 0.4,
   attractRadius = 0.35,
 }) => {
-  const prefersReduced  = usePrefersReducedMotion()
-  const modalOpen       = useModalOpen()
-
   const containerRef    = useRef(null)
   const didFirstFrameRef = useRef(false)
-  const rafRef          = useRef(null)
   const programRef      = useRef(null)
   const meshRef         = useRef(null)
   const geometryRef     = useRef(null)
@@ -165,7 +160,7 @@ const HeroBg = ({
   const firstResizeRef  = useRef(true)
 
   // ── Loop-read refs ──────────────────────────────────────────────────────────
-  // Changing these does NOT recreate the WebGL context — the loop reads from
+  // Changing these does NOT recreate the WebGL context — render() reads from
   // refs so React never needs to tear down/rebuild the renderer on prop changes.
   const pausedRef            = useRef(paused)
   const mouseDampeningRef    = useRef(mouseDampening)
@@ -174,10 +169,7 @@ const HeroBg = ({
   const attractRadiusRef     = useRef(attractRadius)
   const blindCountRef        = useRef(blindCount)
   const blindMinWidthRef     = useRef(blindMinWidth)
-  const prefersReducedRef    = useRef(prefersReduced)
-  const modalOpenRef         = useRef(modalOpen)
-  const intersectingRef      = useRef(true)
-  const setActiveRef         = useRef(null)
+  const onFirstFrameRef      = useRef(onFirstFrame)
 
   useEffect(() => {
     pausedRef.current         = paused
@@ -187,35 +179,8 @@ const HeroBg = ({
     attractRadiusRef.current  = attractRadius
     blindCountRef.current     = blindCount
     blindMinWidthRef.current  = blindMinWidth
-    prefersReducedRef.current = prefersReduced
-    // If reduced motion was just enabled, stop the RAF loop and render one
-    // static frame.
-    if (prefersReduced && rafRef.current) {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = null
-      const renderer = rendererRef.current
-      if (renderer && meshRef.current) {
-        try { renderer.render({ scene: meshRef.current }) } catch {}
-      }
-    } else if (!prefersReduced) {
-      // Reduced motion turned back off mid-session — nothing else fires a
-      // resume edge here (the GL setup effect is keyed on [dpr], not
-      // prefersReduced), so kick setActive directly. It re-checks every gate
-      // (already-running, modal, intersection, tab-hidden) before scheduling.
-      setActiveRef.current?.(true)
-    }
-  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, prefersReduced])
-
-  // Pause/resume when a blocking modal opens or closes. The shader keeps
-  // running behind a fullscreen overlay otherwise — IntersectionObserver
-  // only fires for off-screen elements, not occluded ones.
-  useEffect(() => {
-    modalOpenRef.current = modalOpen
-    const setActive = setActiveRef.current
-    if (!setActive) return
-    if (modalOpen) setActive(false)
-    else setActive(true)
-  }, [modalOpen])
+    onFirstFrameRef.current   = onFirstFrame
+  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, onFirstFrame])
 
   // ── Uniform update — no context rebuild ────────────────────────────────────
   // Updates shader uniforms in-place whenever visual props change.
@@ -236,19 +201,17 @@ const HeroBg = ({
     uniforms.uColorCount.value = colorCount
   }, [angle, noise, blindCount, mirrorGradient, spotlightRadius, spotlightSoftness, spotlightOpacity, distortAmount, shineDirection, gradientColors])
 
-  // ── Main WebGL setup — runs only when DPR changes (effectively once on mount) ─
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
+  // ── GL setup — pause/resume, reduced motion, and context-loss recovery are
+  // owned by useWebGLBackground. setup() builds the renderer/program/mesh and
+  // returns the lifecycle contract; render() holds the mouse-damping /
+  // auto-animate math. Rebuilds only when DPR changes. ──────────────────────
+  useWebGLBackground(containerRef, (container) => {
     const renderer = new Renderer({
-      // Cap at 1.5 — matches the other WebGL backgrounds (TestimonialsVeil,
-      // ContactBg, NotFoundPasswordBg). On a DPR-3 phone the shader otherwise
-      // renders at 3× (9× pixels), which saturates the GPU and causes
-      // main-thread stalls that destroy mobile INP.
+      // Cap at 1.5 — on a DPR-3 phone the shader otherwise renders at 3×
+      // (9× pixels), which saturates the GPU and destroys mobile INP.
       dpr: dpr ?? Math.min(window.devicePixelRatio || 1, 1.5),
       alpha: true,
-      antialias: false, // antialias doubles pixel work on Retina for no visible gain in a shader effect
+      antialias: false, // doubles pixel work on Retina for no visible gain in a shader effect
     })
     rendererRef.current = renderer
     const gl = renderer.gl
@@ -311,10 +274,6 @@ const HeroBg = ({
       }
     }
 
-    resize()
-    const ro = new ResizeObserver(resize)
-    ro.observe(container)
-
     const onPointerMove = e => {
       const rect = canvasRectRef.current
       if (!rect) return
@@ -326,133 +285,80 @@ const HeroBg = ({
     }
     canvas.addEventListener('pointermove', onPointerMove)
 
-    // Shared pause/resume — used by visibilitychange, IntersectionObserver,
-    // and the modal-open signal. Loop runs only when the canvas is visible,
-    // the tab is foreground, and no blocking modal is occluding it.
-    const setActive = (active) => {
-      if (!active) {
-        if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
-      } else if (
-        !rafRef.current
-        && !prefersReducedRef.current
-        && !modalOpenRef.current
-        && intersectingRef.current
-        && !document.hidden
-      ) {
-        rafRef.current = requestAnimationFrame(loop)
-      }
-    }
-    setActiveRef.current = setActive
-    // Reconcile against modalOpen state captured during the WebGL rebuild —
-    // if the modal toggled while setActiveRef was null, this catches it.
-    if (modalOpenRef.current) setActive(false)
-
-    const onVisibilityChange = () => setActive(!document.hidden)
-    document.addEventListener('visibilitychange', onVisibilityChange)
-
-    // Pause the RAF loop when the container is scrolled out of view.
-    const io = new IntersectionObserver(([entry]) => {
-      intersectingRef.current = entry.isIntersecting
-      setActive(entry.isIntersecting)
-    }, { rootMargin: '200px' })
-    io.observe(container)
-
-    const loop = t => {
-      // Stop the loop on context loss instead of rescheduling — otherwise the RAF
-      // spins forever running damping math with nothing to render once the GL
-      // context is lost. A later resume edge (IO/visibility/modal) restarts it via
-      // setActive (which gates on !rafRef.current); if the context is still gone
-      // it stops again after one frame.
-      if (!programRef.current || gl.isContextLost()) { rafRef.current = 0; return }
-      rafRef.current = requestAnimationFrame(loop)
-      const tSec = t * 0.001
-      uniforms.iTime.value = tSec
-      if (!lastTimeRef.current) lastTimeRef.current = t
-      const dt = Math.min((t - lastTimeRef.current) / 1000, 0.1)
-      lastTimeRef.current = t
-
-      const W = gl.drawingBufferWidth
-      const H = gl.drawingBufferHeight
-      const cur = uniforms.iMouse.value
-      const mouse = mouseTargetRef.current
-
-      if (autoAnimateRef.current) {
-        const ax = (Math.sin(tSec * autoSpeedRef.current * 0.7) * 0.38 + 0.5) * W
-        const ay = (Math.cos(tSec * autoSpeedRef.current * 0.5 + 1.2) * 0.38 + 0.5) * H
-        const dx = mouse[0] - cur[0]
-        const dy = mouse[1] - cur[1]
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        const maxDist = attractRadiusRef.current * Math.max(W, H)
-        let targetX, targetY
-        if (dist < maxDist) {
-          const raw = 1.0 - dist / maxDist
-          const ease = raw * raw * (3 - 2 * raw)
-          targetX = ax + (mouse[0] - ax) * ease
-          targetY = ay + (mouse[1] - ay) * ease
-        } else {
-          targetX = ax
-          targetY = ay
-        }
-        const tau = Math.max(1e-4, mouseDampeningRef.current)
-        const factor = Math.min(1, 1 - Math.exp(-dt / tau))
-        cur[0] += (targetX - cur[0]) * factor
-        cur[1] += (targetY - cur[1]) * factor
-      } else if (mouseDampeningRef.current > 0) {
-        const tau = Math.max(1e-4, mouseDampeningRef.current)
-        const factor = Math.min(1, 1 - Math.exp(-dt / tau))
-        cur[0] += (mouse[0] - cur[0]) * factor
-        cur[1] += (mouse[1] - cur[1]) * factor
-      }
-
-      if (!pausedRef.current && programRef.current && meshRef.current) {
-        try {
-          renderer.render({ scene: meshRef.current })
-          if (!didFirstFrameRef.current) {
-            didFirstFrameRef.current = true
-            try { onFirstFrame?.() } catch {}
-          }
-        } catch (e) { console.error(e) }
-      }
-    }
-
-    if (prefersReducedRef.current) {
-      // Render one static frame then stop — respect accessibility preference
+    const paintFrame = () => {
       try {
         renderer.render({ scene: meshRef.current })
         if (!didFirstFrameRef.current) {
           didFirstFrameRef.current = true
-          try { onFirstFrame?.() } catch {}
+          try { onFirstFrameRef.current?.() } catch {}
         }
       } catch (e) { console.error(e) }
-    } else if (!modalOpenRef.current && !document.hidden && intersectingRef.current) {
-      // Mirror the gates in setActive — the reconcile call above only stops
-      // the loop, it can't prevent it from starting here. Without this guard
-      // the loop would resume on every GL setup re-run regardless of modal
-      // state, defeating the modal-pause coordination.
-      rafRef.current = requestAnimationFrame(loop)
     }
 
-    return () => {
-      setActiveRef.current = null
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-      canvas.removeEventListener('pointermove', onPointerMove)
-      ro.disconnect()
-      io.disconnect()
-      if (canvas.parentElement === container) container.removeChild(canvas)
-      const callIfFn = (obj, key) => { if (obj && typeof obj[key] === 'function') obj[key].call(obj) }
-      callIfFn(programRef.current, 'remove')
-      callIfFn(geometryRef.current, 'remove')
-      callIfFn(meshRef.current, 'remove')
-      callIfFn(rendererRef.current, 'destroy')
-      programRef.current = null
-      geometryRef.current = null
-      meshRef.current = null
-      rendererRef.current = null
+    return {
+      canvas,
+      isContextLost: () => gl.isContextLost(),
+      resize,
+      render(t) {
+        const tSec = t * 0.001
+        uniforms.iTime.value = tSec
+        if (!lastTimeRef.current) lastTimeRef.current = t
+        const dt = Math.min((t - lastTimeRef.current) / 1000, 0.1)
+        lastTimeRef.current = t
+
+        const W = gl.drawingBufferWidth
+        const H = gl.drawingBufferHeight
+        const cur = uniforms.iMouse.value
+        const mouse = mouseTargetRef.current
+
+        if (autoAnimateRef.current) {
+          const ax = (Math.sin(tSec * autoSpeedRef.current * 0.7) * 0.38 + 0.5) * W
+          const ay = (Math.cos(tSec * autoSpeedRef.current * 0.5 + 1.2) * 0.38 + 0.5) * H
+          const dx = mouse[0] - cur[0]
+          const dy = mouse[1] - cur[1]
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const maxDist = attractRadiusRef.current * Math.max(W, H)
+          let targetX, targetY
+          if (dist < maxDist) {
+            const raw = 1.0 - dist / maxDist
+            const ease = raw * raw * (3 - 2 * raw)
+            targetX = ax + (mouse[0] - ax) * ease
+            targetY = ay + (mouse[1] - ay) * ease
+          } else {
+            targetX = ax
+            targetY = ay
+          }
+          const tau = Math.max(1e-4, mouseDampeningRef.current)
+          const factor = Math.min(1, 1 - Math.exp(-dt / tau))
+          cur[0] += (targetX - cur[0]) * factor
+          cur[1] += (targetY - cur[1]) * factor
+        } else if (mouseDampeningRef.current > 0) {
+          const tau = Math.max(1e-4, mouseDampeningRef.current)
+          const factor = Math.min(1, 1 - Math.exp(-dt / tau))
+          cur[0] += (mouse[0] - cur[0]) * factor
+          cur[1] += (mouse[1] - cur[1]) * factor
+        }
+
+        if (!pausedRef.current) paintFrame()
+      },
+      renderStatic() {
+        // One still frame for reduced motion — still fire the first-frame hook.
+        paintFrame()
+      },
+      dispose() {
+        canvas.removeEventListener('pointermove', onPointerMove)
+        if (canvas.parentElement === container) container.removeChild(canvas)
+        const callIfFn = (obj, key) => { if (obj && typeof obj[key] === 'function') obj[key].call(obj) }
+        callIfFn(programRef.current, 'remove')
+        callIfFn(geometryRef.current, 'remove')
+        callIfFn(meshRef.current, 'remove')
+        callIfFn(rendererRef.current, 'destroy')
+        programRef.current = null
+        geometryRef.current = null
+        meshRef.current = null
+        rendererRef.current = null
+      },
     }
-  // Only DPR triggers a full context rebuild. All other props are handled via
-  // refs (loop-read values) or the uniform update effect above.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dpr])
 
   return (
