@@ -3,8 +3,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 // resend's send is mocked at module scope; the route constructs `new Resend()`
 // at import time, so the mock must be in place before the route is imported.
 const sendMock = vi.hoisted(() => vi.fn())
+// Implementation is a regular function (not an arrow) so it's usable as a
+// constructor — the route does `new Resend(...)`, and Vitest 4 rejects calling
+// `new` on a mock whose implementation can't construct.
 vi.mock('resend', () => ({
-  Resend: vi.fn(() => ({ emails: { send: sendMock } })),
+  Resend: vi.fn(function () { return { emails: { send: sendMock } } }),
 }))
 
 const { POST } = await import('@/app/api/contact/route')
