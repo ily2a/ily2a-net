@@ -42,10 +42,13 @@ function HeroBackground() {
       />
       {/* Gradient placeholder sits ON TOP of the canvas as a normal-alpha
           overlay (not a lighten backdrop) so it crossfades away to reveal the
-          canvas without the additive brightness spike that caused a load flash. */}
+          canvas without the additive brightness spike that caused a load flash.
+          pointer-events-none so it never intercepts the mouse — otherwise this
+          decorative layer (still in the DOM at opacity 0) blocks the canvas from
+          receiving pointermove, freezing the spotlight's mouse attraction. */}
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         initial={{ opacity: 1 }}
         animate={{ opacity: bgReady ? 0 : 1 }}
         transition={{ duration: 0.24, ease: EASE_OUT }}
