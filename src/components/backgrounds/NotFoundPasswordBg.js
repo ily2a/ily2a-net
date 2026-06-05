@@ -126,32 +126,26 @@ void main() {
 }
 `;
 
-export default function NotFoundPasswordBg({
-  speed = 0.25,
-  innerLineCount = 32.0,
-  outerLineCount = 36.0,
-  warpIntensity = 0.9,
-  rotation = -45,
-  edgeFadeWidth = 0.0,
-  colorCycleSpeed = 0.8,
-  brightness = 0.18,
-  color1 = AMETHYST[400],
-  color2 = AMETHYST[600],
-  color3 = AMETHYST[800],
-  enableMouseInteraction = true,
-  mouseInfluence = 2.0,
-}) {
+// Visual configuration. These were once component props, but no caller ever
+// overrides them, so they live as module constants — the WebGL setup reads them
+// directly and the loop only advances the time/mouse uniforms each frame.
+const SPEED = 0.25;
+const INNER_LINE_COUNT = 32.0;
+const OUTER_LINE_COUNT = 36.0;
+const WARP_INTENSITY = 0.9;
+const ROTATION_DEG = -45;
+const EDGE_FADE_WIDTH = 0.0;
+const COLOR_CYCLE_SPEED = 0.8;
+const BRIGHTNESS = 0.18;
+const COLOR1 = AMETHYST[400];
+const COLOR2 = AMETHYST[600];
+const COLOR3 = AMETHYST[800];
+const ENABLE_MOUSE_INTERACTION = true;
+const MOUSE_INFLUENCE = 2.0;
+
+export default function NotFoundPasswordBg() {
   const containerRef = useRef(null);
   const prefersReduced = usePrefersReducedMotion();
-
-  // ── Loop-read ref ──────────────────────────────────────────────────────────
-  // Changing props does NOT recreate the WebGL context — the loop reads from
-  // this ref so React never tears down/rebuilds the renderer on prop changes.
-  const propsRef = useRef({ speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence });
-
-  useEffect(() => {
-    propsRef.current = { speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence };
-  }, [speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence]);
 
   // ── Main WebGL setup — runs once on mount ──────────────────────────────────
   useEffect(() => {
@@ -195,7 +189,6 @@ export default function NotFoundPasswordBg({
     ro.observe(container);
 
     const geometry = new Triangle(gl);
-    const p = propsRef.current;
 
     let program = new Program(gl, {
       vertex: vertexShader,
@@ -203,20 +196,20 @@ export default function NotFoundPasswordBg({
       uniforms: {
         uTime:           { value: 0 },
         uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
-        uSpeed:          { value: p.speed },
-        uInnerLines:     { value: p.innerLineCount },
-        uOuterLines:     { value: p.outerLineCount },
-        uWarpIntensity:  { value: p.warpIntensity },
-        uRotation:       { value: (p.rotation * Math.PI) / 180 },
-        uEdgeFadeWidth:  { value: p.edgeFadeWidth },
-        uColorCycleSpeed:{ value: p.colorCycleSpeed },
-        uBrightness:     { value: p.brightness },
-        uColor1:         { value: hexToRgbNormalized(p.color1) },
-        uColor2:         { value: hexToRgbNormalized(p.color2) },
-        uColor3:         { value: hexToRgbNormalized(p.color3) },
+        uSpeed:          { value: SPEED },
+        uInnerLines:     { value: INNER_LINE_COUNT },
+        uOuterLines:     { value: OUTER_LINE_COUNT },
+        uWarpIntensity:  { value: WARP_INTENSITY },
+        uRotation:       { value: (ROTATION_DEG * Math.PI) / 180 },
+        uEdgeFadeWidth:  { value: EDGE_FADE_WIDTH },
+        uColorCycleSpeed:{ value: COLOR_CYCLE_SPEED },
+        uBrightness:     { value: BRIGHTNESS },
+        uColor1:         { value: hexToRgbNormalized(COLOR1) },
+        uColor2:         { value: hexToRgbNormalized(COLOR2) },
+        uColor3:         { value: hexToRgbNormalized(COLOR3) },
         uMouse:          { value: new Float32Array([0.5, 0.5]) },
-        uMouseInfluence: { value: p.mouseInfluence },
-        uEnableMouse:    { value: p.enableMouseInteraction },
+        uMouseInfluence: { value: MOUSE_INFLUENCE },
+        uEnableMouse:    { value: ENABLE_MOUSE_INTERACTION },
       },
     });
 
@@ -230,31 +223,8 @@ export default function NotFoundPasswordBg({
 
     let animationFrameId = 0;
 
-    // Cache hex→vec3 conversion across frames — colors almost never change,
-    // so re-parsing on every RAF tick is wasted regex/parseInt work.
-    let lastColor1 = null, lastColor2 = null, lastColor3 = null;
-    let cachedVec1 = null, cachedVec2 = null, cachedVec3 = null;
-
-    const syncUniforms = (cp, time) => {
-      program.uniforms.uSpeed.value          = cp.speed;
-      program.uniforms.uInnerLines.value     = cp.innerLineCount;
-      program.uniforms.uOuterLines.value     = cp.outerLineCount;
-      program.uniforms.uWarpIntensity.value  = cp.warpIntensity;
-      program.uniforms.uRotation.value       = (cp.rotation * Math.PI) / 180;
-      program.uniforms.uEdgeFadeWidth.value  = cp.edgeFadeWidth;
-      program.uniforms.uColorCycleSpeed.value= cp.colorCycleSpeed;
-      program.uniforms.uBrightness.value     = cp.brightness;
-      if (cp.color1 !== lastColor1) { lastColor1 = cp.color1; cachedVec1 = hexToRgbNormalized(cp.color1); }
-      if (cp.color2 !== lastColor2) { lastColor2 = cp.color2; cachedVec2 = hexToRgbNormalized(cp.color2); }
-      if (cp.color3 !== lastColor3) { lastColor3 = cp.color3; cachedVec3 = hexToRgbNormalized(cp.color3); }
-      program.uniforms.uColor1.value         = cachedVec1;
-      program.uniforms.uColor2.value         = cachedVec2;
-      program.uniforms.uColor3.value         = cachedVec3;
-      program.uniforms.uMouseInfluence.value = cp.mouseInfluence;
-      program.uniforms.uEnableMouse.value    = cp.enableMouseInteraction;
-      program.uniforms.uTime.value           = time;
-    };
-
+    // Static uniforms (colors, line counts, rotation, etc.) are set once above
+    // and never change, so the loop only advances time and eases the mouse.
     function update(time) {
       // Stop on context loss instead of rescheduling — rescheduling before this
       // check spun an empty RAF loop forever once the GL context was lost. A
@@ -262,12 +232,10 @@ export default function NotFoundPasswordBg({
       // !animationFrameId); if the context is still gone it stops again.
       if (gl.isContextLost()) { animationFrameId = 0; return; }
       animationFrameId = requestAnimationFrame(update);
-      const cp = propsRef.current;
 
-      // Update uniforms in-place from the latest props ref — no context rebuild needed
-      syncUniforms(cp, time * 0.001);
+      program.uniforms.uTime.value = time * 0.001;
 
-      if (cp.enableMouseInteraction) {
+      if (ENABLE_MOUSE_INTERACTION) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
         currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
         program.uniforms.uMouse.value[0] = currentMouse[0];
@@ -281,7 +249,7 @@ export default function NotFoundPasswordBg({
     }
 
     const renderStatic = () => {
-      syncUniforms(propsRef.current, 0);
+      program.uniforms.uTime.value = 0;
       renderer.render({ scene: mesh });
     };
 
