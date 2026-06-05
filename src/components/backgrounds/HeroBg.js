@@ -189,8 +189,7 @@ const HeroBg = ({
     blindMinWidthRef.current  = blindMinWidth
     prefersReducedRef.current = prefersReduced
     // If reduced motion was just enabled, stop the RAF loop and render one
-    // static frame. The loop already checks prefersReducedRef on restart so
-    // disabling reduced motion is handled the next time setActive(true) fires.
+    // static frame.
     if (prefersReduced && rafRef.current) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
@@ -198,6 +197,12 @@ const HeroBg = ({
       if (renderer && meshRef.current) {
         try { renderer.render({ scene: meshRef.current }) } catch {}
       }
+    } else if (!prefersReduced) {
+      // Reduced motion turned back off mid-session — nothing else fires a
+      // resume edge here (the GL setup effect is keyed on [dpr], not
+      // prefersReduced), so kick setActive directly. It re-checks every gate
+      // (already-running, modal, intersection, tab-hidden) before scheduling.
+      setActiveRef.current?.(true)
     }
   }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, prefersReduced])
 
