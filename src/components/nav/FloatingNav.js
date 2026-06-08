@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Navbar from '@/components/nav/Navbar'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
@@ -14,14 +14,14 @@ export default function FloatingNav({ delay = 0 }) {
 
   return (
     <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
-      <motion.div
+      <m.div
         className="pointer-events-auto"
         initial={introPlayed ? false : { y: 150 }}
         animate={{ y: 0 }}
         transition={{ ...SPRING_NAV, delay: introPlayed ? 0 : delay }}
       >
         <Navbar isMobile={isMobile} />
-      </motion.div>
+      </m.div>
     </div>
   )
 }

@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import ProjectCard from '@/components/ProjectCard'
 import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 
-const MotionLink = motion(Link)
+const MotionLink = m.create(Link)
 
 const GRID_STAGGER = {
   hidden: { opacity: 1 },
@@ -18,8 +18,12 @@ const CARD_ENTER = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
 }
 
+// Stable empty default so an omitted `projects` prop keeps the same reference
+// across renders instead of allocating a fresh array each time.
+const EMPTY_PROJECTS = []
+
 export default function CraftSection({
-  projects = [],
+  projects = EMPTY_PROJECTS,
   headingAs: Tag = 'h2',
   showViewAll = false,
   navOffset = false,
@@ -54,7 +58,7 @@ export default function CraftSection({
           </div>
           <p className="text-md text-text-secondary">{CRAFT_DESCRIPTION}</p>
         </div>
-        <motion.div
+        <m.div
           className="grid grid-cols-1 gap-4 mobile:grid-cols-2"
           variants={GRID_STAGGER}
           initial="hidden"
@@ -62,11 +66,11 @@ export default function CraftSection({
           viewport={{ once: true, margin: '-80px' }}
         >
           {projects.map((project, i) => (
-            <motion.div key={project._id} variants={CARD_ENTER}>
+            <m.div key={project._id} variants={CARD_ENTER}>
               <ProjectCard project={project} priority={i < 2} />
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

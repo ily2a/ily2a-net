@@ -15,6 +15,7 @@ export default function Error({ error: _error, reset }) {
         </h1>
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={reset}
             className="btn-label text-brand underline"
           >

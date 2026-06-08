@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP } from '@/constants/animations'
 import { scrollToElement } from '@/lib/scroll'
@@ -57,7 +57,7 @@ export default function TableOfContents({ items }) {
       <ul className="flex flex-col">
         {items.map(({ id, label, level }) => (
           <li key={id}>
-            <motion.a
+            <m.a
               href={`#${id}`}
               onClick={(e) => handleClick(e, id)}
               aria-current={activeId === id ? 'location' : undefined}
@@ -73,7 +73,7 @@ export default function TableOfContents({ items }) {
               transition={SPRING_SNAP}
             >
               {label}
-            </motion.a>
+            </m.a>
           </li>
         ))}
       </ul>

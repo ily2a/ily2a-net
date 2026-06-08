@@ -109,6 +109,10 @@ export default function RootLayout({ children }) {
     <html lang="en-GB" className={satoshi.variable}>
       <head>
         <link rel="preconnect" href="https://cdn.sanity.io" />
+        {/* JSON-LD structured data built from trusted site constants — the
+            standard Next.js pattern for <script type="application/ld+json">,
+            not user HTML. */}
+        {/* react-doctor-disable-next-line react-doctor/no-danger */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString }}

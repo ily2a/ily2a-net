@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 const baseClass =
   'gradient-button inline-flex items-center justify-center rounded-[8px] min-w-[132px] px-9 py-4 text-base font-bold leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amethyst-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50'
@@ -11,7 +11,7 @@ const ContactFormButton = forwardRef(function ContactFormButton(
   ref
 ) {
   return (
-    <motion.button
+    <m.button
       ref={ref}
       className={className ? `${baseClass} ${className}` : baseClass}
       whileTap={{ scale: 0.97 }}
@@ -19,7 +19,7 @@ const ContactFormButton = forwardRef(function ContactFormButton(
       {...props}
     >
       {children}
-    </motion.button>
+    </m.button>
   )
 })
 

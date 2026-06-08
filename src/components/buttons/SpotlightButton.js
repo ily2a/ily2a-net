@@ -10,14 +10,18 @@
 //     ripple, embedded modal) → bespoke component (e.g. ContactButton,
 //     MobileContactButton, BookingButton).
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import { SPRING_SNAP } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
 import SpotlightLayer from '@/components/effects/SpotlightLayer'
 
-// Module-level: motion.create() is stable and shouldn't re-run on render
-const MotionLink = motion.create(Link)
+// Module-level: m.create() is stable and shouldn't re-run on render
+const MotionLink = m.create(Link)
+
+// SpotlightLayer takes no props, so its element is constant — build it once at
+// module scope instead of rebuilding the JSX on every render.
+const SPOTLIGHT = <SpotlightLayer />
 
 const VARIANTS = {
   default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950', height: 'h-11' },
@@ -31,8 +35,6 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   const baseClass = `relative inline-flex items-center justify-center rounded-[8px] px-4 ${v.height} btn-label ${v.text} overflow-hidden select-none no-underline ${className}`
   const baseStyle = { background: v.bg }
 
-  const spotlight = <SpotlightLayer />
-
   if (href) {
     return (
       <MotionLink
@@ -44,14 +46,14 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
         className={baseClass}
         style={baseStyle}
       >
-        {spotlight}
+        {SPOTLIGHT}
         <span className="relative z-10">{children}</span>
       </MotionLink>
     )
   }
 
   return (
-    <motion.button
+    <m.button
       type="button"
       ref={ref}
       onClick={onClick}
@@ -61,8 +63,8 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
       className={baseClass}
       style={{ ...baseStyle, border: 'none', font: 'inherit' }}
     >
-      {spotlight}
+      {SPOTLIGHT}
       <span className="relative z-10">{children}</span>
-    </motion.button>
+    </m.button>
   )
 }

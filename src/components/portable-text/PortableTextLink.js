@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 
 // External-link icon — visible cue alongside the SR-only "(opens in new tab)"
@@ -26,7 +26,7 @@ function ExternalIcon() {
 
 export default function PortableTextLink({ href, children }) {
   return (
-    <motion.a
+    <m.a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
@@ -37,6 +37,6 @@ export default function PortableTextLink({ href, children }) {
       {children}
       <ExternalIcon />
       <span className="sr-only">, opens in new tab</span>
-    </motion.a>
+    </m.a>
   )
 }

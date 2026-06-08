@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import { motion, animate } from 'framer-motion'
+import { m, animate } from 'framer-motion'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
@@ -11,6 +11,8 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
   const angleRef       = useRef(62)
   const prefersReduced = usePrefersReducedMotion()
 
+  // Cleanup-only effect; animRef is a ref and needs no dependency.
+  // react-doctor-disable-next-line react-doctor/exhaustive-deps
   useEffect(() => {
     return () => { animRef.current?.stop() }
   }, [])
@@ -36,7 +38,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
   const gradient   = 'conic-gradient(from var(--ca, 62deg), transparent 249deg, var(--color-amethyst-400) 249.6deg)'
 
   return (
-    <motion.button
+    <m.button
       ref={buttonRef}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
@@ -57,25 +59,25 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
     >
       <div className={`${layerClass} bg-surface`} />
       {/* Gradient layers fade in on hover via Framer Motion variants */}
-      <motion.div
+      <m.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         className={layerClass}
         style={{ background: gradient }}
       />
-      <motion.div
+      <m.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} blur`}
         style={{ background: gradient }}
       />
-      <motion.div
+      <m.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} rotate-180`}
         style={{ background: gradient }}
       />
-      <motion.div
+      <m.div
         variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
         className={`${layerClass} blur rotate-180`}
@@ -85,6 +87,6 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
       <span className="btn-label relative z-[1] pointer-events-none text-text-primary">
         {label}
       </span>
-    </motion.button>
+    </m.button>
   )
 }

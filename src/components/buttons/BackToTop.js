@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useSpotlight } from '@/hooks/useSpotlight'
@@ -15,7 +15,9 @@ export default function BackToTop() {
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400)
-    onScroll() // sync once: page may mount already scrolled (restoration, hash deep-link)
+    // sync once: page may mount already scrolled (restoration, hash deep-link) — can't read scrollY during SSR.
+    // react-doctor-disable-next-line react-doctor/no-initialize-state
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -23,7 +25,7 @@ export default function BackToTop() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.button
+        <m.button
           ref={ref}
           onClick={() => scrollToY(0, prefersReduced)}
           onMouseMove={onMouseMove}
@@ -40,7 +42,7 @@ export default function BackToTop() {
             <path d="M12 19V5M5 12l7-7 7 7"/>
           </svg>
           <span className="relative z-10 hidden lg:inline">Back to top</span>
-        </motion.button>
+        </m.button>
       )}
     </AnimatePresence>
   )

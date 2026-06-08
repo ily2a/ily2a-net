@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
 
 const STATES = ['default', 'hover', 'pressed']
@@ -14,7 +14,7 @@ export default function Logo({ isMobile = false, onClick }) {
   const handleClick = onClick ?? (() => router.push('/'))
 
   return (
-    <motion.button
+    <m.button
       onClick={handleClick}
       {...handlers}
       aria-label="ily2a home"
@@ -23,8 +23,8 @@ export default function Logo({ isMobile = false, onClick }) {
       {STATES.map((s) => (
         // SVGs don't benefit from Next.js image optimisation; unoptimized skips
         // the image pipeline while still using the <Image> component API.
-        // CSS transition is intentional here — motion.div wrappers inside
-        // motion.button interfere with FM gesture detection on mobile.
+        // CSS transition is intentional here — m.div wrappers inside
+        // m.button interfere with FM gesture detection on mobile.
         <Image
           key={s}
           src={`/assets/logo-${s}.svg`}
@@ -36,6 +36,6 @@ export default function Logo({ isMobile = false, onClick }) {
           className={`block inset-0 pointer-events-none transition-opacity duration-[80ms] ease-out ${s === 'default' ? 'relative' : 'absolute'} ${state === s ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}
-    </motion.button>
+    </m.button>
   )
 }

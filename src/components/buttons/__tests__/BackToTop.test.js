@@ -5,11 +5,11 @@ import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import BackToTop from '@/components/buttons/BackToTop'
 
 // Strip Framer Motion so visibility is deterministic (no enter/exit animation
-// timing): motion.* -> the underlying tag (forwardRef for the spotlight callback
+// timing): m.* -> the underlying tag (forwardRef for the spotlight callback
 // ref), AnimatePresence -> passthrough so `{visible && <button/>}` mounts and
-// unmounts synchronously.
+// unmounts synchronously. The app uses LazyMotion's `m`, not `motion`.
 vi.mock('framer-motion', () => ({
-  motion: new Proxy({}, {
+  m: new Proxy({}, {
     get: (_t, tag) => React.forwardRef(function MotionMock(props, ref) {
       const { children, initial, animate, exit, transition, whileTap, whileHover, variants, ...rest } = props
       return React.createElement(tag, { ref, ...rest }, children)

@@ -142,7 +142,7 @@ export function useWebGLBackground(containerRef, setup, deps = []) {
       teardownGl()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
+  }, deps) // react-doctor-disable-line react-doctor/exhaustive-deps
 }
 
 function isWithinViewport(el) {

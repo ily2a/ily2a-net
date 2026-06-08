@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const TextReveal = memo(function TextReveal({ text, className, scale = 1, initialDelay = 0, instant = false }) {
@@ -12,7 +12,7 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
   return (
     <p className={className}>
       {words.map((word, wi) => (
-        <motion.span
+        <m.span
           // Words can repeat in a sentence, so the index is required for
           // uniqueness. Position is also stable here — the word array is
           // derived from immutable text and never reordered.
@@ -30,7 +30,7 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
           }}
         >
           {word}
-        </motion.span>
+        </m.span>
       ))}
     </p>
   )

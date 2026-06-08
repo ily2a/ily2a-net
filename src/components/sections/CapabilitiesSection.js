@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Image from 'next/image'
 import { EASE_OUT } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
@@ -80,7 +80,7 @@ function SpotlightCard({ children }) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <motion.div
+      <m.div
         className="cap-card__spotlight"
         initial={{ opacity: 0 }}
         animate={{ opacity }}
@@ -128,7 +128,7 @@ export default function CapabilitiesSection() {
         <div className="flex flex-col gap-3">
 
         {/* ── Service cards ── */}
-        <motion.div
+        <m.div
           className="grid grid-cols-1 gap-3 mobile:grid-cols-2"
           variants={STAGGER_PARENT}
           initial="hidden"
@@ -136,7 +136,7 @@ export default function CapabilitiesSection() {
           viewport={{ once: true, margin: '-80px' }}
         >
           {CARDS.map((card) => (
-            <motion.div key={card.title} variants={STAGGER_CHILD}>
+            <m.div key={card.title} variants={STAGGER_CHILD}>
               <SpotlightCard>
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-3">
@@ -148,12 +148,12 @@ export default function CapabilitiesSection() {
                 <p className="text-body-card text-brand">{card.description}</p>
                 <Tags items={card.tags} />
               </SpotlightCard>
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
 
         {/* ── Skills + Tools ── */}
-        <motion.div
+        <m.div
           className="grid grid-cols-1 gap-3 mobile:grid-cols-[2fr_1fr]"
           variants={STAGGER_PARENT}
           initial="hidden"
@@ -161,7 +161,7 @@ export default function CapabilitiesSection() {
           viewport={{ once: true, margin: '-80px' }}
         >
 
-          <motion.div variants={STAGGER_CHILD}>
+          <m.div variants={STAGGER_CHILD}>
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
@@ -179,9 +179,9 @@ export default function CapabilitiesSection() {
               ))}
             </div>
           </SpotlightCard>
-          </motion.div>
+          </m.div>
 
-          <motion.div variants={STAGGER_CHILD}>
+          <m.div variants={STAGGER_CHILD}>
           <SpotlightCard>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
@@ -200,9 +200,9 @@ export default function CapabilitiesSection() {
               ))}
             </ul>
           </SpotlightCard>
-          </motion.div>
+          </m.div>
 
-        </motion.div>
+        </m.div>
 
         </div>{/* end cards wrapper */}
       </div>

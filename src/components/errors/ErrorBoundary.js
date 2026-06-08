@@ -28,6 +28,7 @@ export default class ErrorBoundary extends Component {
           <div className="flex flex-col items-center gap-4 p-8 text-center">
             <p role="alert" className="text-text-secondary">Something went wrong.</p>
             <button
+              type="button"
               onClick={() => this.setState(s => ({ hasError: false, resetKey: s.resetKey + 1 }))}
               className="underline text-brand bg-transparent border-none cursor-pointer"
             >

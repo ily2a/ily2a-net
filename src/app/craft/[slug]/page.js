@@ -149,6 +149,8 @@ export default async function CaseStudyPage({ params }) {
 
   return (
     <main id="main-content">
+      {/* JSON-LD structured data, serialized through safeJsonLd() — trusted, not user HTML. */}
+      {/* react-doctor-disable-next-line react-doctor/no-danger */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
       {/* PasswordGate is intentional soft security — the full page content is
           server-rendered and visible in the DOM. The gate exists as a human-facing
@@ -231,6 +233,8 @@ export default async function CaseStudyPage({ params }) {
                     Prototype
                   </h2>
                   <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-glass-border shadow-[0_8px_32px_var(--color-shadow-strong)]">
+                    {/* sandbox is set below; allow-same-origin+scripts is required for the Figma embed. */}
+                    {/* react-doctor-disable-next-line react-doctor/iframe-missing-sandbox */}
                     <iframe
                       src={figmaEmbedUrl}
                       allowFullScreen
@@ -281,6 +285,9 @@ function SidebarContent({ metaFields, tags }) {
       </h3>
 
       {tags?.length > 0 && (
+        // role="list" re-declared intentionally: Safari+VoiceOver drops the implicit
+        // list role when list-style is removed.
+        // react-doctor-disable-next-line react-doctor/no-redundant-roles
         <ul className="flex flex-wrap gap-[6px] list-none p-0 m-0 mt-3" role="list">
           {tags.map((tag) => (
             <li key={tag} className="project-card__tag">{tag}</li>

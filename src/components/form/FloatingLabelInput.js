@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useId, useRef, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { EASE_OUT } from '@/constants/animations'
 
 const GAP_PAD  = 4
@@ -40,7 +40,7 @@ function NotchedBorder({ floated, hasError, focused, labelWidth, width, height }
 
   return (
     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
-      <motion.path
+      <m.path
         d={path} fill="none" strokeWidth="1" strokeLinecap="round"
         initial={{ stroke, strokeOpacity }}
         animate={{ stroke, strokeOpacity }}
@@ -62,7 +62,7 @@ function useFloatingLabel() {
 
 function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = '50%', required }) {
   return (
-    <motion.label
+    <m.label
       htmlFor={htmlFor}
       className="absolute left-[14px] font-sans text-base leading-none pointer-events-none select-none origin-top-left -translate-y-1/2"
       animate={{
@@ -76,7 +76,7 @@ function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children
         {children}
         {required && <span aria-hidden="true" className="ml-[3px]">*</span>}
       </span>
-    </motion.label>
+    </m.label>
   )
 }
 
@@ -90,6 +90,8 @@ export function FloatingLabelInput({
 
   return (
     <div ref={wrapRef} className="relative">
+      {/* Labeled by <FloatingLabel htmlFor={id}> below — the rule can't see the cross-component association. */}
+      {/* react-doctor-disable-next-line react-doctor/control-has-associated-label */}
       <input
         id={id} name={name} type={type} value={value} onChange={onChange}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
@@ -119,6 +121,8 @@ export function FloatingLabelTextarea({
 
   return (
     <div ref={wrapRef} className="relative">
+      {/* Labeled by <FloatingLabel htmlFor={id}> below — the rule can't see the cross-component association. */}
+      {/* react-doctor-disable-next-line react-doctor/control-has-associated-label */}
       <textarea
         id={id} name={name} value={value} onChange={onChange}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}

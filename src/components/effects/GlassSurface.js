@@ -1,10 +1,14 @@
+// Stable empty default so an omitted `style` prop keeps the same reference
+// across renders instead of allocating a fresh object each time.
+const EMPTY_STYLE = {}
+
 const GlassSurface = ({
   children,
   width = '100%',
   height = 64,
   borderRadius = 12,
   className = '',
-  style = {},
+  style = EMPTY_STYLE,
 }) => (
   <div
     className={`relative overflow-hidden bg-surface/35 backdrop-blur-[20px] backdrop-saturate-300 shadow-[inset_0_1px_0_0_var(--color-glass-border),inset_0_-1px_0_0_var(--color-glass-bg)] ${className}`}

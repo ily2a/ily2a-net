@@ -3,11 +3,11 @@
 import { memo, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { urlFor } from '@/sanity/lib/image'
 import { EASE_OUT } from '@/constants/animations'
 
-const MotionLink = motion.create(Link)
+const MotionLink = m.create(Link)
 
 const BLUR_LAYERS = [
   { blur: 0.5, mask: 'linear-gradient(transparent 0%,#000 12.5%,#000 25%,transparent 37.5%)' },
@@ -98,7 +98,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
 
           {/* Hover image — desktop only */}
           {project.cardImageHover && (
-            <motion.div variants={hoverImgVariants} className="absolute inset-0 hidden tab:block">
+            <m.div variants={hoverImgVariants} className="absolute inset-0 hidden tab:block">
               <Image
                 src={imgUrl(project.cardImageHover)}
                 alt=""
@@ -111,19 +111,21 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
                 blurDataURL={project.cardImageHover.lqip}
                 onError={onImgError}
               />
-            </motion.div>
+            </m.div>
           )}
         </div>
 
         {/* Desktop: blur/scrim overlay — sibling of image, never scaled */}
         <div className="hidden tab:block absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
-          <motion.div className="project-card__blur" aria-hidden="true" variants={overlayVariants}>
+          <m.div className="project-card__blur" aria-hidden="true" variants={overlayVariants}>
             {BLUR_LAYERS.map((layer) => (
               <div key={layer.blur} className="project-card__blur-layer" style={layer.style} />
             ))}
-          </motion.div>
-          <motion.div className="project-card__scrim" variants={overlayVariants} />
-          <motion.div className="project-card__content" variants={contentVariants}>
+          </m.div>
+          <m.div className="project-card__scrim" variants={overlayVariants} />
+          <m.div className="project-card__content" variants={contentVariants}>
+            {/* role="list" re-declared: Safari+VoiceOver drops the implicit list role when list-style is removed. */}
+            {/* react-doctor-disable-next-line react-doctor/no-redundant-roles */}
             <ul className="project-card__tags" role="list">
               {project.tags?.map((tag) => (
                 <li key={tag} className="project-card__tag">{tag}</li>
@@ -133,10 +135,12 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
               <h3 className="project-card__title heading-2">{project.title}</h3>
               <p className="project-card__subtitle font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance">{project.description}</p>
             </div>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Mobile: tags pinned inside image at bottom — hidden on desktop */}
+        {/* role="list" re-declared: Safari+VoiceOver drops the implicit list role when list-style is removed. */}
+        {/* react-doctor-disable-next-line react-doctor/no-redundant-roles */}
         <ul className="tab:hidden absolute bottom-3 left-3 right-3 flex gap-[6px] flex-wrap z-[2] list-none p-0 m-0" role="list">
           {project.tags?.map((tag) => (
             <li key={tag} className="project-card__tag">{tag}</li>

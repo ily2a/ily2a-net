@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'
@@ -41,7 +41,7 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
   const styles = isMobile ? mobileStates : webStates
 
   return (
-    <motion.button
+    <m.button
       onClick={onClick}
       {...handlers}
       {...rest}
@@ -59,14 +59,14 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
     >
       <Icon color={styles[state].iconColor} />
       {!isMobile && (
-        <motion.span
+        <m.span
           className="link-label"
           animate={{ color: styles[state].textColor }}
           transition={SPRING_SNAP}
         >
           {label}
-        </motion.span>
+        </m.span>
       )}
-    </motion.button>
+    </m.button>
   )
 }

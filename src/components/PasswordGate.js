@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { SPRING_SNAP } from '@/constants/animations'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 import FloatingNav from '@/components/nav/FloatingNav'
@@ -52,7 +52,7 @@ export default function PasswordGate() {
   return (
     <AnimatePresence>
       {!unlocked && (
-        <motion.div
+        <m.div
           key="gate"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
@@ -61,14 +61,14 @@ export default function PasswordGate() {
           <NotFoundPasswordBg />
           <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 24, delay: 0.05 }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-[calc(100vw-32px)] max-w-[440px] text-center"
           >
             {/* Lock icon */}
-            <motion.div
+            <m.div
               animate={
                 status === 'error'
                   ? { x: [0, -8, 8, -6, 6, -3, 3, 0] }
@@ -78,7 +78,7 @@ export default function PasswordGate() {
             >
               <AnimatePresence mode="wait">
                 {status === 'success' ? (
-                  <motion.svg
+                  <m.svg
                     key="check"
                     width="32" height="32" viewBox="0 0 24 24" fill="none"
                     initial={{ scale: 0.5, opacity: 0 }}
@@ -87,16 +87,16 @@ export default function PasswordGate() {
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                     aria-hidden="true"
                   >
-                    <motion.path
+                    <m.path
                       d="M5 13l4 4L19 7"
                       stroke="var(--color-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
                       transition={{ duration: 0.4, ease: 'easeOut' }}
                     />
-                  </motion.svg>
+                  </m.svg>
                 ) : (
-                  <motion.svg
+                  <m.svg
                     key={status === 'error' ? 'lock-error' : 'lock'}
                     width="32" height="32" viewBox="0 0 24 24"
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -105,22 +105,22 @@ export default function PasswordGate() {
                     transition={{ duration: 0.2 }}
                     aria-hidden="true"
                   >
-                    <motion.rect
+                    <m.rect
                       x="3" y="11" width="18" height="11" rx="3"
                       animate={{ fill: status === 'error' ? 'var(--color-error)' : 'var(--color-text-secondary)' }}
                       transition={{ duration: 0.2 }}
                     />
-                    <motion.path
+                    <m.path
                       d="M7 11V7a5 5 0 0 1 10 0v4"
                       fill="none" strokeWidth="2.5" strokeLinecap="round"
                       animate={{ stroke: status === 'error' ? 'var(--color-error)' : 'var(--color-text-secondary)' }}
                       transition={{ duration: 0.2 }}
                     />
                     <circle cx="12" cy="16.5" r="1.5" fill="var(--color-background)" />
-                  </motion.svg>
+                  </m.svg>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </m.div>
 
             {/* Heading */}
             <h1 id="password-gate-heading" className="text-intro text-text-primary mt-3 [text-indent:0.03em]">
@@ -141,7 +141,7 @@ export default function PasswordGate() {
                   hasError={status === 'error'}
                   errorId="cs-password-error"
                   rightSlot={
-                    <motion.button
+                    <m.button
                       type="button"
                       onClick={() => setShowPass(v => !v)}
                       aria-label={showPass ? 'Hide password' : 'Show password'}
@@ -162,7 +162,7 @@ export default function PasswordGate() {
                           <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                       )}
-                    </motion.button>
+                    </m.button>
                   }
                 />
                 <div role="alert" aria-atomic="true">
@@ -189,8 +189,8 @@ export default function PasswordGate() {
               </button>
             </form>
 
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   )

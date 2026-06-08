@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 
@@ -36,7 +36,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
   }
 
   return (
-    <motion.button
+    <m.button
       ref={buttonRef}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -51,7 +51,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
       </span>
       <span className="absolute inset-0 pointer-events-none">
         {!prefersReduced && ripples.map((ripple) => (
-          <motion.span
+          <m.span
             key={ripple.key}
             initial={{ scale: 0.4, opacity: 0.35 }}
             animate={{ scale: 4, opacity: 0 }}
@@ -69,6 +69,6 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
           />
         ))}
       </span>
-    </motion.button>
+    </m.button>
   )
 }

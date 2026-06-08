@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP } from '@/constants/animations'
 
@@ -30,7 +30,7 @@ const CloseButton = forwardRef(function CloseButton({ onClick }, ref) {
   const { state, handlers } = useButtonState()
 
   return (
-    <motion.button
+    <m.button
       ref={ref}
       onClick={onClick}
       {...handlers}
@@ -50,7 +50,7 @@ const CloseButton = forwardRef(function CloseButton({ onClick }, ref) {
           fill={states[state].fill}
         />
       </svg>
-    </motion.button>
+    </m.button>
   )
 })
 

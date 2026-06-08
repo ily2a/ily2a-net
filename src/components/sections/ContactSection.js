@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ContactFormButton } from '@/components/buttons/ContactFormButton'
 import BookingButton from '@/components/buttons/BookingButton'
 import LinkedInButton from '@/components/buttons/LinkedInButton'
@@ -47,18 +47,18 @@ export default function ContactSection() {
       <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
-        <motion.div className="flex flex-col gap-2" {...fadeUp(0)}>
+        <m.div className="flex flex-col gap-2" {...fadeUp(0)}>
           <h2 className="heading-section text-text-primary">Contact</h2>
           <p className="text-md text-text-secondary">
             Please fill out this form to get in touch, I&apos;m excited to hear about your ideas.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* ── Form (2/3) + About blurb (1/3) ── */}
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6 lg:gap-8">
 
           {/* Form */}
-          <motion.form
+          <m.form
             className="flex flex-col gap-4 w-full md:flex-[2] md:order-1 order-1"
             onSubmit={handleSubmit}
             noValidate
@@ -172,10 +172,10 @@ export default function ContactSection() {
                   </p>
                 )}
               </div>
-          </motion.form>
+          </m.form>
 
           {/* About blurb */}
-          <motion.div
+          <m.div
             className="hidden lg:flex flex-col gap-3 w-full lg:flex-[1] lg:pt-[26px] order-2"
             {...fadeUp(0.15)}
           >
@@ -191,12 +191,12 @@ export default function ContactSection() {
             <p className="text-body text-text-primary">
               Cheers, Ily
             </p>
-          </motion.div>
+          </m.div>
 
         </div>
 
         {/* ── Info card ── */}
-        <motion.div
+        <m.div
           className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
           style={{ boxShadow: 'var(--shadow-glass-card)' }}
           {...fadeUp(0.15)}
@@ -218,15 +218,15 @@ export default function ContactSection() {
             <LinkedInButton />
             <BookingButton static />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ── Copyright ── */}
-        <motion.p
+        <m.p
           className="text-center text-md pt-5 text-brand"
           {...fadeUp(0.2)}
         >
           © {new Date().getFullYear()} Ily Ameur. All rights reserved.
-        </motion.p>
+        </m.p>
 
       </div>
     </section>

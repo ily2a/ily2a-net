@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import CloseButton from '@/components/buttons/CloseButton'
+import { m } from 'framer-motion'
+import BookingDialog from '@/components/buttons/BookingDialog'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { pushModalOpen, popModalOpen } from '@/lib/modal-store'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
@@ -20,21 +20,6 @@ function releaseScrollLock() {
 
 // Iframe is considered failed if it hasn't fired onLoad within this window.
 const IFRAME_LOAD_TIMEOUT_MS = 15_000
-
-// Single source of truth for the Cal.com booking URL. Used by both iframe
-// embeds (with ?embed=true) and the error-fallback "open in a new tab" link.
-const CAL_BOOKING_URL = 'https://cal.com/ily2a/intro'
-const CAL_EMBED_URL   = `${CAL_BOOKING_URL}?embed=true`
-
-// Shared style for the iframe frame in both narrow and wide layouts. Position-
-// dependent properties are merged in below; these five never change.
-const FRAME_BASE = {
-  background:     'transparent',
-  border:         '1px solid var(--color-brand)',
-  borderRadius:   '8px',
-  overflow:       'hidden',
-  backdropFilter: 'blur(8px)',
-}
 
 export default function BookingButton({ static: isStatic = false }) {
   const [open, setOpen]               = useState(false)
@@ -107,6 +92,8 @@ export default function BookingButton({ static: isStatic = false }) {
     import('@calcom/embed-react').catch(() => {})
   }
 
+  // Mount flag for the portal — must flip after mount, can't read during SSR.
+  // react-doctor-disable-next-line react-doctor/no-initialize-state
   useEffect(() => { setMounted(true) }, [])
 
   // Reset iframe state each time modal opens
@@ -154,7 +141,9 @@ export default function BookingButton({ static: isStatic = false }) {
     triggerRef.current = null
   }, [])
 
-  // Focus management + focus trap + Escape handler when modal is open
+  // Focus management + focus trap + Escape handler when modal is open.
+  // Deps are intentional (handleClose is stable; listeners read live state); see eslint-disable on the deps line.
+  // react-doctor-disable-next-line react-doctor/exhaustive-deps
   useEffect(() => {
     if (!open) { focusableRef.current = []; return }
 
@@ -249,145 +238,9 @@ export default function BookingButton({ static: isStatic = false }) {
     })
   }
 
-  const backdropStyle = {
-    position:        'fixed',
-    inset:           0,
-    background:      'var(--color-surface-blur)',
-    backdropFilter:  'blur(4px)',
-    zIndex:          9999,
-    overscrollBehavior: 'none',
-    ...(isNarrowLayout && {
-      display:        'flex',
-      alignItems:     'center',
-      justifyContent: 'center',
-      padding:        isMobile ? '20px' : '40px',
-    }),
-  }
-
-  const frameStyle = isNarrowLayout ? {
-    ...FRAME_BASE,
-    position:  'relative',
-    width:     '100%',
-    maxWidth:  '860px',
-    height:    isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
-    maxHeight: '800px',
-  } : {
-    ...FRAME_BASE,
-    position: 'absolute',
-    top:      '64px',
-    bottom:   '64px',
-    left:     '160px',
-    right:    '160px',
-  }
-
-  const overlay = (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="backdrop"
-          onClick={handleClose}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={SPRING_SNAP}
-          style={backdropStyle}
-        >
-          <motion.div
-            key="frame"
-            ref={frameRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="booking-dialog-title"
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={SPRING_SNAP}
-            style={frameStyle}
-          >
-            <h2 id="booking-dialog-title" className="sr-only">Book a call with Ily Ameur</h2>
-            <div style={{
-              position: 'absolute',
-              top:      '16px',
-              zIndex:   10,
-              ...(isMobile ? { right: '16px' } : { left: '16px' }),
-            }}>
-              <CloseButton ref={closeButtonRef} onClick={handleClose} />
-            </div>
-
-            {/* Spinner shown while iframe loads */}
-            {!iframeLoaded && !iframeError && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div role="status" aria-label="Loading calendar" className="booking-spinner" />
-              </div>
-            )}
-
-            {/* SR-only completion announcement — the spinner gives a
-                "loading" hint but doesn't fire a "ready" message when it
-                disappears. Screen-reader users would otherwise wait silently. */}
-            <div className="sr-only" aria-live="polite">
-              {iframeLoaded && !iframeError ? 'Calendar ready' : ''}
-            </div>
-
-            {/* Fallback shown if the iframe fails to load or times out — gives
-                the user a way out instead of an indefinite spinner. */}
-            {iframeError && (
-              <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center text-text-primary">
-                <p className="text-sm">The calendar couldn&apos;t load.</p>
-                <a
-                  href={CAL_BOOKING_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm underline text-brand"
-                >
-                  Open it in a new tab
-                </a>
-              </div>
-            )}
-
-            {/* allow-same-origin is required by Cal.com for auth/cookie access.
-                Mobile/tablet: scrollable wrapper + dynamic height from Cal.com postMessages.
-                Desktop: iframe fills container, overflow:hidden clips the footer bar. */}
-            {!iframeError && (isNarrowLayout ? (
-              <div style={{
-                height:                  '100%',
-                overflowY:               'auto',
-                WebkitOverflowScrolling: 'touch',
-                touchAction:             'pan-y',
-              }}>
-                <iframe
-                  ref={iframeRef}
-                  src={CAL_EMBED_URL}
-                  title="Book a call with Ily Ameur"
-                  width="100%"
-                  height={iframeHeight}
-                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                  onLoad={() => setIframeLoaded(true)}
-                  onError={() => setIframeError(true)}
-                  className="block border-0 w-full"
-                />
-              </div>
-            ) : (
-              <iframe
-                ref={iframeRef}
-                src={CAL_EMBED_URL}
-                title="Book a call with Ily Ameur"
-                width="100%"
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                onLoad={() => setIframeLoaded(true)}
-                onError={() => setIframeError(true)}
-                className="block border-0 w-full h-[calc(100%+80px)]"
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
-
   return (
     <>
-      <motion.button
+      <m.button
         initial={isStatic ? false : { opacity: 0, scale: 0.5 }}
         animate={{
           opacity: 1,
@@ -411,9 +264,25 @@ export default function BookingButton({ static: isStatic = false }) {
         className="inline-flex items-center justify-center h-11 px-4 rounded-[8px] cursor-pointer border-0 text-amethyst-950"
       >
         <span className="btn-label leading-none">Book a call</span>
-      </motion.button>
+      </m.button>
 
-      {mounted && createPortal(overlay, document.body)}
+      {mounted && createPortal(
+        <BookingDialog
+          open={open}
+          onClose={handleClose}
+          isMobile={isMobile}
+          isNarrowLayout={isNarrowLayout}
+          frameRef={frameRef}
+          closeButtonRef={closeButtonRef}
+          iframeRef={iframeRef}
+          iframeLoaded={iframeLoaded}
+          iframeError={iframeError}
+          iframeHeight={iframeHeight}
+          onIframeLoad={() => setIframeLoaded(true)}
+          onIframeError={() => setIframeError(true)}
+        />,
+        document.body,
+      )}
     </>
   )
 }

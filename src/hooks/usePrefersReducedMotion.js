@@ -16,7 +16,7 @@ export function usePrefersReducedMotion() {
     // Initial sync from media query — must run after mount to avoid the
     // hydration mismatch that would happen if we read it during render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPrefersReduced(mq.matches)
+    setPrefersReduced(mq.matches) // react-doctor-disable-line react-doctor/no-initialize-state
     const handler = (e) => setPrefersReduced(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useSpring, AnimatePresence } from 'framer-motion'
+import { m, useSpring, AnimatePresence } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
@@ -29,11 +29,16 @@ export default function SmoothCursor() {
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_QUERY)
     const update = () => { setIsEnabled(mq.matches); if (!mq.matches) setIsVisible(false) }
+    // Must sync after mount — matchMedia can't be read during SSR render.
+    // react-doctor-disable-next-line react-doctor/no-initialize-state
     update()
     mq.addEventListener('change', update)
     return () => mq.removeEventListener('change', update)
   }, [])
 
+  // Effect intentionally re-subscribes only on isEnabled/prefersReduced; the
+  // listeners read live state through refs. See the eslint-disable on the deps below.
+  // react-doctor-disable-next-line react-doctor/exhaustive-deps
   useEffect(() => {
     if (!isEnabled || prefersReduced) return
 
@@ -95,7 +100,7 @@ export default function SmoothCursor() {
     }
   // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEnabled, prefersReduced])
+  }, [isEnabled, prefersReduced]) // react-doctor-disable-line react-doctor/exhaustive-deps
 
   useEffect(() => {
     if (!isEnabled || prefersReduced) return
@@ -106,7 +111,7 @@ export default function SmoothCursor() {
   if (!isEnabled || prefersReduced) return null
 
   return (
-    <motion.div
+    <m.div
       className="fixed top-0 left-0 z-[9999] pointer-events-none will-change-transform"
       style={{ x: cursorX, y: cursorY }}
       animate={{ opacity: isVisible ? 1 : 0 }}
@@ -116,7 +121,7 @@ export default function SmoothCursor() {
           element's transform (composited translate3d, off the main thread),
           so the -50% offset can't share that transform. */}
       <div className="-translate-x-1/2 -translate-y-1/2">
-      <motion.div
+      <m.div
         className="flex items-center justify-center overflow-hidden backdrop-blur-[20px] backdrop-saturate-300"
         animate={{
           width:        isHovering ? 120 : 16,
@@ -133,7 +138,7 @@ export default function SmoothCursor() {
       >
         <AnimatePresence>
           {isHovering && (
-            <motion.span
+            <m.span
               className="text-cursor text-text-primary pointer-events-none select-none"
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -141,11 +146,11 @@ export default function SmoothCursor() {
               transition={{ ease: 'easeInOut', duration: 0.15 }}
             >
               {hoverLabel}
-            </motion.span>
+            </m.span>
           )}
         </AnimatePresence>
-      </motion.div>
+      </m.div>
       </div>
-    </motion.div>
+    </m.div>
   )
 }

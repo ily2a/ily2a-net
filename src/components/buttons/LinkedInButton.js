@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP } from '@/constants/animations'
 
@@ -37,7 +37,7 @@ export default function LinkedInButton() {
   const { state, handlers } = useButtonState()
 
   return (
-    <motion.a
+    <m.a
       href="https://linkedin.com/in/ily2a"
       target="_blank"
       rel="noopener noreferrer"
@@ -52,6 +52,6 @@ export default function LinkedInButton() {
       className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-[8px] border border-transparent"
     >
       <LinkedInIcon color={states[state].iconColor} size={22} />
-    </motion.a>
+    </m.a>
   )
 }

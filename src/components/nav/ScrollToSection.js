@@ -25,7 +25,9 @@ export default function ScrollToSection() {
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       scrollToElement(document.getElementById(section), prefersReduced)
 
-      // Clean the query param from the URL without adding to history
+      // Clean the query param from the URL without adding to history — this is
+      // post-scroll URL hygiene, not a navigation redirect.
+      // react-doctor-disable-next-line react-doctor/nextjs-no-client-side-redirect
       router.replace('/', { scroll: false })
     })
 

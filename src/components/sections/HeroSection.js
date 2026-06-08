@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import BookingButton from '@/components/buttons/BookingButton'
 import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/effects/TextReveal'
@@ -16,7 +16,7 @@ function HeroBackground() {
   const [bgReady, setBgReady] = useState(false)
 
   return (
-    <motion.div
+    <m.div
       aria-hidden="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.5 }}
@@ -46,7 +46,7 @@ function HeroBackground() {
           pointer-events-none so it never intercepts the mouse — otherwise this
           decorative layer (still in the DOM at opacity 0) blocks the canvas from
           receiving pointermove, freezing the spotlight's mouse attraction. */}
-      <motion.div
+      <m.div
         aria-hidden="true"
         className="absolute inset-0 w-full h-full pointer-events-none"
         initial={{ opacity: 1 }}
@@ -57,7 +57,7 @@ function HeroBackground() {
             'linear-gradient(135deg, var(--color-amethyst-950) 0%, var(--color-amethyst-700) 40%, var(--color-amethyst-400) 75%, var(--color-amethyst-300) 100%)',
         }}
       />
-    </motion.div>
+    </m.div>
   )
 }
 
