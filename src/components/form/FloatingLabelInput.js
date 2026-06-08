@@ -8,7 +8,7 @@ const GAP_PAD  = 4
 const LBL_LEFT = 14
 const R        = 10
 
-const INPUT_CLS = "block w-full rounded-[10px] px-3.5 py-3 outline-none border-0 text-text-primary font-sans text-base bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
+const INPUT_CLS = "text-field-input block w-full rounded-[10px] px-3.5 py-3 outline-none border-0 text-text-primary bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
 
 function useDims(ref) {
   const [dims, setDims] = useState({ w: 0, h: 0 })
@@ -64,7 +64,7 @@ function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children
   return (
     <m.label
       htmlFor={htmlFor}
-      className="absolute left-[14px] font-sans text-base leading-none pointer-events-none select-none origin-top-left -translate-y-1/2"
+      className="text-field-label absolute left-[14px] pointer-events-none select-none origin-top-left -translate-y-1/2"
       animate={{
         top:   floated ? 0 : restingTop,
         scale: floated ? 0.8 : 1,

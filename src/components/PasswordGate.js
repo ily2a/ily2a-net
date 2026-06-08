@@ -167,12 +167,12 @@ export default function PasswordGate() {
                 />
                 <div role="alert" aria-atomic="true">
                   {status === 'error' && (
-                    <p id="cs-password-error" className="text-[12px] text-error">
+                    <p id="cs-password-error" className="text-form-error text-error">
                       Incorrect password. Try again.
                     </p>
                   )}
                   {status === 'ratelimited' && (
-                    <p id="cs-password-error" className="text-[12px] text-error">
+                    <p id="cs-password-error" className="text-form-error text-error">
                       Too many attempts — please wait before trying again.
                     </p>
                   )}

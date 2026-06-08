@@ -133,7 +133,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
             </ul>
             <div className="project-card__text">
               <h3 className="project-card__title heading-2">{project.title}</h3>
-              <p className="project-card__subtitle font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance">{project.description}</p>
+              <p className="project-card__subtitle">{project.description}</p>
             </div>
           </m.div>
         </div>
@@ -152,7 +152,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
       {/* ── Mobile: title + subtitle below image — hidden on desktop ── */}
       <div className="tab:hidden pt-[10px] px-1 pb-0 flex flex-col gap-2">
         <h3 className="project-card__title heading-2">{project.title}</h3>
-        <p className="project-card__subtitle font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance">{project.description}</p>
+        <p className="project-card__subtitle">{project.description}</p>
       </div>
 
     </MotionLink>

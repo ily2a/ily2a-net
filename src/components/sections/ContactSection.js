@@ -94,7 +94,7 @@ export default function ContactSection() {
                     hasError={!!errors.name} errorId="name-error"
                   />
                   {errors.name && (
-                    <p id="name-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.name[errors.name] ?? 'Please check this field.'}</p>
+                    <p id="name-error" role="alert" className="text-form-error text-error">{ERROR_COPY.name[errors.name] ?? 'Please check this field.'}</p>
                   )}
                 </div>
 
@@ -108,7 +108,7 @@ export default function ContactSection() {
                     hasError={!!errors.email} errorId="email-error"
                   />
                   {errors.email && (
-                    <p id="email-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.email[errors.email] ?? 'Please check this field.'}</p>
+                    <p id="email-error" role="alert" className="text-form-error text-error">{ERROR_COPY.email[errors.email] ?? 'Please check this field.'}</p>
                   )}
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function ContactSection() {
                   hasError={!!errors.message} errorId="message-error"
                 />
                 {errors.message && (
-                  <p id="message-error" role="alert" className="text-[12px] text-error">{ERROR_COPY.message[errors.message] ?? 'Please check this field.'}</p>
+                  <p id="message-error" role="alert" className="text-form-error text-error">{ERROR_COPY.message[errors.message] ?? 'Please check this field.'}</p>
                 )}
               </div>
 
@@ -142,11 +142,11 @@ export default function ContactSection() {
               <div aria-live="polite" aria-atomic="true">
                 {status === 'sent' && (
                   <div className="flex items-center gap-3">
-                    <p className="text-[13px] text-text-secondary">Message sent successfully.</p>
+                    <p className="text-form-status text-text-secondary">Message sent successfully.</p>
                     <button
                       type="button"
                       onClick={reset}
-                      className="text-[13px] underline text-brand"
+                      className="text-form-status underline text-brand"
                     >
                       Send another
                     </button>
@@ -154,20 +154,20 @@ export default function ContactSection() {
                 )}
                 {status === 'error' && (
                   <div className="flex items-center gap-3">
-                    <p className="text-[13px] text-error">
+                    <p className="text-form-status text-error">
                       Something went wrong — please try again.
                     </p>
                     <button
                       type="button"
                       onClick={resetError}
-                      className="text-[13px] underline text-error"
+                      className="text-form-status underline text-error"
                     >
                       Retry
                     </button>
                   </div>
                 )}
                 {status === 'ratelimited' && (
-                  <p className="text-[13px] text-error">
+                  <p className="text-form-status text-error">
                     Too many submissions — please wait a while before trying again.
                   </p>
                 )}

@@ -36,13 +36,6 @@
   --font-sans: var(--font-satoshi), sans-serif;
 
   /* ─── Glass Surface ───────────────────────────────────────── */
-  --shadow-glass:
-    0 0 2px 1px color-mix(in oklch, white, transparent 82%) inset,
-    0 0 10px 4px color-mix(in oklch, white, transparent 92%) inset,
-    0px 4px 16px rgba(17, 17, 26, 0.05),
-    0px 8px 24px rgba(17, 17, 26, 0.05),
-    0px 16px 56px rgba(17, 17, 26, 0.05);
-
   /* Darker, more prominent glass card — used by the contact info card and
      craft sidebar. Two inset highlights + a deep drop shadow. */
   --shadow-glass-card:
@@ -153,6 +146,7 @@ section:focus-visible {
 .heading-sub     { @apply font-bold tracking-[-0.01em] text-[18px] xl:text-[20px]; }
 .heading-article { @apply font-bold tracking-[-0.01em] leading-[130%] text-[16px] lg:text-[18px] xl:text-[24px] text-balance; }
 .heading-2       { @apply font-bold tracking-[-0.01em] leading-[130%] text-[18px] md:text-[20px] lg:text-[24px] xl:text-[28px] text-balance; }
+.heading-error   { @apply font-light tracking-[0.06em] leading-[140%] text-[24px] md:text-[26px] lg:text-[28px] xl:text-[32px] text-balance; }
 
 /* Body */
 .text-md         { @apply font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance; }
@@ -171,9 +165,17 @@ section:focus-visible {
 
 /* UI components */
 .btn-label       { @apply font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance whitespace-nowrap; }
+.btn-label-flat  { @apply font-bold text-base leading-none; }
 .link-label      { @apply font-medium tracking-[-0.01em] leading-[120%] text-[16px] text-balance whitespace-nowrap; }
 .text-toc        { @apply text-[13px] xl:text-[14px] font-medium leading-[1.4] tracking-[-0.01em]; }
 .text-cursor     { @apply text-[14px] font-medium whitespace-nowrap tracking-[0.02em]; }
+.text-field-label { @apply font-sans text-base leading-none; }
+.text-field-input { @apply font-sans text-base; }
+.text-notice     { @apply text-sm; }
+
+/* Form microcopy — inline field validation (12px) and form-level status (13px) */
+.text-form-error  { @apply text-[12px]; }
+.text-form-status { @apply text-[13px]; }
 
 /* Testimonials */
 .text-testimonial-name  { @apply font-semibold text-[15px] tracking-[-0.01em] leading-[1.2]; }
@@ -190,10 +192,6 @@ section:focus-visible {
   .booking-spinner { @apply opacity-50; }
 }
 
-
-/* ══════════════════════════════════════════════════════════════
-   TYPOGRAPHY — all font styles are inlined as Tailwind utilities
-   ══════════════════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════════════════
    PROJECT CARD
@@ -241,7 +239,7 @@ section:focus-visible {
 }
 
 .project-card__subtitle {
-  @apply text-text-primary/75;
+  @apply font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance text-text-primary/75;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -322,8 +320,4 @@ section:focus-visible {
 .gradient-button:active {
   color: var(--color-amethyst-950);
 }
-
-/* ══════════════════════════════════════════════════════════════
-   ANIMATIONS
-   ══════════════════════════════════════════════════════════════ */
 

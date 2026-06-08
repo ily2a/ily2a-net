@@ -123,12 +123,12 @@ export default function BookingDialog({
                 the user a way out instead of an indefinite spinner. */}
             {iframeError && (
               <div role="alert" className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center text-text-primary">
-                <p className="text-sm">The calendar couldn&apos;t load.</p>
+                <p className="text-notice">The calendar couldn&apos;t load.</p>
                 <a
                   href={CAL_BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm underline text-brand"
+                  className="text-notice underline text-brand"
                 >
                   Open it in a new tab
                 </a>
