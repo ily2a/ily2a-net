@@ -102,10 +102,14 @@ src/
 │   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
 ├── components/           # React components (grouped by role)
-│   ├── backgrounds/      # Visual effect backgrounds
+│   ├── backgrounds/      # WebGL effect backgrounds
 │   ├── buttons/          # Button and CTA components
+│   ├── effects/          # Cursor, glass, spotlight, text-reveal effects
+│   ├── errors/           # Error boundary wrappers
 │   ├── form/             # Form inputs
 │   ├── nav/              # Navigation components
+│   ├── portable-text/    # Sanity Portable Text renderers
+│   ├── providers/        # App-level providers (motion, analytics)
 │   └── sections/         # Home page section components
 ├── sanity/               # Sanity client, schema types, image helpers
 ├── lib/                  # GROQ queries (sanity-queries.js), validation
@@ -158,7 +162,8 @@ npx sanity@latest schema deploy
 - **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
-- **BookingButton** — Cal.com booking embed trigger with scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails
+- **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails
+- **BookingDialog** — presentational booking dialog (backdrop, framed card, spinner / error fallback, Cal.com iframe); render-only, lazy-loaded by BookingButton
 - **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
 - **LinkedInButton** — LinkedIn profile link
 - **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
@@ -213,7 +218,8 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 - **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
 - **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
-- **useModalOpen** — module-level counter (`pushModalOpen` / `popModalOpen`) that WebGL backgrounds subscribe to so they can pause RAF loops while a blocking modal is open
+- **useModalOpen** — `useSyncExternalStore` binding over the `modal-store.js` singleton; lets React components read whether any blocking modal is open (the imperative `pushModalOpen` / `popModalOpen` API lives in the store)
+- **useWebGLBackground** — shared lifecycle for the OGL backgrounds: pauses the RAF loop when the canvas is off-screen, the tab is hidden, or a modal covers it; honours `prefers-reduced-motion` (one static frame); and rebuilds cleanly on GL context loss/restore. Each background supplies a `setup(container)` that returns its renderer hooks
 - **useSpotlight** — RAF-throttled pointer tracker that writes `--mx` / `--my` CSS variables on the target element, used by buttons that paint a radial spotlight at the cursor
 
 ## Lib
@@ -223,6 +229,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **color.js** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
 - **dedup.js** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
+- **modal-store.js** — framework-agnostic singleton (no React) tracking whether any blocking modal is open; WebGL backgrounds subscribe imperatively to pause their RAF loops while occluded, and React consumes it through `useModalOpen`
 - **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
 - **scroll.js** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
 - **validation.js** — shared form validation
@@ -240,7 +247,7 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 
 `next.config.mjs` ships:
 
-- A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site, allowlisting only the third-party origins actually used (Sanity, Cal.com, Figma embeds, Vercel telemetry, Fontshare). The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
+- A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site, allowlisting only the third-party origins actually used (Sanity, Cal.com, Figma embeds, Vercel telemetry). Fonts are self-hosted, so `font-src` stays on `'self'`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
 - A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src.
 - HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
 
@@ -263,12 +270,14 @@ Vitest is configured with the `node` environment by default ([vitest.config.mjs]
 - `src/app/api/__tests__/revalidate.test.js`
 - `src/app/api/__tests__/unlock.test.js`
 - `src/lib/__tests__/api.test.js`
+- `src/lib/__tests__/color.test.js`
 - `src/lib/__tests__/dedup.test.js`
 - `src/lib/__tests__/json-ld.test.js`
 - `src/lib/__tests__/portable-text.test.js`
 - `src/lib/__tests__/scroll.test.js`
 - `src/lib/__tests__/validation.test.js`
 - `src/hooks/__tests__/useModalOpen.test.js`
+- `src/components/buttons/__tests__/BackToTop.test.js`
 
 Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
 
