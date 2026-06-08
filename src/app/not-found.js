@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <main className="relative flex items-center justify-center min-h-screen overflow-hidden">
+    <main id="main-content" className="relative flex items-center justify-center min-h-screen overflow-hidden">
       <NotFoundPasswordBg />
 
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>

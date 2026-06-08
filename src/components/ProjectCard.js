@@ -70,6 +70,9 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }) {
       href={`/craft/${project.slug.current}`}
       initial="rest"
       whileHover="hover"
+      // Keyboard focus reveals the same overlay as hover, so sighted keyboard
+      // users get the title/description that mouse users see on hover.
+      whileFocus="hover"
       whileTap={isTouch ? { scale: 0.97 } : undefined}
       transition={{ duration: 0.15, ease: EASE_OUT }}
       style={{ touchAction: 'manipulation' }}

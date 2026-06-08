@@ -206,7 +206,7 @@ export default async function CaseStudyPage({ params }) {
                 require significant CSS restructuring; both instances are text-only so
                 the duplication cost is negligible. */}
             <div className="block lg:hidden">
-              <SidebarContent metaFields={metaFields} tags={data.tags} />
+              <SidebarContent metaFields={metaFields} tags={data.tags} headingAs="h2" />
             </div>
 
             {/* Body */}
@@ -274,15 +274,15 @@ export default async function CaseStudyPage({ params }) {
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 
-function SidebarContent({ metaFields, tags }) {
+function SidebarContent({ metaFields, tags, headingAs: Heading = 'h3' }) {
   return (
     <div
       className="flex flex-col bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border rounded-xl p-6"
       style={{ boxShadow: 'var(--shadow-glass-card)' }}
     >
-      <h3 className="heading-article text-brand">
+      <Heading className="heading-article text-brand">
         Project Details
-      </h3>
+      </Heading>
 
       {tags?.length > 0 && (
         // role="list" re-declared intentionally: Safari+VoiceOver drops the implicit

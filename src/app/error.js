@@ -6,7 +6,7 @@ import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 
 export default function Error({ error: _error, reset }) {
   return (
-    <main className="flex items-center justify-center min-h-screen">
+    <main id="main-content" className="flex items-center justify-center min-h-screen">
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>
       <div className="flex flex-col items-center gap-6 p-8 text-center">
         <h1 className="heading-error text-text-primary">
