@@ -1,11 +1,12 @@
 # ily2a.net
 
-Personal portfolio and case study site for Ily Ameur — design engineer. Built with Next.js, Sanity CMS, and Tailwind CSS v4.
+Personal portfolio and case study site for Ily Ameur — design engineer. Built with Next.js, TypeScript, Sanity CMS, and Tailwind CSS v4.
 
 ## Stack
 
 | Layer | Technology |
 |---|---|
+| Language | TypeScript (strict mode) |
 | Framework | Next.js 16 (App Router) |
 | UI | React 19 + Framer Motion |
 | Styling | Tailwind CSS v4 (inline utilities, no custom font classes) |
@@ -63,9 +64,11 @@ DEDUP_SECRET=your_dedup_secret
 # Not required for the public published-content fetch.
 SANITY_API_READ_TOKEN=your_sanity_read_token
 
-# Optional — Sanity API version (defaults to a pinned date in src/sanity/env.js)
+# Optional — Sanity API version (defaults to a pinned date in src/sanity/env.ts)
 NEXT_PUBLIC_SANITY_API_VERSION=2026-03-13
 ```
+
+`NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` are required — [src/sanity/env.ts](src/sanity/env.ts) throws at startup if either is missing, so misconfiguration fails fast with a clear message rather than surfacing as an opaque runtime error later.
 
 ### 3. Run the dev server
 ```bash
@@ -85,16 +88,18 @@ npm run test:watch  # Run Vitest in watch mode
 npm run a11y        # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
+Type-checking runs as part of `npm run build` (Next.js type-checks the project during the build). To type-check on its own: `npx tsc --noEmit`.
+
 ## Project Structure
 ```
 src/
 ├── app/                  # Next.js App Router pages & API routes
-│   ├── page.js           # Home page
-│   ├── layout.js         # Root layout
-│   ├── error.js          # Error boundary page
-│   ├── loading.js        # Loading UI
-│   ├── not-found.js      # 404 page
-│   ├── sitemap.js        # Dynamic sitemap
+│   ├── page.tsx          # Home page
+│   ├── layout.tsx        # Root layout
+│   ├── error.tsx         # Error boundary page
+│   ├── loading.tsx       # Loading UI
+│   ├── not-found.tsx     # 404 page
+│   ├── sitemap.ts        # Dynamic sitemap
 │   ├── craft/            # Project gallery + dynamic case study pages
 │   ├── api/
 │   │   ├── contact/      # Contact form API (Resend)
@@ -112,9 +117,9 @@ src/
 │   ├── providers/        # App-level providers (motion, analytics)
 │   └── sections/         # Home page section components
 ├── sanity/               # Sanity client, schema types, image helpers
-├── lib/                  # GROQ queries (sanity-queries.js), validation
+├── lib/                  # GROQ queries (sanity-queries.ts), validation
 ├── hooks/                # Custom React hooks
-├── data/                 # Static data (testimonials.js)
+├── data/                 # Static data (testimonials.ts)
 └── constants/            # Framer Motion animation configs, layout/site constants
 ```
 
@@ -201,14 +206,14 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 ## Constants
 
-- **animations.js** — shared Framer Motion animation configs
-- **colors.js** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
-- **layout.js** — layout constants (JS-only breakpoints)
-- **site.js** — site URL, name, and meta description constants
+- **animations.ts** — shared Framer Motion animation configs
+- **colors.ts** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
+- **layout.ts** — layout constants (JS-only breakpoints)
+- **site.ts** — site URL, name, and meta description constants
 
 ## Data
 
-- **testimonials.js** — static testimonials array (avoids a Sanity round-trip for this rarely-changing content)
+- **testimonials.ts** — static testimonials array (avoids a Sanity round-trip for this rarely-changing content)
 
 ## Hooks
 
@@ -218,21 +223,21 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 - **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
 - **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
-- **useModalOpen** — `useSyncExternalStore` binding over the `modal-store.js` singleton; lets React components read whether any blocking modal is open (the imperative `pushModalOpen` / `popModalOpen` API lives in the store)
-- **useWebGLBackground** — shared lifecycle for the OGL backgrounds: pauses the RAF loop when the canvas is off-screen, the tab is hidden, or a modal covers it; honours `prefers-reduced-motion` (one static frame); and rebuilds cleanly on GL context loss/restore. Each background supplies a `setup(container)` that returns its renderer hooks
+- **useModalOpen** — `useSyncExternalStore` binding over the `modal-store.ts` singleton; lets React components read whether any blocking modal is open (the imperative `pushModalOpen` / `popModalOpen` API lives in the store)
+- **useWebGLBackground** — shared lifecycle for the OGL backgrounds: pauses the RAF loop when the canvas is off-screen, the tab is hidden, or a modal covers it; honours `prefers-reduced-motion` (one static frame); and rebuilds cleanly on GL context loss/restore. Each background supplies a `setup(container)` that returns its renderer hooks (typed as `WebGLBackgroundContext`)
 - **useSpotlight** — RAF-throttled pointer tracker that writes `--mx` / `--my` CSS variables on the target element, used by buttons that paint a radial spotlight at the cursor
 
 ## Lib
 
-- **sanity-queries.js** — GROQ queries for case studies and home-page content
-- **api.js** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
-- **color.js** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
-- **dedup.js** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
-- **json-ld.js** — safe JSON-LD serialiser for `<script>` injection
-- **modal-store.js** — framework-agnostic singleton (no React) tracking whether any blocking modal is open; WebGL backgrounds subscribe imperatively to pause their RAF loops while occluded, and React consumes it through `useModalOpen`
-- **portable-text.js** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
-- **scroll.js** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
-- **validation.js** — shared form validation
+- **sanity-queries.ts** — GROQ queries for case studies and home-page content
+- **api.ts** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
+- **color.ts** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
+- **dedup.ts** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
+- **json-ld.ts** — safe JSON-LD serialiser for `<script>` injection
+- **modal-store.ts** — framework-agnostic singleton (no React) tracking whether any blocking modal is open; WebGL backgrounds subscribe imperatively to pause their RAF loops while occluded, and React consumes it through `useModalOpen`
+- **portable-text.ts** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
+- **scroll.ts** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
+- **validation.ts** — shared form validation
 
 ## Deployment
 
@@ -245,7 +250,7 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 
 ### Security headers and CSP
 
-`next.config.mjs` ships:
+[next.config.ts](next.config.ts) ships:
 
 - A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site, allowlisting only the third-party origins actually used (Sanity, Cal.com, Figma embeds, Vercel telemetry). Fonts are self-hosted, so `font-src` stays on `'self'`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
 - A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src.
@@ -264,26 +269,26 @@ The route uses constant-time secret comparison and a fixed-key sliding-window ra
 
 ## Tests
 
-Vitest is configured with the `node` environment by default ([vitest.config.mjs](vitest.config.mjs)). Tests live next to the code they cover under `__tests__/` folders:
+Vitest is configured with the `node` environment by default ([vitest.config.ts](vitest.config.ts)). Tests live next to the code they cover under `__tests__/` folders:
 
-- `src/app/api/__tests__/contact.test.js`
-- `src/app/api/__tests__/revalidate.test.js`
-- `src/app/api/__tests__/unlock.test.js`
-- `src/lib/__tests__/api.test.js`
-- `src/lib/__tests__/color.test.js`
-- `src/lib/__tests__/dedup.test.js`
-- `src/lib/__tests__/json-ld.test.js`
-- `src/lib/__tests__/portable-text.test.js`
-- `src/lib/__tests__/scroll.test.js`
-- `src/lib/__tests__/validation.test.js`
-- `src/hooks/__tests__/useModalOpen.test.js`
-- `src/components/buttons/__tests__/BackToTop.test.js`
+- `src/app/api/__tests__/contact.test.ts`
+- `src/app/api/__tests__/revalidate.test.ts`
+- `src/app/api/__tests__/unlock.test.ts`
+- `src/lib/__tests__/api.test.ts`
+- `src/lib/__tests__/color.test.ts`
+- `src/lib/__tests__/dedup.test.ts`
+- `src/lib/__tests__/json-ld.test.ts`
+- `src/lib/__tests__/portable-text.test.ts`
+- `src/lib/__tests__/scroll.test.ts`
+- `src/lib/__tests__/validation.test.ts`
+- `src/hooks/__tests__/useModalOpen.test.ts`
+- `src/components/buttons/__tests__/BackToTop.test.tsx`
 
 Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
 
 ## SEO
 
-- **Sitemap** — generated at build time by [src/app/sitemap.js](src/app/sitemap.js); pulls case study slugs from Sanity
+- **Sitemap** — generated at build time by [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity
 - **robots.txt** — static, lives at [public/robots.txt](public/robots.txt)
-- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.js](src/app/layout.js); the `WebSite.name` controls Google's site-name display in search results
+- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.tsx](src/app/layout.tsx); the `WebSite.name` controls Google's site-name display in search results
 - **OG image** — static [public/og-image.png](public/og-image.png) referenced from `metadata.openGraph` and `metadata.twitter`
