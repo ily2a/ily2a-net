@@ -1,0 +1,179 @@
+'use client'
+
+import { memo, useSyncExternalStore, type SyntheticEvent } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { m, type Variants } from 'framer-motion'
+import type { SanityImageObject } from '@sanity/image-url'
+import { urlFor } from '@/sanity/lib/image'
+import { EASE_OUT } from '@/constants/animations'
+
+const MotionLink = m.create(Link)
+
+// A Sanity image with the lqip placeholder string projected by the GROQ query.
+type CardImage = SanityImageObject & { lqip?: string }
+
+export interface ProjectCardData {
+  _id: string
+  slug: { current: string }
+  title: string
+  description: string
+  tags?: string[]
+  cardImageDefault?: CardImage
+  cardImageHover?: CardImage
+}
+
+const BLUR_LAYERS = [
+  { blur: 0.5, mask: 'linear-gradient(transparent 0%,#000 12.5%,#000 25%,transparent 37.5%)' },
+  { blur: 1,   mask: 'linear-gradient(transparent 12.5%,#000 25%,#000 37.5%,transparent 50%)' },
+  { blur: 2,   mask: 'linear-gradient(transparent 25%,#000 37.5%,#000 50%,transparent 62.5%)' },
+  { blur: 4,   mask: 'linear-gradient(transparent 37.5%,#000 50%,#000 62.5%,transparent 75%)' },
+  { blur: 8,   mask: 'linear-gradient(transparent 50%,#000 62.5%,#000 75%,transparent 87.5%)' },
+  { blur: 16,  mask: 'linear-gradient(transparent 62.5%,#000 75%,#000 87.5%,#000 100%)' },
+  { blur: 32,  mask: 'linear-gradient(transparent 75%,#000 87.5%,#000 100%)' },
+].map(({ blur, mask }) => ({
+  blur,
+  style: {
+    backdropFilter:       `blur(${blur}px)`,
+    WebkitBackdropFilter: `blur(${blur}px)`,
+    maskImage:            mask,
+    WebkitMaskImage:      mask,
+  },
+}))
+
+const overlayVariants: Variants = {
+  rest:  { opacity: 0 },
+  hover: { opacity: 1, transition: { duration: 0.2, ease: EASE_OUT } },
+}
+
+const contentVariants: Variants = {
+  rest:  { opacity: 0, y: 12 },
+  hover: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT, delay: 0.1 } },
+}
+
+const hoverImgVariants: Variants = {
+  rest:  { opacity: 0 },
+  hover: { opacity: 1, transition: { duration: 0.4, ease: EASE_OUT } },
+}
+
+const imgUrl = (source: CardImage) => urlFor(source).width(800).auto('format').url()
+const onImgError = (e: SyntheticEvent<HTMLImageElement>) => { e.currentTarget.style.display = 'none' }
+
+// Subscribe to (hover: none) via useSyncExternalStore so isTouch stays in sync
+// with the media query without a setState-in-effect cascade. SSR snapshot is
+// false so server output matches the desktop default.
+const subscribeHover = (cb: () => void): (() => void) => {
+  const mql = window.matchMedia('(hover: none)')
+  mql.addEventListener('change', cb)
+  return () => mql.removeEventListener('change', cb)
+}
+const getHoverSnapshot     = () => window.matchMedia('(hover: none)').matches
+const getHoverServerSnapshot = () => false
+
+// Single CSS-responsive card — no JS branching, no hydration CLS.
+// Desktop (tab: 730px+): plain image, all info revealed on hover with blur overlay.
+// Mobile (below tab): image with tags inside + title/subtitle below, slight tap scale.
+//
+// whileTap is gated by isTouch so desktop clicks never trigger the scale —
+// only touch devices get the press-down feedback.
+const ProjectCard = memo(function ProjectCard({ project, priority = false }: { project: ProjectCardData; priority?: boolean }) {
+  const isTouch = useSyncExternalStore(subscribeHover, getHoverSnapshot, getHoverServerSnapshot)
+
+  return (
+    <MotionLink
+      href={`/craft/${project.slug.current}`}
+      initial="rest"
+      whileHover="hover"
+      // Keyboard focus reveals the same overlay as hover, so sighted keyboard
+      // users get the title/description that mouse users see on hover.
+      whileFocus="hover"
+      whileTap={isTouch ? { scale: 0.97 } : undefined}
+      transition={{ duration: 0.15, ease: EASE_OUT }}
+      style={{ touchAction: 'manipulation' }}
+      className="project-card block no-underline"
+      data-cursor-label="View project"
+    >
+      {/* ── Image + overlay container ── */}
+      <div className="relative aspect-[16/10] w-full">
+
+        {/* Image wrapper */}
+        <div className="absolute inset-0 rounded-xl overflow-hidden">
+          {/* Default image */}
+          {project.cardImageDefault && (
+            <Image
+              src={imgUrl(project.cardImageDefault)}
+              alt={project.title}
+              fill
+              sizes="(max-width: 600px) 100vw, 50vw"
+              priority={priority}
+              className="project-card__img"
+              placeholder={project.cardImageDefault.lqip ? 'blur' : 'empty'}
+              blurDataURL={project.cardImageDefault.lqip}
+              onError={onImgError}
+            />
+          )}
+
+          {/* Hover image — desktop only */}
+          {project.cardImageHover && (
+            <m.div variants={hoverImgVariants} className="absolute inset-0 hidden tab:block">
+              <Image
+                src={imgUrl(project.cardImageHover)}
+                alt=""
+                aria-hidden="true"
+                fill
+                loading="lazy"
+                sizes="(max-width: 600px) 100vw, 50vw"
+                className="project-card__img"
+                placeholder={project.cardImageHover.lqip ? 'blur' : 'empty'}
+                blurDataURL={project.cardImageHover.lqip}
+                onError={onImgError}
+              />
+            </m.div>
+          )}
+        </div>
+
+        {/* Desktop: blur/scrim overlay — sibling of image, never scaled */}
+        <div className="hidden tab:block absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+          <m.div className="project-card__blur" aria-hidden="true" variants={overlayVariants}>
+            {BLUR_LAYERS.map((layer) => (
+              <div key={layer.blur} className="project-card__blur-layer" style={layer.style} />
+            ))}
+          </m.div>
+          <m.div className="project-card__scrim" variants={overlayVariants} />
+          <m.div className="project-card__content" variants={contentVariants}>
+            {/* role="list" re-declared: Safari+VoiceOver drops the implicit list role when list-style is removed. */}
+            {/* react-doctor-disable-next-line react-doctor/no-redundant-roles */}
+            <ul className="project-card__tags" role="list">
+              {project.tags?.map((tag) => (
+                <li key={tag} className="project-card__tag">{tag}</li>
+              ))}
+            </ul>
+            <div className="project-card__text">
+              <h3 className="project-card__title heading-2">{project.title}</h3>
+              <p className="project-card__subtitle">{project.description}</p>
+            </div>
+          </m.div>
+        </div>
+
+        {/* Mobile: tags pinned inside image at bottom — hidden on desktop */}
+        {/* role="list" re-declared: Safari+VoiceOver drops the implicit list role when list-style is removed. */}
+        {/* react-doctor-disable-next-line react-doctor/no-redundant-roles */}
+        <ul className="tab:hidden absolute bottom-3 left-3 right-3 flex gap-[6px] flex-wrap z-[2] list-none p-0 m-0" role="list">
+          {project.tags?.map((tag) => (
+            <li key={tag} className="project-card__tag">{tag}</li>
+          ))}
+        </ul>
+
+      </div>
+
+      {/* ── Mobile: title + subtitle below image — hidden on desktop ── */}
+      <div className="tab:hidden pt-[10px] px-1 pb-0 flex flex-col gap-2">
+        <h3 className="project-card__title heading-2">{project.title}</h3>
+        <p className="project-card__subtitle">{project.description}</p>
+      </div>
+
+    </MotionLink>
+  )
+})
+
+export default ProjectCard
