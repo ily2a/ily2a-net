@@ -78,7 +78,6 @@ export default function ContactSection() {
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden="true"
-                aria-label="Leave this field empty"
                 value={form.website ?? ''}
                 onChange={handleChange}
                 style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
@@ -135,9 +134,8 @@ export default function ContactSection() {
                   className="w-full"
                   disabled={status === 'sending' || status === 'sent' || status === 'ratelimited'}
                   aria-busy={status === 'sending'}
-                  aria-describedby="submit-status"
                 >
-                  <span id="submit-status">{submitLabel}</span>
+                  {submitLabel}
                 </ContactFormButton>
               </div>
 

@@ -12,7 +12,7 @@ import ContactSection from '@/components/sections/ContactSection'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { sanityFetch } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
-import { urlFor } from '@/sanity/lib/image'
+import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import type { SanityImageObject } from '@sanity/image-url'
 import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
 import { safeJsonLd } from '@/lib/json-ld'
@@ -21,7 +21,7 @@ import PasswordGate from '@/components/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
 import { makePtBody, ptSection } from '@/components/portable-text/PortableTextComponents'
 
-type CoverImage = SanityImageObject & { url?: string; lqip?: string; alt?: string }
+type CoverImage = SanityImageObject & { url?: string; lqip?: string; alt?: string; dimensions?: SanityImageDimensions }
 
 interface CaseStudyDetail {
   _id: string
@@ -87,9 +87,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const data = await getCaseStudy(slug)
   if (!data) return {}
+  // Sanity covers are cropped to exactly 1200×630; the fallback banner has
+  // its own native size — declare whichever is actually served.
   const ogImage = data.coverImage?.url
-    ? `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`
-    : '/og-image.png'
+    ? { url: `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`, width: 1200, height: 630 }
+    : { url: '/og-image.png', width: 1644, height: 916 }
   const description = data.description || `${data.title} — case study by ${SITE_NAME}. ${CRAFT_DESCRIPTION}`
   return {
     title: `${data.title} — ${SITE_NAME}`,
@@ -102,7 +104,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       siteName: SITE_NAME,
       locale: 'en_GB',
       type: 'article',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: `${data.title} — ${SITE_NAME}` }],
+      images: [{ ...ogImage, alt: `${data.title} — ${SITE_NAME}` }],
       ...(data._createdAt && { publishedTime: data._createdAt }),
       ...(data._updatedAt && { modifiedTime: data._updatedAt }),
     },
@@ -110,7 +112,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: 'summary_large_image',
       title: `${data.title} — ${SITE_NAME}`,
       description,
-      images: [{ url: ogImage, alt: `${data.title} — ${SITE_NAME}` }],
+      images: [{ url: ogImage.url, alt: `${data.title} — ${SITE_NAME}` }],
     },
   }
 }
@@ -126,6 +128,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
   const coverUrl = data.coverImage
     ? urlFor(data.coverImage).width(1400).auto('format').url()
     : null
+  // Match the height attribute to the ratio the CDN actually delivers so the
+  // reserved space is correct and the cover (the page's LCP element) never
+  // causes a layout shift. 788 keeps the old 16:9-ish guess as fallback.
+  const coverHeight = displayHeightFor(data.coverImage, data.coverImage?.dimensions, 1400, 788)
 
   const figmaEmbedUrl = (() => {
     const raw = data.figmaEmbed
@@ -240,8 +246,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                   src={coverUrl}
                   alt={data.coverImage?.alt || data.title}
                   width={1400}
-                  height={788}
+                  height={coverHeight}
                   priority
+                  // Mirrors the column width at each breakpoint (page padding,
+                  // then minus the lg/xl sidebar) so retina screens stop
+                  // fetching the 2× candidate for a ~900px slot.
+                  sizes="(max-width: 729px) min(100vw - 40px, 600px), (max-width: 1087px) calc(100vw - 80px), (max-width: 1199px) calc(100vw - 112px), (max-width: 1439px) calc(100vw - 468px), 904px"
                   className="w-full h-auto block object-cover"
                   placeholder={data.coverImage?.lqip ? 'blur' : 'empty'}
                   blurDataURL={data.coverImage?.lqip}

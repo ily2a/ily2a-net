@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: "Ily Ameur - Design Engineer Portfolio",
     locale: "en_GB",
     type: "website",
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${SITE_NAME} — Design Engineer` }],
+    images: [{ url: '/og-image.png', width: 1644, height: 916, alt: `${SITE_NAME} — Design Engineer` }],
   },
   twitter: {
     card: "summary_large_image",

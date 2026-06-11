@@ -75,7 +75,10 @@ export default function BookingDialog({
     position:  'relative',
     width:     '100%',
     maxWidth:  '860px',
-    height:    isMobile ? 'calc(100vh - 40px)' : 'calc(100vh - 80px)',
+    // dvh, not vh: on mobile, 100vh includes the area behind the collapsible
+    // browser chrome, which clipped the dialog's bottom edge while the URL bar
+    // was visible. dvh tracks the actual visible viewport.
+    height:    isMobile ? 'calc(100dvh - 40px)' : 'calc(100dvh - 80px)',
     maxHeight: '800px',
   } : {
     ...FRAME_BASE,

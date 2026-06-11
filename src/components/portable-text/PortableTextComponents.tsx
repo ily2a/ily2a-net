@@ -9,7 +9,7 @@ import type {
 } from '@portabletext/react'
 import type { TypedObject } from '@portabletext/types'
 import type { SanityImageObject } from '@sanity/image-url'
-import { urlFor } from '@/sanity/lib/image'
+import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import { toId } from '@/lib/portable-text'
 import PortableTextLink from '@/components/portable-text/PortableTextLink'
 
@@ -32,6 +32,7 @@ interface CaseStudyImageValue extends SanityImageObject {
   alt?: string
   caption?: string
   lqip?: string
+  dimensions?: SanityImageDimensions
 }
 
 interface LinkMark extends TypedObject {
@@ -93,13 +94,16 @@ export function makePtBody(headingIdMap: Record<string, string> = {}): PortableT
     types: {
       image: ({ value }: PortableTextTypeComponentProps<CaseStudyImageValue>) => {
         const url = urlFor(value).width(1200).auto('format').url()
+        // Reserve space at the image's real delivered ratio (crop-aware) so
+        // non-16:9 uploads don't shift the article when they load.
+        const height = displayHeightFor(value, value.dimensions, 1200, 675)
         return (
           <figure className="flex flex-col gap-2.5 w-full">
             <Image
               src={url}
               alt={value.alt || value.caption || ''}
               width={1200}
-              height={675}
+              height={height}
               sizes="(max-width: 600px) 100vw, (max-width: 1088px) 90vw, 900px"
               className="w-full h-auto rounded-xl block"
               placeholder={value.lqip ? 'blur' : 'empty'}
