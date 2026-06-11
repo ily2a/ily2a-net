@@ -2,7 +2,8 @@
 // No React, no 'use client' — heavy background renderers (WebGL canvases) set up
 // in mount-only effects subscribe imperatively so they can pause their RAF loops
 // while occluded (IntersectionObserver doesn't fire for covered elements, only
-// off-screen ones). React components consume this via the useModalOpen hook.
+// off-screen ones). A React component that needs this state can consume it via
+// useSyncExternalStore(subscribeToModalOpen, getModalOpen, () => false).
 
 let openCount = 0
 const listeners = new Set<() => void>()

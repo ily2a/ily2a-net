@@ -1,15 +1,15 @@
-// useModalOpen exposes a module-level singleton (push/pop/listeners). Each
-// test imports a fresh copy via vi.resetModules so module-level openCount
-// can't leak between tests.
+// modal-store is a module-level singleton (push/pop/listeners). Each test
+// imports a fresh copy via vi.resetModules so module-level openCount can't
+// leak between tests.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-let mod: typeof import('../useModalOpen')
+let mod: typeof import('../modal-store')
 beforeEach(async () => {
   vi.resetModules()
-  mod = await import('../useModalOpen')
+  mod = await import('../modal-store')
 })
 
-describe('useModalOpen store', () => {
+describe('modal-store', () => {
   it('notifies subscribers on the 0→1 transition only — not on intermediate pushes', () => {
     const listener = vi.fn()
     mod.subscribeToModalOpen(listener)
