@@ -6,9 +6,11 @@ import { getClientIp, timingSafeStringEqual, createRateLimiter } from '@/lib/api
 // Requires SANITY_REVALIDATION_SECRET in env and a matching secret in the Sanity webhook config.
 
 // Pre-auth IP throttle — bounds brute-force attempts against the secret before
-// the timing-safe compare runs. Sized loose enough that a misconfigured webhook
-// retry loop won't trip it from a single Sanity egress IP.
-const isPreAuthRateLimited = createRateLimiter({ limit: 20, windowMs: 60 * 60 * 1000 })
+// the timing-safe compare runs. Must sit ABOVE the post-auth quota below (60/hr):
+// Sanity webhooks all arrive from one egress IP, so a tighter pre-auth cap would
+// make the post-auth budget unreachable and 429 a busy editing session before
+// the secret is even checked.
+const isPreAuthRateLimited = createRateLimiter({ limit: 120, windowMs: 60 * 60 * 1000 })
 
 // Post-auth quota — prevents a leaked secret from draining Next.js cache and
 // exhausting Sanity API rate limits. Keyed on a fixed string so Sanity's egress
@@ -40,10 +42,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Next 16 retyped revalidateTag as (tag, profile); this webhook relies on
-    // the original single-arg purge. Cast preserves the exact runtime call —
-    // revisit if migrating to the new cache-profile API.
-    ;(revalidateTag as (tag: string) => void)('sanity')
+    // Next 16 deprecated single-arg revalidateTag and its own runtime warning
+    // tells callers to pass "max" (the full-purge profile) — which is exactly
+    // this webhook's intent: invalidate every entry tagged 'sanity'.
+    revalidateTag('sanity', 'max')
   } catch (err) {
     console.error('[/api/revalidate] revalidateTag threw:', err)
     return Response.json({ error: 'Revalidation failed' }, { status: 500 })

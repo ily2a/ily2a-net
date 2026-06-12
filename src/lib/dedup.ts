@@ -21,6 +21,8 @@ interface DedupCacheOptions {
 
 export interface DedupCache {
   isDuplicate: (key: string) => boolean
+  reserve: (key: string) => void
+  release: (key: string) => void
   markSent: (key: string) => void
   cache: Map<string, number>
 }
@@ -44,11 +46,22 @@ export function createDedupCache({ ttl = DEFAULT_DEDUP_TTL, now = Date.now }: De
     return false
   }
 
+  // Reserve a key for an in-flight send so a concurrent duplicate (a fast
+  // double-submit, before the first send resolves) is treated as a duplicate
+  // and short-circuited. Release on failure so a genuine retry isn't suppressed.
+  function reserve(key: string): void {
+    cache.set(key, now())
+  }
+
+  function release(key: string): void {
+    cache.delete(key)
+  }
+
   function markSent(key: string): void {
     cache.set(key, now())
   }
 
-  return { isDuplicate, markSent, cache }
+  return { isDuplicate, reserve, release, markSent, cache }
 }
 
 // Module-level singleton with HMAC secret resolved once. `randomBytes` keeps
@@ -60,5 +73,7 @@ const singleton = createDedupCache()
 export const contactDedup = {
   key: (email: string, message: string) => dedupKey(DEDUP_SECRET, email, message),
   isDuplicate: singleton.isDuplicate,
+  reserve: singleton.reserve,
+  release: singleton.release,
   markSent: singleton.markSent,
 }

@@ -41,8 +41,11 @@ export async function POST(request: Request) {
 
   const expected = process.env.CASE_STUDY_PASSWORD
   if (!expected) {
+    // Collapse server misconfiguration into the same 401 as a wrong password so
+    // an unauthenticated caller can't distinguish "env var missing" from "wrong
+    // password" (matches the revalidate route's convention). Log server-side only.
     console.error('[/api/unlock] CASE_STUDY_PASSWORD is not set')
-    return Response.json({ success: false }, { status: 500 })
+    return Response.json({ success: false }, { status: 401 })
   }
 
   if (!timingSafeStringEqual(password, expected)) {

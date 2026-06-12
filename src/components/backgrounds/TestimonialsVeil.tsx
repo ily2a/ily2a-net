@@ -127,7 +127,11 @@ export default function TestimonialsVeil({
 // Builds the ogl CPPN renderer/program/mesh and returns the lifecycle contract
 // for useWebGLBackground. Live props are read from propsRef inside render().
 function setupTestimonialsVeil(container: HTMLElement, propsRef: RefObject<TestimonialsVeilState>): WebGLBackgroundContext {
-  const renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio, 1.5) })
+  // dpr:1 (not capped devicePixelRatio) — this CPPN fragment shader is very
+  // heavy (~500 FLOPs/px) and resolutionScale (0.6) was being multiplied back up
+  // by a 1.5 dpr to ~0.9x. At dpr:1 the effective resolution is ~0.6x (≈2.3x less
+  // GPU work); the stacked mix-blend + bg-background/30 overlays mask the softness.
+  const renderer = new Renderer({ dpr: 1 })
   const gl = renderer.gl
   const geometry = new Triangle(gl)
 

@@ -25,7 +25,9 @@ describe('POST /api/revalidate', () => {
     const res = await POST(makeReq({ secret: SECRET }))
     expect(res.status).toBe(200)
     await expect(res.json()).resolves.toMatchObject({ revalidated: true })
-    expect(revalidateTagMock).toHaveBeenCalledWith('sanity')
+    // 'max' is the full-purge cache-life profile Next 16 requires as the second
+    // arg (single-arg form is deprecated).
+    expect(revalidateTagMock).toHaveBeenCalledWith('sanity', 'max')
   })
 
   it('returns 401 when the secret header is missing', async () => {
@@ -53,9 +55,9 @@ describe('POST /api/revalidate', () => {
     await expect(res.json()).resolves.toEqual({ error: 'Revalidation failed' })
   })
 
-  it('pre-auth rate-limits after 20 requests from the same IP', async () => {
+  it('pre-auth rate-limits after 120 requests from the same IP', async () => {
     const ip = '192.0.2.9'
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 120; i++) {
       const res = await POST(makeReq({ secret: 'wrong', ip }))
       expect(res.status).not.toBe(429)
     }
@@ -66,7 +68,7 @@ describe('POST /api/revalidate', () => {
   it('post-auth quota returns 429 after 60 authenticated requests (leaked-secret guard)', async () => {
     // The post-auth limiter is keyed on a fixed string and is a module singleton,
     // so import a fresh copy to isolate its counter from the other tests. Use
-    // varying IPs so the pre-auth (20/IP) limiter never trips first.
+    // varying IPs so the pre-auth (120/IP) limiter never trips first.
     vi.resetModules()
     const { POST: FreshPOST } = await import('@/app/api/revalidate/route')
     for (let i = 0; i < 60; i++) {

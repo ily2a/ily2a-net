@@ -9,7 +9,6 @@ interface GlassSurfaceProps {
   width?: number | string
   height?: number | string
   borderRadius?: number | string
-  className?: string
   style?: CSSProperties
 }
 
@@ -18,11 +17,10 @@ const GlassSurface = ({
   width = '100%',
   height = 64,
   borderRadius = 12,
-  className = '',
   style = EMPTY_STYLE,
 }: GlassSurfaceProps) => (
   <div
-    className={`relative overflow-hidden bg-surface/35 backdrop-blur-[20px] backdrop-saturate-300 shadow-[inset_0_1px_0_0_var(--color-glass-border),inset_0_-1px_0_0_var(--color-glass-bg)] ${className}`}
+    className="relative overflow-hidden bg-surface/35 backdrop-blur-[20px] backdrop-saturate-300 shadow-[inset_0_1px_0_0_var(--color-glass-border),inset_0_-1px_0_0_var(--color-glass-bg)]"
     style={{
       ...style,
       width:        typeof width        === 'number' ? `${width}px`        : width,

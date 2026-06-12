@@ -1,10 +1,18 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 
-export default function Error({ error: _error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  // Surface the error so a production crash leaves a trace. Server-component
+  // errors reach the client only as a digest; log it (removeConsole keeps
+  // console.error in prod) instead of discarding the object.
+  useEffect(() => {
+    console.error('[app/error]', error.digest ?? error)
+  }, [error])
+
   return (
     <main id="main-content" className="flex items-center justify-center min-h-screen">
       <SilentErrorBoundary><FloatingNav /></SilentErrorBoundary>

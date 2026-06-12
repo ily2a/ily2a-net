@@ -10,7 +10,7 @@ import FloatingNav from '@/components/nav/FloatingNav'
 import BackToTop from '@/components/buttons/BackToTop'
 import ContactSection from '@/components/sections/ContactSection'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
-import { sanityFetch } from '@/sanity/lib/live'
+import { sanityFetch, fetchSanityList } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import type { SanityImageObject } from '@sanity/image-url'
@@ -65,22 +65,20 @@ interface ContextSection {
 
 // Deduplicated fetch — React cache() ensures generateMetadata and the page
 // component share a single request per render pass.
+//
+// No try/catch: a thrown fetch (network/auth/rate-limit) must NOT be swallowed
+// into `null`, because the caller maps null → notFound(). Letting it throw means
+// a transient Sanity failure during a revalidation pass keeps the previous good
+// page instead of baking (and caching) a 404. `null` is reserved strictly for
+// "query succeeded, no such document".
 const getCaseStudy = cache(async (slug: string): Promise<CaseStudyDetail | null> => {
-  try {
-    const { data } = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
-    return (data ?? null) as CaseStudyDetail | null
-  } catch {
-    return null
-  }
+  const { data } = await sanityFetch({ query: CASE_STUDY_BY_SLUG_QUERY, params: { slug } })
+  return (data ?? null) as CaseStudyDetail | null
 })
 
 export async function generateStaticParams() {
-  try {
-    const { data } = await sanityFetch({ query: CASE_STUDY_SLUGS_QUERY })
-    return ((data ?? []) as { slug: string }[]).map(({ slug }) => ({ slug }))
-  } catch {
-    return []
-  }
+  const slugs = await fetchSanityList<{ slug: string }>('craft/[slug] generateStaticParams', CASE_STUDY_SLUGS_QUERY)
+  return slugs.map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -91,7 +89,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // its own native size — declare whichever is actually served.
   const ogImage = data.coverImage?.url
     ? { url: `${data.coverImage.url}?w=1200&h=630&fit=crop&auto=format`, width: 1200, height: 630 }
-    : { url: '/og-image.png', width: 1644, height: 916 }
+    : { url: '/og-image.jpg', width: 1644, height: 916 }
   const description = data.description || `${data.title} — case study by ${SITE_NAME}. ${CRAFT_DESCRIPTION}`
   return {
     title: `${data.title} — ${SITE_NAME}`,
@@ -155,7 +153,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     .filter(block => block._type === 'block' && typeof block.style === 'string' && ['h1', 'h2', 'h3'].includes(block.style))
     .map(block => {
       const text = (block.children as { text?: string }[] | undefined)?.map(c => c.text ?? '').join('') ?? ''
-      return { _key: block._key, id: toId(text), label: text, level: parseInt((block.style as string)[1]) }
+      // style is filtered to 'h1' | 'h2' | 'h3' above, so [1] is always present.
+      return { _key: block._key, id: toId(text), label: text, level: parseInt((block.style as string)[1]!) }
     })
     .filter(h => h.label)
 

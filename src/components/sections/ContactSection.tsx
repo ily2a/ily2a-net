@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { m } from 'framer-motion'
 import { ContactFormButton } from '@/components/buttons/ContactFormButton'
 import BookingButton from '@/components/buttons/BookingButton'
@@ -39,6 +40,15 @@ const AURORA_STOPS = [AMETHYST[950], AMETHYST[600], AMETHYST[400]]
 
 export default function ContactSection() {
   const { form, errors, status, handleChange, handleSubmit, reset, resetError } = useContactForm()
+  // Avoid a build-time-baked year drifting after New Year. Initial render uses
+  // the render-time year (matches the static HTML at first paint); the effect
+  // corrects it to the live year post-hydration. suppressHydrationWarning covers
+  // the one case where a tab is open across the year boundary.
+  const [year, setYear] = useState(() => new Date().getFullYear())
+  // Post-mount sync of a value that legitimately differs between the build-time
+  // server render and the client (same pattern as usePrefersReducedMotion).
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setYear(new Date().getFullYear()) }, []) // react-doctor-disable-line react-doctor/no-initialize-state
   const submitLabel =
     status === 'sending' ? 'Sending…' :
     status === 'sent' ? 'Sent ✓' :
@@ -223,9 +233,10 @@ export default function ContactSection() {
         {/* ── Copyright ── */}
         <m.p
           className="text-center text-md pt-5 text-brand"
+          suppressHydrationWarning
           {...fadeUp(0.2)}
         >
-          © {new Date().getFullYear()} Ily Ameur. All rights reserved.
+          © {year} Ily Ameur. All rights reserved.
         </m.p>
 
       </div>

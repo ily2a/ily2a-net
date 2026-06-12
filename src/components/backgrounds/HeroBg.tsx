@@ -33,8 +33,6 @@ uniform float uSpotlightRadius;
 uniform float uSpotlightSoftness;
 uniform float uSpotlightOpacity;
 uniform float uMirror;
-uniform float uDistort;
-uniform float uShineFlip;
 uniform vec3  uColor0;
 uniform vec3  uColor1;
 uniform vec3  uColor2;
@@ -85,14 +83,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   pr.x /= aspect;
   vec2 uv = pr * 0.5 + 0.5;
   vec2 uvMod = uv;
-  if (uDistort > 0.0) {
-    // 6.0 = spatial frequency of the distortion wave — higher = more ripples.
-    float a = uvMod.y * 6.0;
-    float b = uvMod.x * 6.0;
-    float w = 0.01 * uDistort;
-    uvMod.x += sin(a) * w;
-    uvMod.y += cos(b) * w;
-  }
   float t = uvMod.x;
   if (uMirror > 0.5) t = 1.0 - abs(1.0 - 2.0 * fract(t));
   vec3 base = getGradientColor(t);
@@ -103,7 +93,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   float spot = (1.0 - 2.0 * pow(dn, uSpotlightSoftness)) * uSpotlightOpacity;
   vec3 cir = vec3(spot);
   float stripe = fract(uvMod.x * max(uBlindCount, 1.0));
-  if (uShineFlip > 0.5) stripe = 1.0 - stripe;
   vec3 ran = vec3(stripe);
   vec3 col = cir + base - ran;
   col += (rand(gl_FragCoord.xy + iTime) - 0.5) * uNoise;
@@ -119,18 +108,18 @@ void main() {
 
 const prepStops = (stops?: string[]): { arr: [number, number, number][]; count: number } => {
   const base = (stops && stops.length ? stops : [AMETHYST[950], AMETHYST[400]]).slice(0, MAX_COLORS)
-  if (base.length === 1) base.push(base[0])
-  while (base.length < MAX_COLORS) base.push(base[base.length - 1])
+  // The loops below pad `base` to exactly MAX_COLORS entries, so every index
+  // read here is in-bounds; the non-null assertions just satisfy the compiler.
+  if (base.length === 1) base.push(base[0]!)
+  while (base.length < MAX_COLORS) base.push(base[base.length - 1]!)
   const arr: [number, number, number][] = []
-  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRgbNormalized(base[i]))
+  for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRgbNormalized(base[i]!))
   const count = Math.max(2, Math.min(MAX_COLORS, stops?.length ?? 2))
   return { arr, count }
 }
 
 interface HeroBgProps {
   className?: string
-  dpr?: number
-  paused?: boolean
   onFirstFrame?: () => void
   gradientColors?: string[]
   angle?: number
@@ -142,8 +131,6 @@ interface HeroBgProps {
   spotlightRadius?: number
   spotlightSoftness?: number
   spotlightOpacity?: number
-  distortAmount?: number
-  shineDirection?: 'left' | 'right'
   mixBlendMode?: CSSProperties['mixBlendMode']
   autoAnimate?: boolean
   autoSpeed?: number
@@ -152,8 +139,6 @@ interface HeroBgProps {
 
 const HeroBg = ({
   className = '',
-  dpr,
-  paused = false,
   onFirstFrame,
   gradientColors,
   angle = 0,
@@ -165,8 +150,6 @@ const HeroBg = ({
   spotlightRadius = 0.5,
   spotlightSoftness = 1,
   spotlightOpacity = 1,
-  distortAmount = 0,
-  shineDirection = 'left',
   mixBlendMode = 'lighten',
   autoAnimate = false,
   autoSpeed = 0.4,
@@ -186,7 +169,6 @@ const HeroBg = ({
   // ── Loop-read refs ──────────────────────────────────────────────────────────
   // Changing these does NOT recreate the WebGL context — render() reads from
   // refs so React never needs to tear down/rebuild the renderer on prop changes.
-  const pausedRef            = useRef(paused)
   const mouseDampeningRef    = useRef(mouseDampening)
   const autoAnimateRef       = useRef(autoAnimate)
   const autoSpeedRef         = useRef(autoSpeed)
@@ -196,7 +178,6 @@ const HeroBg = ({
   const onFirstFrameRef      = useRef(onFirstFrame)
 
   useEffect(() => {
-    pausedRef.current         = paused
     mouseDampeningRef.current = mouseDampening
     autoAnimateRef.current    = autoAnimate
     autoSpeedRef.current      = autoSpeed
@@ -204,7 +185,7 @@ const HeroBg = ({
     blindCountRef.current     = blindCount
     blindMinWidthRef.current  = blindMinWidth
     onFirstFrameRef.current   = onFirstFrame
-  }, [paused, mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, onFirstFrame])
+  }, [mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, onFirstFrame])
 
   // ── Uniform update — no context rebuild ────────────────────────────────────
   // Updates shader uniforms in-place whenever visual props change.
@@ -218,12 +199,10 @@ const HeroBg = ({
     uniforms.uSpotlightRadius.value   = spotlightRadius
     uniforms.uSpotlightSoftness.value = spotlightSoftness
     uniforms.uSpotlightOpacity.value  = spotlightOpacity
-    uniforms.uDistort.value           = distortAmount
-    uniforms.uShineFlip.value         = shineDirection === 'right' ? 1 : 0
     const { arr: colorArr, count: colorCount } = prepStops(gradientColors)
     for (let i = 0; i < MAX_COLORS; i++) uniforms[`uColor${i}`].value = colorArr[i]
     uniforms.uColorCount.value = colorCount
-  }, [angle, noise, blindCount, mirrorGradient, spotlightRadius, spotlightSoftness, spotlightOpacity, distortAmount, shineDirection, gradientColors])
+  }, [angle, noise, blindCount, mirrorGradient, spotlightRadius, spotlightSoftness, spotlightOpacity, gradientColors])
 
   // ── GL setup — pause/resume, reduced motion, and context-loss recovery are
   // owned by useWebGLBackground. setup() builds the renderer/program/mesh and
@@ -233,7 +212,7 @@ const HeroBg = ({
     const renderer = new Renderer({
       // Cap at 1.5 — on a DPR-3 phone the shader otherwise renders at 3×
       // (9× pixels), which saturates the GPU and destroys mobile INP.
-      dpr: dpr ?? Math.min(window.devicePixelRatio || 1, 1.5),
+      dpr: Math.min(window.devicePixelRatio || 1, 1.5),
       alpha: true,
       antialias: false, // doubles pixel work on Retina for no visible gain in a shader effect
     })
@@ -256,8 +235,6 @@ const HeroBg = ({
       uSpotlightSoftness:{ value: spotlightSoftness },
       uSpotlightOpacity: { value: spotlightOpacity },
       uMirror:           { value: mirrorGradient ? 1 : 0 },
-      uDistort:          { value: distortAmount },
-      uShineFlip:        { value: shineDirection === 'right' ? 1 : 0 },
       uColor0:           { value: colorArr[0] },
       uColor1:           { value: colorArr[1] },
       uColor2:           { value: colorArr[2] },
@@ -309,6 +286,13 @@ const HeroBg = ({
     }
     canvas.addEventListener('pointermove', onPointerMove)
 
+    // Page scroll changes the canvas's viewport rect without resizing it, so the
+    // ResizeObserver-driven resize() never refreshes canvasRectRef. Without this,
+    // onPointerMove maps the pointer through a rect captured at scroll 0 and the
+    // spotlight tracks the wrong point once the hero is partly scrolled.
+    const onScroll = () => { canvasRectRef.current = container.getBoundingClientRect() }
+    window.addEventListener('scroll', onScroll, { passive: true })
+
     const paintFrame = () => {
       try {
         const m = meshRef.current
@@ -333,7 +317,9 @@ const HeroBg = ({
 
         const W = gl.drawingBufferWidth
         const H = gl.drawingBufferHeight
-        const cur = uniforms.iMouse.value
+        // iMouse.value is a 2-element [x, y] vec (mutated in place each frame);
+        // type it as a tuple so the index reads/writes below are checked as defined.
+        const cur = uniforms.iMouse.value as [number, number]
         const mouse = mouseTargetRef.current
 
         if (autoAnimateRef.current) {
@@ -364,7 +350,7 @@ const HeroBg = ({
           cur[1] += (mouse[1] - cur[1]) * factor
         }
 
-        if (!pausedRef.current) paintFrame()
+        paintFrame()
       },
       renderStatic() {
         // One still frame for reduced motion — still fire the first-frame hook.
@@ -372,8 +358,13 @@ const HeroBg = ({
       },
       dispose() {
         canvas.removeEventListener('pointermove', onPointerMove)
+        window.removeEventListener('scroll', onScroll)
         if (canvas.parentElement === container) container.removeChild(canvas)
-        const callIfFn = (obj: { [k: string]: any } | null, key: string) => { if (obj && typeof obj[key] === 'function') obj[key].call(obj) }
+        const callIfFn = (obj: unknown, key: string) => {
+          if (!obj || typeof obj !== 'object') return
+          const fn = (obj as Record<string, unknown>)[key]
+          if (typeof fn === 'function') fn.call(obj)
+        }
         callIfFn(programRef.current, 'remove')
         callIfFn(geometryRef.current, 'remove')
         callIfFn(meshRef.current, 'remove')
@@ -384,7 +375,7 @@ const HeroBg = ({
         rendererRef.current = null
       },
     }
-  }, [dpr])
+  }, [])
 
   return (
     <div

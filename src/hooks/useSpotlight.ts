@@ -56,7 +56,11 @@ export function useSpotlight(): SpotlightHandle {
       ro.disconnect()
       window.removeEventListener('scroll', updateRect)
       window.removeEventListener('resize', updateRect)
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      // Reset to 0, not just cancel: onMouseMove early-returns while rafRef is
+      // truthy and only clears it inside the (now-cancelled) callback. Without
+      // this reset, re-attaching to a node that stays mounted (e.g. BackToTop)
+      // leaves rafRef pinned at the stale id and freezes the spotlight.
+      if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = 0 }
     }
   }, [])
 

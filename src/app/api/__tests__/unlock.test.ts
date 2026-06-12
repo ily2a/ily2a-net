@@ -43,10 +43,14 @@ describe('POST /api/unlock', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 500 (not 401) when CASE_STUDY_PASSWORD is unset', async () => {
+  it('returns 401 (indistinguishable from a wrong password) when CASE_STUDY_PASSWORD is unset', async () => {
+    // Server misconfiguration must not be externally distinguishable from a
+    // wrong password — otherwise an unauthenticated caller can detect the env
+    // var is missing. Collapsed to 401 to match the revalidate route.
     vi.stubEnv('CASE_STUDY_PASSWORD', '')
     const res = await POST(makeReq({ password: 'anything' }))
-    expect(res.status).toBe(500)
+    expect(res.status).toBe(401)
+    await expect(res.json()).resolves.toEqual({ success: false })
   })
 
   it('returns 413 for an oversized body', async () => {

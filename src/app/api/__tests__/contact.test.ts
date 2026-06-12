@@ -54,7 +54,7 @@ describe('POST /api/contact', () => {
     const body = validBody({ name: 'Foo\r\nBcc: evil@example.com' })
     const res = await POST(makeReq(body))
     expect(res.status).toBe(200)
-    const arg = sendMock.mock.calls[0][0]
+    const arg = sendMock.mock.calls[0]![0]
     // CR/LF replaced with spaces — no line terminator survives into the email.
     expect(arg.text).toContain('Name: Foo  Bcc: evil@example.com')
     expect(arg.text).not.toMatch(/Name:.*\r/)

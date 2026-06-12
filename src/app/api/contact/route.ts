@@ -77,13 +77,16 @@ export async function POST(request: Request) {
 
   // Server-side idempotency: the client AbortController cancels the fetch
   // but the Resend SDK request may already be in flight, so without dedup a
-  // fast double-submit ships the same email twice. Peek only — commit the
-  // key after the send confirms, otherwise a failed send would suppress the
-  // user's retry for DEDUP_TTL.
+  // fast double-submit ships the same email twice.
   const idemKey = contactDedup.key(safeEmail, safeMessage)
   if (contactDedup.isDuplicate(idemKey)) {
     return Response.json({ success: true })
   }
+  // Reserve the key BEFORE the send so a concurrent in-flight duplicate (the
+  // exact double-submit case) is blocked rather than sending twice. Released on
+  // any failure below so a genuine retry isn't suppressed; refreshed to full TTL
+  // once the send confirms.
+  contactDedup.reserve(idemKey)
 
   // Wrap in a timeout so a stalled Resend API doesn't hold the serverless
   // execution slot open for the full platform timeout (~10s).
@@ -110,12 +113,14 @@ Reason: ${safeMessage}`,
   try {
     result = await Promise.race([sendPromise, timeoutPromise])
   } catch {
+    contactDedup.release(idemKey)
     return Response.json({ error: 'Failed to send message' }, { status: 500 })
   } finally {
     clearTimeout(timeoutId)
   }
 
   if (result?.error) {
+    contactDedup.release(idemKey)
     return Response.json({ error: 'Failed to send message' }, { status: 500 })
   }
 

@@ -167,8 +167,8 @@ function setupNotFoundPasswordBg(container: HTMLElement): WebGLBackgroundContext
   const gl = renderer.gl;
   gl.clearColor(0, 0, 0, 0);
 
-  const currentMouse = [0.5, 0.5];
-  let targetMouse = [0.5, 0.5];
+  const currentMouse: [number, number] = [0.5, 0.5];
+  let targetMouse: [number, number] = [0.5, 0.5];
 
   function handleMouseMove(e: MouseEvent) {
     const rect = gl.canvas.getBoundingClientRect();

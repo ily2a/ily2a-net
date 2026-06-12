@@ -7,19 +7,13 @@ import ContactSection from '@/components/sections/ContactSection'
 import FloatingNav from '@/components/nav/FloatingNav'
 import ScrollToSection from '@/components/nav/ScrollToSection'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
-import { sanityFetch } from '@/sanity/lib/live'
+import { fetchSanityList } from '@/sanity/lib/live'
 import { CASE_STUDIES_FEATURED_QUERY } from '@/lib/sanity-queries'
 import { HERO_NAV_DELAY } from '@/constants/animations'
 import type { ProjectCardData } from '@/components/ProjectCard'
 
 export default async function Home() {
-  let projects: ProjectCardData[] = []
-  try {
-    const { data } = await sanityFetch({ query: CASE_STUDIES_FEATURED_QUERY })
-    projects = (data ?? []) as ProjectCardData[]
-  } catch (e) {
-    console.error('[page.tsx] Sanity fetch failed:', e)
-  }
+  const projects = await fetchSanityList<ProjectCardData>('page.tsx', CASE_STUDIES_FEATURED_QUERY)
 
   return (
     <main id="main-content">

@@ -28,6 +28,11 @@ interface CraftSectionProps {
   headingAs?: ElementType
   showViewAll?: boolean
   navOffset?: boolean
+  // How many leading card images to fetch with priority. Defaults to 0: on the
+  // home page the grid sits below an h-screen hero, so eagerly preloading those
+  // images just contends with fonts/JS/hero for bandwidth. The /craft page (cards
+  // above the fold) passes 2.
+  priorityCount?: number
 }
 
 export default function CraftSection({
@@ -35,6 +40,7 @@ export default function CraftSection({
   headingAs: Tag = 'h2',
   showViewAll = false,
   navOffset = false,
+  priorityCount = 0,
 }: CraftSectionProps) {
   return (
     <section
@@ -75,7 +81,7 @@ export default function CraftSection({
         >
           {projects.map((project, i) => (
             <m.div key={project._id} variants={CARD_ENTER}>
-              <ProjectCard project={project} priority={i < 2} />
+              <ProjectCard project={project} priority={i < priorityCount} />
             </m.div>
           ))}
         </m.div>

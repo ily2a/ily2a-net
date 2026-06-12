@@ -64,6 +64,7 @@ function SpotlightCard({ children }: { children?: ReactNode }) {
     const el    = e.currentTarget
     const rect  = el.getBoundingClientRect()
     const touch = e.touches[0]
+    if (!touch) return
     el.style.setProperty('--mx', `${touch.clientX - rect.left}px`)
     el.style.setProperty('--my', `${touch.clientY - rect.top}px`)
     setOpacity(1)

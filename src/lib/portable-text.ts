@@ -11,13 +11,26 @@ export function toId(text: string): string {
 /**
  * Disambiguates duplicate ids in a list of { id, ... } items by appending
  * an incrementing suffix. Items without an `id` pass through untouched.
+ *
+ * The suffixed candidate is re-checked against every id already emitted (not
+ * just the base count), so a generated id can never collide with a later
+ * natural id: e.g. ['foo','foo','foo-2'] → ['foo','foo-2','foo-3'] rather than
+ * a duplicate 'foo-2'. Without this, two headings could share a DOM id and the
+ * ToC anchor would scroll to the wrong one.
  */
 export function dedupeIds<T extends { id?: string }>(items: T[]): T[] {
-  const seen: Record<string, number> = {}
+  const seen = new Set<string>()
   return items.map((item) => {
     const base = item.id
     if (!base) return item
-    seen[base] = (seen[base] ?? 0) + 1
-    return seen[base] === 1 ? item : { ...item, id: `${base}-${seen[base]}` }
+    if (!seen.has(base)) {
+      seen.add(base)
+      return item
+    }
+    let n = 2
+    let candidate = `${base}-${n}`
+    while (seen.has(candidate)) candidate = `${base}-${++n}`
+    seen.add(candidate)
+    return { ...item, id: candidate }
   })
 }

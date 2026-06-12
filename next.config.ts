@@ -75,7 +75,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       // Studio route — permissive CSP required by Sanity Studio's plugin system.
-      // Must come before the catch-all so it takes precedence.
+      // The catch-all below explicitly excludes /studio (negative lookahead), so
+      // this is the ONLY CSP that applies there. (Next.js applies last-match-wins
+      // when two entries set the same header for the same path, so we must not let
+      // the strict site CSP also match /studio — it would override this one.)
       {
         source: '/studio(.*)',
         headers: [
@@ -99,9 +102,10 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=2592000' },
         ],
       },
-      // All other routes — strict CSP + security headers
+      // All other routes — strict CSP + security headers. Excludes /studio via
+      // negative lookahead so the strict CSP never overrides StudioCSP above.
       {
-        source: '/(.*)',
+        source: '/((?!studio).*)',
         headers: [
           { key: 'Content-Security-Policy',   value: ContentSecurityPolicy },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },

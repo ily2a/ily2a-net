@@ -49,4 +49,22 @@ describe('dedupeIds', () => {
     const out = dedupeIds([noId])
     expect(out[0]).toBe(noId)
   })
+
+  it('does not let a generated suffix collide with a later natural id', () => {
+    // Regression: ['foo','foo','foo-2'] previously produced a duplicate 'foo-2'
+    // (item 2 renamed to foo-2; item 3 natural foo-2 passed through unchanged).
+    // Corrected contract guarantees uniqueness; item 3 yields because item 2
+    // already claimed 'foo-2', so it takes the next free slot.
+    const out = dedupeIds([{ id: 'foo' }, { id: 'foo' }, { id: 'foo-2' }])
+    const ids = out.map((i) => i.id)
+    expect(ids).toEqual(['foo', 'foo-2', 'foo-2-2'])
+    expect(new Set(ids).size).toBe(ids.length) // no duplicates
+  })
+
+  it('keeps all ids unique through an interleaved collision', () => {
+    const out = dedupeIds([{ id: 'a' }, { id: 'a' }, { id: 'a-2' }, { id: 'a' }])
+    const ids = out.map((i) => i.id)
+    expect(ids[0]).toBe('a')
+    expect(new Set(ids).size).toBe(ids.length) // the invariant that matters
+  })
 })

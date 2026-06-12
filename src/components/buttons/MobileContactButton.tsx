@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, type AriaAttributes, type KeyboardEvent, type MouseEvent } from 'react'
+import { useRef, useState, type AriaAttributes, type MouseEvent } from 'react'
 import { m } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
@@ -34,25 +34,24 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
   }
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    triggerRipple(e.clientX, e.clientY)
-    onClick?.()
-  }
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      if (e.key === ' ') e.preventDefault()
-      const button = buttonRef.current
-      if (!button) return
-      const rect = button.getBoundingClientRect()
-      triggerRipple(rect.left + rect.width / 2, rect.top + rect.height / 2)
+    // e.detail === 0 means a keyboard-synthesized click (Enter/Space), which has
+    // no pointer coordinates — ripple from the button center. Letting the native
+    // button handle Space (no preventDefault/onKeyDown) keeps activation working;
+    // the old keydown handler cancelled Space's click, drawing a ripple but never
+    // navigating.
+    if (e.detail === 0) {
+      const rect = buttonRef.current?.getBoundingClientRect()
+      if (rect) triggerRipple(rect.left + rect.width / 2, rect.top + rect.height / 2)
+    } else {
+      triggerRipple(e.clientX, e.clientY)
     }
+    onClick?.()
   }
 
   return (
     <m.button
       ref={buttonRef}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
       aria-current={ariaCurrent}
       whileTap={{ scale: 0.96 }}
       transition={SPRING_SNAP}

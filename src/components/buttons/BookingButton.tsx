@@ -10,12 +10,15 @@ import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/c
 import { BREAKPOINTS } from '@/constants/layout'
 
 function releaseScrollLock() {
-  const scrollY = parseInt(document.body.dataset.scrollY ?? '0', 10)
+  // No-op when no lock is active — guards against an errant window.scrollTo(0, 0)
+  // if called without a saved position (e.g. the lock was already released).
+  if (document.body.dataset.scrollY === undefined) return
+  const scrollY = parseInt(document.body.dataset.scrollY, 10)
   document.body.style.position = ''
   document.body.style.top      = ''
   document.body.style.width    = ''
   delete document.body.dataset.scrollY
-  window.scrollTo(0, scrollY)
+  window.scrollTo(0, Number.isNaN(scrollY) ? 0 : scrollY)
 }
 
 // Iframe is considered failed if it hasn't fired onLoad within this window.
@@ -132,6 +135,12 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
   }, [open, iframeLoaded])
 
   const handleClose = useCallback(() => {
+    // Cancel a pending open-rAF so it can't apply the body lock after we've closed
+    // (open-then-immediately-close within one frame).
+    if (openRafRef.current !== null) {
+      cancelAnimationFrame(openRafRef.current)
+      openRafRef.current = null
+    }
     releaseScrollLock()
     if (modalCounterRef.current) {
       popModalOpen()
@@ -162,9 +171,9 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
         const first = focusableRef.current[0]
         const last  = focusableRef.current[focusableRef.current.length - 1]
         if (e.shiftKey) {
-          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+          if (document.activeElement === first) { e.preventDefault(); last?.focus() }
         } else {
-          if (document.activeElement === last)  { e.preventDefault(); first.focus() }
+          if (document.activeElement === last)  { e.preventDefault(); first?.focus() }
         }
       }
     }
@@ -186,10 +195,13 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
       }
       // Desktop uses a fixed-height iframe; only narrow layouts read iframeHeight,
       // so skip the state update (and re-render) when it wouldn't be used.
-      if (isNarrowLayout && e.data?.type === '__dimensionChanged' && e.data?.data?.iframeHeight) {
+      // e.data is `any` (MessageEvent) — narrow to a finite number before the
+      // arithmetic so a malformed message can't set height to NaN.
+      const reportedHeight = e.data?.data?.iframeHeight
+      if (isNarrowLayout && e.data?.type === '__dimensionChanged' && typeof reportedHeight === 'number' && Number.isFinite(reportedHeight)) {
         // Floor raised to 400 — Cal.com fires transient near-zero heights during
         // reflow; clamping to 200 would collapse the iframe with no recovery affordance.
-        setIframeHeight(Math.min(3000, Math.max(400, e.data.data.iframeHeight - 40)))
+        setIframeHeight(Math.min(3000, Math.max(400, reportedHeight - 40)))
       }
     }
 
@@ -199,25 +211,28 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
       document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('message', handleCalMessage)
       cancelAnimationFrame(raf)
-      // Cancel a pending open-rAF if unmount happens before it fires —
-      // otherwise it would write body styles to a now-orphaned modal.
+    }
+  }, [open, handleClose, isNarrowLayout])
+
+  // Unmount-only safety net. Runs ONLY when the component leaves the tree — never
+  // on an `open`/`isNarrowLayout` effect re-run. A resize across the LG breakpoint
+  // while the modal is open must NOT release the scroll lock or pop the modal
+  // counter (that would unlock the page behind the open dialog and resume the
+  // background WebGL). The two conditions are independent: a sync push +
+  // unmount-before-rAF leaves modalCounterRef true while dataset.scrollY is undefined.
+  useEffect(() => {
+    return () => {
       if (openRafRef.current !== null) {
         cancelAnimationFrame(openRafRef.current)
         openRafRef.current = null
       }
-      // Safety net: restore scroll if the body was actually locked, and
-      // decrement the modal-open count if this component still owns one.
-      // The two conditions are independent: a sync push + unmount-before-rAF
-      // leaves modalCounterRef true while dataset.scrollY is still undefined.
-      if (document.body.dataset.scrollY !== undefined) {
-        releaseScrollLock()
-      }
+      releaseScrollLock()
       if (modalCounterRef.current) {
         popModalOpen()
         modalCounterRef.current = false
       }
     }
-  }, [open, handleClose, isNarrowLayout])
+  }, [])
 
   const handleOpen = () => {
     if (open || isOpeningRef.current) return

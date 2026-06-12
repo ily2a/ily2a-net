@@ -43,8 +43,20 @@ interface RateLimiterOptions {
  */
 export function createRateLimiter({ limit, windowMs }: RateLimiterOptions): (ip: string) => boolean {
   const ipLog = new Map<string, number[]>()
+  // Opportunistic eviction: a one-shot IP otherwise leaves a Map entry forever,
+  // so an IP-rotating caller grows the Map for the instance lifetime. When the
+  // Map crosses this many keys, drop every entry whose newest hit is outside the
+  // window — keeps memory flat without an O(n) sweep on every request.
+  const SWEEP_THRESHOLD = 10_000
+  function sweep(now: number) {
+    for (const [ip, hits] of ipLog) {
+      const last = hits[hits.length - 1]
+      if (last === undefined || now - last >= windowMs) ipLog.delete(ip)
+    }
+  }
   return function isRateLimited(ip: string): boolean {
     const now  = Date.now()
+    if (ipLog.size > SWEEP_THRESHOLD) sweep(now)
     const hits = (ipLog.get(ip) ?? []).filter(t => now - t < windowMs)
     if (hits.length >= limit) { ipLog.set(ip, hits); return true }
     ipLog.set(ip, [...hits, now])

@@ -223,7 +223,6 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 - **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
 - **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
-- **useModalOpen** — `useSyncExternalStore` binding over the `modal-store.ts` singleton; lets React components read whether any blocking modal is open (the imperative `pushModalOpen` / `popModalOpen` API lives in the store)
 - **useWebGLBackground** — shared lifecycle for the OGL backgrounds: pauses the RAF loop when the canvas is off-screen, the tab is hidden, or a modal covers it; honours `prefers-reduced-motion` (one static frame); and rebuilds cleanly on GL context loss/restore. Each background supplies a `setup(container)` that returns its renderer hooks (typed as `WebGLBackgroundContext`)
 - **useSpotlight** — RAF-throttled pointer tracker that writes `--mx` / `--my` CSS variables on the target element, used by buttons that paint a radial spotlight at the cursor
 
@@ -234,7 +233,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **color.ts** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
 - **dedup.ts** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.ts** — safe JSON-LD serialiser for `<script>` injection
-- **modal-store.ts** — framework-agnostic singleton (no React) tracking whether any blocking modal is open; WebGL backgrounds subscribe imperatively to pause their RAF loops while occluded, and React consumes it through `useModalOpen`
+- **modal-store.ts** — framework-agnostic singleton (no React) tracking whether any blocking modal is open via `pushModalOpen` / `popModalOpen`; WebGL backgrounds subscribe imperatively (`subscribeToModalOpen` / `getModalOpen`) to pause their RAF loops while occluded
 - **portable-text.ts** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
 - **scroll.ts** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
 - **validation.ts** — shared form validation
@@ -278,10 +277,12 @@ Vitest is configured with the `node` environment by default ([vitest.config.ts](
 - `src/lib/__tests__/color.test.ts`
 - `src/lib/__tests__/dedup.test.ts`
 - `src/lib/__tests__/json-ld.test.ts`
+- `src/lib/__tests__/modal-store.test.ts`
 - `src/lib/__tests__/portable-text.test.ts`
 - `src/lib/__tests__/scroll.test.ts`
 - `src/lib/__tests__/validation.test.ts`
-- `src/hooks/__tests__/useModalOpen.test.ts`
+- `src/sanity/lib/__tests__/image.test.ts`
+- `src/hooks/__tests__/useContactForm.test.tsx`
 - `src/components/buttons/__tests__/BackToTop.test.tsx`
 
 Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
@@ -291,4 +292,4 @@ Components/hooks that need a DOM should add `// @vitest-environment jsdom` at th
 - **Sitemap** — generated at build time by [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity
 - **robots.txt** — static, lives at [public/robots.txt](public/robots.txt)
 - **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.tsx](src/app/layout.tsx); the `WebSite.name` controls Google's site-name display in search results
-- **OG image** — static [public/og-image.png](public/og-image.png) referenced from `metadata.openGraph` and `metadata.twitter`
+- **OG image** — static [public/og-image.jpg](public/og-image.jpg) referenced from `metadata.openGraph` and `metadata.twitter`

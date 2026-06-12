@@ -126,6 +126,7 @@ export function useWebGLBackground(
 
     // ── Lifecycle signals (stable across GL rebuilds — observe the container) ─
     const io = new IntersectionObserver(([entry]) => {
+      if (!entry) return
       isVisible = entry.isIntersecting
       sync()
     }, { rootMargin: `${ROOT_MARGIN_PX}px` })

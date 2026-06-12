@@ -1,8 +1,9 @@
 'use client'
 
-import { Renderer, Program, Mesh, Color, Triangle } from 'ogl'
+import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useEffect, useRef, type RefObject } from 'react'
 import { AMETHYST } from '@/constants/colors'
+import { hexToRgbNormalized } from '@/lib/color'
 import { useWebGLBackground, type WebGLBackgroundContext } from '@/hooks/useWebGLBackground'
 
 const VERT = `#version 300 es
@@ -165,7 +166,7 @@ function setupContactBg(container: HTMLElement, propsRef: RefObject<ContactBgSta
   if (geometry.attributes.uv) delete geometry.attributes.uv
 
   let lastStops = propsRef.current.colorStops
-  let cachedStops = lastStops.map(hex => { const c = new Color(hex); return [c.r, c.g, c.b] })
+  let cachedStops = lastStops.map(hexToRgbNormalized)
 
   const program = new Program(gl, {
     vertex: VERT,
@@ -197,7 +198,7 @@ function setupContactBg(container: HTMLElement, propsRef: RefObject<ContactBgSta
       const p = propsRef.current
       if (p.colorStops !== lastStops) {
         lastStops = p.colorStops
-        cachedStops = p.colorStops.map(hex => { const c = new Color(hex); return [c.r, c.g, c.b] })
+        cachedStops = p.colorStops.map(hexToRgbNormalized)
       }
       program.uniforms.uTime.value = t * 0.001 * (p.speed ?? 1.0)
       program.uniforms.uAmplitude.value = p.amplitude ?? 1.0

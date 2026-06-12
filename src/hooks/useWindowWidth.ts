@@ -11,9 +11,11 @@ let debounceTimer: ReturnType<typeof setTimeout>
 
 if (typeof window !== 'undefined') {
   window.addEventListener('resize', () => {
-    // Skip work when nothing is mounted — the listener stays attached for the
-    // lifetime of the page (singleton), but there's no reason to run a debounced
-    // innerWidth read + fanout when no component is subscribed.
+    // Keep the snapshot fresh even with no subscribers, so a component mounting
+    // after a resize (e.g. on /studio, or during a Suspense fallback) reads the
+    // correct width instead of a stale one until the next resize. The read is
+    // cheap; only the debounced fanout is gated on having subscribers.
+    currentWidth = window.innerWidth
     if (listeners.size === 0) return
     clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
