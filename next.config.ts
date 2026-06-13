@@ -102,6 +102,14 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=2592000' },
         ],
       },
+      // Brand assets (logo SVGs) — stable filenames, rarely change. One month,
+      // same rationale as favicons (a brand refresh would rename/cache-bust).
+      {
+        source: '/assets/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000' },
+        ],
+      },
       // All other routes — strict CSP + security headers. Excludes /studio via
       // negative lookahead so the strict CSP never overrides StudioCSP above.
       {
