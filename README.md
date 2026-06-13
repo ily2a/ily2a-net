@@ -83,12 +83,13 @@ npm run dev         # Dev server with Turbopack
 npm run build       # Production build
 npm start           # Start production server
 npm run lint        # Run ESLint
+npm run typecheck   # Type-check with tsc (no emit)
 npm test            # Run Vitest once
 npm run test:watch  # Run Vitest in watch mode
 npm run a11y        # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
-Type-checking runs as part of `npm run build` (Next.js type-checks the project during the build). To type-check on its own: `npx tsc --noEmit`.
+Type-checking also runs as part of `npm run build` (Next.js type-checks during the build). To type-check on its own: `npm run typecheck`. The project enables `noUncheckedIndexedAccess` on top of `strict`.
 
 ## Project Structure
 ```
@@ -146,7 +147,7 @@ npx sanity@latest schema deploy
 **Layout & Navigation**
 - **FloatingNav** — fixed bottom navbar with spring animation
 - **Navbar** / **NavbarButton** — top navbar with glass surface and scroll-aware behaviour
-- **GlassSurface** — SVG displacement filter glass effect used in the navbar
+- **GlassSurface** — frosted-glass surface (CSS `backdrop-blur` + saturate) used in the navbar
 - **Logo** — animated logo mark
 - **BackToTop** — scroll-to-top utility
 
@@ -164,7 +165,7 @@ npx sanity@latest schema deploy
 - **FloatingLabelInput** — text input with floating label animation, used in the contact form
 
 **Buttons & CTAs**
-- **SpotlightButton** — animated CTA button (`default`, `dark`, `ghost` variants)
+- **SpotlightButton** — animated CTA button (`default`, `dark` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
 - **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails
