@@ -42,6 +42,16 @@ interface LinkMark extends TypedObject {
 const getBlockText = (value: PortableTextBlock): string =>
   (value.children as { text?: string }[] | undefined)?.map(c => c.text ?? '').join('') ?? ''
 
+// Inline code. overflow-wrap:anywhere is required, not cosmetic: tokens like
+// `Semantics/Components/button/primary` have no break opportunity (slashes don't
+// break by default), so a bare <code> sets a min-content wider than a phone column
+// and overflows the page. `anywhere` lets it wrap and keeps the column shrinkable.
+const InlineCode = ({ children }: { children?: ReactNode }) => (
+  <code className="rounded-md border border-glass-border bg-glass-bg px-1.5 py-0.5 font-mono text-[0.85em] text-text-primary [overflow-wrap:anywhere]">
+    {children}
+  </code>
+)
+
 const ptBase = {
   block: {
     normal: ({ children, value }: PortableTextComponentProps<PortableTextBlock>) => {
@@ -121,6 +131,7 @@ export function makePtBody(headingIdMap: Record<string, string> = {}): PortableT
     marks: {
       strong: ({ children }: { children?: ReactNode }) => <strong>{children}</strong>,
       em:     ({ children }: { children?: ReactNode }) => <em>{children}</em>,
+      code:   InlineCode,
       link:   ({ value, children }: PortableTextMarkComponentProps<LinkMark>) => {
         const href = /^(https?|mailto|tel):/.test(value?.href ?? '') ? (value?.href ?? null) : null
         if (!href) return <span className="text-brand">{children}</span>
@@ -135,5 +146,6 @@ export const ptSection: PortableTextComponents = {
   marks: {
     strong: ({ children }: { children?: ReactNode }) => <strong>{children}</strong>,
     em:     ({ children }: { children?: ReactNode }) => <em>{children}</em>,
+    code:   InlineCode,
   },
 }

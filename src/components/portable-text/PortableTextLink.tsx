@@ -31,7 +31,7 @@ export default function PortableTextLink({ href, children }: { href?: string; ch
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-brand underline underline-offset-4"
+      className="text-brand underline underline-offset-4 [overflow-wrap:anywhere]"
       whileHover={{ opacity: 0.75 }}
       transition={SPRING_SNAP}
     >

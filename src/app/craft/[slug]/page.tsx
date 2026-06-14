@@ -215,8 +215,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
       <div className="w-full flex justify-center px-5 py-10 tab:px-10 tab:py-12 desk:px-14 desk:py-14 xl:px-20 xl:py-16">
         <article className="w-full max-w-[600px] flex flex-col gap-12 items-start tab:max-w-none lg:flex-row lg:gap-14 xl:max-w-[1440px]">
 
-          {/* ── LEFT: main content ── */}
-          <div className="flex-1 min-w-0 flex flex-col gap-8">
+          {/* ── LEFT: main content ──
+              w-full is load-bearing on mobile. The article is `flex-col items-start`,
+              so without an explicit width this column is sized to its *content* (the
+              cross axis ignores flex-shrink/min-w-0). Any unbreakable token — e.g. an
+              inline-code path like `Semantics/Components/button/primary` — then sets a
+              min-content wider than the viewport and the whole column overflows right.
+              w-full pins it to the article width; at lg: the article is flex-row and
+              flex-1/min-w-0 take over. (Defence-in-depth with the code/link wrapping.) */}
+          <div className="w-full flex-1 min-w-0 flex flex-col gap-8">
 
             {/* Header */}
             <header className="flex flex-col tab:flex-row tab:justify-between tab:items-center gap-4">
