@@ -33,11 +33,15 @@
     "@vercel/frameworks": {
       "js-yaml": "3.14.2"
     },
-    "vite": "^7.3.2",
-    "dompurify": "^3.4.0",
+    "vite": "^7.3.5",
+    "dompurify": "^3.4.11",
     "uuid": "^14.0.0",
     "postcss": "^8.5.10",
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "form-data": "^4.0.6",
+    "jsdom": {
+      "undici": "^7.28.0"
+    }
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.2",
