@@ -196,9 +196,11 @@ npx sanity@latest schema deploy
 - **CloseButton** — reusable modal/overlay close button
 - **ErrorBoundary** / **SilentErrorBoundary** — React error boundary wrappers
 
-## Design Tokens
+## Design
 
-Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typography is inlined as Tailwind utilities — no custom font classes. Key tokens:
+[**design.md**](design.md) is the full design-system reference — color, typography utilities, breakpoints, glass surfaces, motion configs, interaction patterns, and accessibility conventions.
+
+Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typography is inlined as Tailwind utilities — no custom font classes. Key tokens at a glance:
 
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
