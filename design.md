@@ -75,6 +75,7 @@ Dark theme only. Amethyst is the single brand hue.
 | `glass-bg` | `rgba(255,255,255,.04)` | Glass card fill |
 | `glass-border` | `rgba(255,255,255,.08)` | Glass card edge |
 | `border-hover` | `rgba(255,255,255,.25)` | Hover edge |
+| `image-outline` | `rgba(255,255,255,.10)` | 1px inset edge ring on images (`.img-outline`) |
 | `shadow` / `shadow-strong` | `rgba(0,0,0,.25)` / `.40` | Elevation |
 
 ---

@@ -31,6 +31,7 @@
   --color-glass-bg:       rgba(255, 255, 255, 0.04);
   --color-glass-border:   rgba(255, 255, 255, 0.08);
   --color-border-hover:   rgba(255, 255, 255, 0.25);
+  --color-image-outline:  rgba(255, 255, 255, 0.10);
 
   /* ─── Font ────────────────────────────────────────────────── */
   --font-sans: var(--font-satoshi), sans-serif;
@@ -149,8 +150,8 @@ section:focus-visible {
 .heading-error   { @apply font-light tracking-[0.06em] leading-[140%] text-[24px] md:text-[26px] lg:text-[28px] xl:text-[32px] text-balance; }
 
 /* Body */
-.text-md         { @apply font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-balance; }
-.text-intro      { @apply font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-balance; }
+.text-md         { @apply font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-pretty; }
+.text-intro      { @apply font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-pretty; }
 .text-body       { @apply font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px]; }
 .text-body-card  { @apply text-[14px] desk:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]; }
 .text-blockquote { @apply italic text-base leading-[160%] tracking-[0.04em]; }
@@ -192,6 +193,17 @@ section:focus-visible {
   .booking-spinner { @apply opacity-50; }
 }
 
+
+/* ─── Image Outline ───────────────────────────────────────────── */
+/* Subtle 1px inset outline for consistent edge depth on this dark theme.
+   Pure white at 10% — never a tinted neutral, which would pick up the
+   surface colour and read as dirt on the image edge. outline-offset is
+   negative so it stays inside the element and doesn't affect layout;
+   modern browsers trace the element's border-radius automatically. */
+.img-outline {
+  outline: 1px solid var(--color-image-outline);
+  outline-offset: -1px;
+}
 
 /* ══════════════════════════════════════════════════════════════
    PROJECT CARD
@@ -239,7 +251,7 @@ section:focus-visible {
 }
 
 .project-card__subtitle {
-  @apply font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-balance text-text-primary/75;
+  @apply font-normal tracking-[0.07em] leading-[150%] text-[14px] md:text-[16px] xl:text-[20px] text-pretty text-text-primary/75;
 }
 
 /* ══════════════════════════════════════════════════════════════

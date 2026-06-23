@@ -36,7 +36,7 @@ export default function TestimonialsSection() {
                   width={44}
                   height={44}
                   sizes="44px"
-                  className="w-11 h-11 rounded-full object-cover shrink-0"
+                  className="w-11 h-11 rounded-full object-cover shrink-0 img-outline"
                 />
                 <div className="flex flex-col gap-0.5">
                   <span className="text-testimonial-name text-text-primary">{name}</span>

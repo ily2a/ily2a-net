@@ -115,7 +115,7 @@ export function makePtBody(headingIdMap: Record<string, string> = {}): PortableT
               width={1200}
               height={height}
               sizes="(max-width: 600px) 100vw, (max-width: 1088px) 90vw, 900px"
-              className="w-full h-auto rounded-xl block"
+              className="w-full h-auto rounded-xl block img-outline"
               placeholder={value.lqip ? 'blur' : 'empty'}
               blurDataURL={value.lqip}
             />

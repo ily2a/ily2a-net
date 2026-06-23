@@ -87,7 +87,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }: { p
       // Keyboard focus reveals the same overlay as hover, so sighted keyboard
       // users get the title/description that mouse users see on hover.
       whileFocus="hover"
-      whileTap={isTouch ? { scale: 0.97 } : undefined}
+      whileTap={isTouch ? { scale: 0.96 } : undefined}
       transition={{ duration: 0.15, ease: EASE_OUT }}
       style={{ touchAction: 'manipulation' }}
       className="project-card block no-underline"
@@ -163,6 +163,11 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }: { p
             <li key={tag} className="project-card__tag">{tag}</li>
           ))}
         </ul>
+
+        {/* Edge ring — top sibling so the 1px outline paints above the image.
+            (An outline on the image wrapper sits under the absolutely-positioned
+            <Image> fills and never shows.) Traces the same rounded-xl edge. */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-xl img-outline z-[4]" />
 
       </div>
 
