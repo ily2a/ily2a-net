@@ -142,6 +142,13 @@ Deploy schema changes:
 npx sanity@latest schema deploy
 ```
 
+### Data fetching: request-time vs build-time
+
+Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/live.ts), and picking the right one matters:
+
+- **`sanityFetch` / `fetchSanityList`** — request-time. Backed by next-sanity's `defineLive`, which calls `draftMode()` internally for live preview. Use these from page components, `generateMetadata`, and route handlers — anywhere that runs inside a render/request context.
+- **`fetchSanityListStatic`** — build-time. Queries the plain published client directly. Use this from `generateStaticParams` and `sitemap`, which run at build with **no request**: calling the live fetch there throws `next-dynamic-api-wrong-context` because `draftMode()` isn't available. Don't reach for the live fetch in those functions.
+
 ## Components
 
 **Layout & Navigation**
