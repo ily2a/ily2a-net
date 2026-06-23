@@ -20,7 +20,7 @@
     "@sanity/vision": "^5.31.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "framer-motion": "^12.36.0",
+    "framer-motion": "^12.41.0",
     "next": "^16.2.9",
     "next-sanity": "^13.0.11",
     "ogl": "^1.0.11",
@@ -44,7 +44,7 @@
     }
   },
   "devDependencies": {
-    "@axe-core/cli": "^4.11.2",
+    "@axe-core/cli": "^4.12.1",
     "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
