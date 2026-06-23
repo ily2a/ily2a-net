@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { fetchSanityList } from '@/sanity/lib/live'
+import { fetchSanityListStatic } from '@/sanity/lib/live'
 import { SITE_URL as BASE_URL } from '@/constants/site'
 import { CASE_STUDY_SITEMAP_QUERY } from '@/lib/sanity-queries'
 
@@ -15,7 +15,7 @@ interface SitemapEntry {
 const SITE_LAST_MODIFIED = new Date('2026-04-08T00:00:00Z')
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const projects = await fetchSanityList<SitemapEntry>('sitemap.ts', CASE_STUDY_SITEMAP_QUERY)
+  const projects = await fetchSanityListStatic<SitemapEntry>('sitemap.ts', CASE_STUDY_SITEMAP_QUERY)
 
   const craftLastModified = projects.length
     ? new Date(Math.max(...projects.map(p => new Date(p._updatedAt).getTime())))

@@ -26,6 +26,10 @@ export const sanityFetch = ((options: Parameters<typeof baseSanityFetch>[0]) =>
 // to an empty list (never throw) on a transient Sanity failure. Owns the single
 // unavoidable cast — GROQ string queries are typed `any` — and the error log, so
 // call sites don't each re-implement try/catch + cast.
+//
+// Request-time only: defineLive's sanityFetch calls draftMode() internally, so
+// this must run inside a render/request context. For build-time data functions
+// (generateStaticParams, sitemap) use fetchSanityListStatic instead.
 export async function fetchSanityList<T>(
   label: string,
   query: string,
@@ -34,6 +38,25 @@ export async function fetchSanityList<T>(
   try {
     const { data } = await sanityFetch({ query, params })
     return (data ?? []) as T[]
+  } catch (e) {
+    console.error(`[${label}] Sanity fetch failed:`, e)
+    return []
+  }
+}
+
+// Build-time-safe variant for functions that run WITHOUT a request context —
+// generateStaticParams and sitemap. They cannot use the live sanityFetch above
+// because defineLive calls draftMode() internally, which throws
+// `next-dynamic-api-wrong-context` at build time (no HTTP request). Queries the
+// plain published client directly instead. Same degrade-to-empty + log contract.
+export async function fetchSanityListStatic<T>(
+  label: string,
+  query: string,
+  params?: Record<string, unknown>,
+): Promise<T[]> {
+  try {
+    const data = await client.fetch<T[]>(query, params ?? {}, { perspective: 'published' })
+    return data ?? []
   } catch (e) {
     console.error(`[${label}] Sanity fetch failed:`, e)
     return []

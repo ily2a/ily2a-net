@@ -6,6 +6,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Base client — only consumed by defineLive (live.ts), never for direct queries.
-               // defineLive handles real-time updates via Sanity's Live Content API.
+  useCdn: true, // Base client — consumed by defineLive (live.ts) for request-time live
+               // queries, and by fetchSanityListStatic for build-time data
+               // (generateStaticParams, sitemap) that can't call draftMode().
 })

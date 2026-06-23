@@ -10,7 +10,7 @@ import FloatingNav from '@/components/nav/FloatingNav'
 import BackToTop from '@/components/buttons/BackToTop'
 import ContactSection from '@/components/sections/ContactSection'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
-import { sanityFetch, fetchSanityList } from '@/sanity/lib/live'
+import { sanityFetch, fetchSanityListStatic } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import type { SanityImageObject } from '@sanity/image-url'
@@ -77,7 +77,7 @@ const getCaseStudy = cache(async (slug: string): Promise<CaseStudyDetail | null>
 })
 
 export async function generateStaticParams() {
-  const slugs = await fetchSanityList<{ slug: string }>('craft/[slug] generateStaticParams', CASE_STUDY_SLUGS_QUERY)
+  const slugs = await fetchSanityListStatic<{ slug: string }>('craft/[slug] generateStaticParams', CASE_STUDY_SLUGS_QUERY)
   return slugs.map(({ slug }) => ({ slug }))
 }
 
