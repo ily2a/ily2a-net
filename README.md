@@ -212,7 +212,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
-- **Breakpoints** — `sm: 390px`, `mobile: 600px` (JS-only), `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px`
+- **Breakpoints** — `sm: 390px`, `mobile: 600px`, `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px` (`mobile`, `md`, and `lg` are also mirrored in JS via `BREAKPOINTS` in [layout.ts](src/constants/layout.ts))
 
 ## Constants
 
