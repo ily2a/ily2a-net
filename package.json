@@ -20,13 +20,13 @@
     "@sanity/vision": "^5.31.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "framer-motion": "^12.41.0",
+    "framer-motion": "^12.42.0",
     "next": "^16.2.9",
     "next-sanity": "^13.0.11",
     "ogl": "^1.0.11",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "resend": "^6.14.0",
+    "resend": "^6.16.0",
     "sanity": "^5.31.1"
   },
   "overrides": {
@@ -45,17 +45,17 @@
   },
   "devDependencies": {
     "@axe-core/cli": "^4.12.1",
-    "@tailwindcss/postcss": "^4.3.1",
+    "@tailwindcss/postcss": "^4.3.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^26.0.0",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9",
     "eslint-config-next": "^16.2.9",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "jsdom": "^29.1.1",
-    "tailwindcss": "^4.3.1",
+    "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
   }
