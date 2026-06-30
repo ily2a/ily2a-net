@@ -108,8 +108,11 @@ src/
 │   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
 ├── components/           # React components (grouped by role)
+│   ├── auth/             # Password gate for protected case studies
 │   ├── backgrounds/      # WebGL effect backgrounds
+│   ├── branding/         # Logo mark
 │   ├── buttons/          # Button and CTA components
+│   ├── cards/            # Project cards
 │   ├── effects/          # Cursor, glass, spotlight, text-reveal effects
 │   ├── errors/           # Error boundary wrappers
 │   ├── form/             # Form inputs
