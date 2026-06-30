@@ -17,7 +17,7 @@ import type { SanityImageObject } from '@sanity/image-url'
 import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
 import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents, { type TocItem } from '@/components/nav/TableOfContents'
-import PasswordGate from '@/components/PasswordGate'
+import PasswordGate from '@/components/auth/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
 import { makePtBody, ptSection } from '@/components/portable-text/PortableTextComponents'
 

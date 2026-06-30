@@ -3,7 +3,7 @@
 import type { ElementType } from 'react'
 import Link from 'next/link'
 import { m, type Variants } from 'framer-motion'
-import ProjectCard, { type ProjectCardData } from '@/components/ProjectCard'
+import ProjectCard, { type ProjectCardData } from '@/components/cards/ProjectCard'
 import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'

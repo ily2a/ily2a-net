@@ -10,7 +10,7 @@ import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { fetchSanityList } from '@/sanity/lib/live'
 import { CASE_STUDIES_FEATURED_QUERY } from '@/lib/sanity-queries'
 import { HERO_NAV_DELAY } from '@/constants/animations'
-import type { ProjectCardData } from '@/components/ProjectCard'
+import type { ProjectCardData } from '@/components/cards/ProjectCard'
 
 export default async function Home() {
   const projects = await fetchSanityList<ProjectCardData>('page.tsx', CASE_STUDIES_FEATURED_QUERY)

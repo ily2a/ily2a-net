@@ -2,7 +2,7 @@
 
 import { memo, type CSSProperties } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import Logo from '@/components/Logo'
+import Logo from '@/components/branding/Logo'
 import NavbarButton from '@/components/buttons/NavbarButton'
 import ContactButton from '@/components/buttons/ContactButton'
 import MobileContactButton from '@/components/buttons/MobileContactButton'

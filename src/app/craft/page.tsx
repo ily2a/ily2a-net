@@ -6,7 +6,7 @@ import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { fetchSanityList } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
 import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
-import type { ProjectCardData } from '@/components/ProjectCard'
+import type { ProjectCardData } from '@/components/cards/ProjectCard'
 
 export const metadata: Metadata = {
   title: `Craft — ${SITE_NAME}`,
