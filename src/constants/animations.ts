@@ -1,11 +1,13 @@
 // Shared Framer Motion spring configs
 // SPRING_SNAP   — instant button state feedback (hover/press), Apple-style
+// SPRING_CURSOR — custom cursor follow; tight tracking with a hint of ease
 // SPRING_ENTRANCE — hero element entrance (slow, weighted)
 // SPRING_NAV    — navbar slide-up entrance
 
 import type { Transition, MotionProps } from 'framer-motion'
 
 export const SPRING_SNAP: Transition     = { type: 'spring', duration: 0.18, bounce: 0 }
+export const SPRING_CURSOR               = { damping: 45, stiffness: 1000, mass: 0.35, restDelta: 0.001 }
 export const SPRING_ENTRANCE: Transition = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV: Transition      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
 

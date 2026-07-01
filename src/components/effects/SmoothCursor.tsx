@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { m, useSpring, AnimatePresence } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { SPRING_CURSOR, SPRING_SNAP } from '@/constants/animations'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
 // Any element can opt into the expanded cursor label by declaring
 // data-cursor-label="…" — an explicit contract instead of reaching into a
 // component's CSS class. ProjectCard sets data-cursor-label="View project".
 const CURSOR_TARGET  = '[data-cursor-label]'
-const SPRING         = { damping: 38, stiffness: 500, mass: 0.75, restDelta: 0.001 }
 
 export default function SmoothCursor() {
   const prefersReduced = usePrefersReducedMotion()
@@ -18,17 +18,23 @@ export default function SmoothCursor() {
   const [isHovering, setIsHovering] = useState(false)
   const [hoverLabel, setHoverLabel] = useState('')
   const [isClicking, setIsClicking] = useState(false)
-  const rafId        = useRef(0)
   const lastPoint    = useRef<{ x: number; y: number } | null>(null) // last pointer position, for re-checking hover on scroll
   const scrollRaf    = useRef(0)
+  const hasShown     = useRef(false)
 
-  const cursorX = useSpring(0, SPRING)
-  const cursorY = useSpring(0, SPRING)
+  const cursorX = useSpring(0, SPRING_CURSOR)
+  const cursorY = useSpring(0, SPRING_CURSOR)
 
   // Enable only on pointer-capable desktops
   useEffect(() => {
     const mq = window.matchMedia(DESKTOP_QUERY)
-    const update = () => { setIsEnabled(mq.matches); if (!mq.matches) setIsVisible(false) }
+    const update = () => {
+      setIsEnabled(mq.matches)
+      if (!mq.matches) {
+        hasShown.current = false
+        setIsVisible(false)
+      }
+    }
     // Must sync after mount — matchMedia can't be read during SSR render.
     // react-doctor-disable-next-line react-doctor/no-initialize-state
     update()
@@ -51,15 +57,16 @@ export default function SmoothCursor() {
 
     const onPointerMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return
-      lastPoint.current = { x: e.clientX, y: e.clientY }
-      if (rafId.current) return
       const { clientX, clientY } = e
-      rafId.current = requestAnimationFrame(() => {
-        cursorX.set(clientX)
-        cursorY.set(clientY)
+      lastPoint.current = { x: clientX, y: clientY }
+      // Drive springs directly — RAF batching added a frame of lag and could
+      // drop intermediate positions within the same frame.
+      cursorX.set(clientX)
+      cursorY.set(clientY)
+      if (!hasShown.current) {
+        hasShown.current = true
         setIsVisible(true)
-        rafId.current = 0
-      })
+      }
     }
 
     const onMouseOver = (e: MouseEvent) =>
@@ -98,7 +105,6 @@ export default function SmoothCursor() {
       window.removeEventListener('mousedown',   onMouseDown)
       window.removeEventListener('mouseup',     onMouseUp)
       window.removeEventListener('blur',        onBlur)
-      if (rafId.current) cancelAnimationFrame(rafId.current)
       if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current)
     }
   // cursorX/cursorY are stable spring objects — excluding them from deps is intentional
@@ -118,7 +124,7 @@ export default function SmoothCursor() {
       className="fixed top-0 left-0 z-[9999] pointer-events-none will-change-transform"
       style={{ x: cursorX, y: cursorY }}
       animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{ duration: 0.15 }}
+      transition={SPRING_SNAP}
     >
       {/* Centering lives on its own element: the spring drives the outer
           element's transform (composited translate3d, off the main thread),
@@ -129,10 +135,10 @@ export default function SmoothCursor() {
         animate={{
           width:        isHovering ? 120 : 16,
           height:       isHovering ? 36  : 16,
-          scale:        isClicking ? 0.8 : 1,
+          scale:        isClicking ? 0.96 : 1,
           borderRadius: isHovering ? 8   : 9999,
         }}
-        transition={{ ease: 'easeInOut', duration: 0.2 }}
+        transition={SPRING_SNAP}
         style={{
           background: 'color-mix(in srgb, var(--color-amethyst-400) 20%, transparent)',
           border:     '1px solid color-mix(in srgb, var(--color-amethyst-400) 40%, transparent)',
@@ -143,10 +149,10 @@ export default function SmoothCursor() {
           {isHovering && (
             <m.span
               className="text-cursor text-text-primary pointer-events-none select-none"
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{    opacity: 0, scale: 0.6 }}
-              transition={{ ease: 'easeInOut', duration: 0.15 }}
+              initial={{ opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, scale: 1,   filter: 'blur(0px)' }}
+              exit={{    opacity: 0, scale: 0.25, filter: 'blur(4px)' }}
+              transition={SPRING_SNAP}
             >
               {hoverLabel}
             </m.span>
