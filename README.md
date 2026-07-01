@@ -186,7 +186,7 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 - **NavbarButton** — navbar-specific button variant
 
 **Visual Effects**
-- **SmoothCursor** — custom cursor that expands on project card hover (desktop pointer only)
+- **SmoothCursor** — custom cursor with tight spring tracking (`SPRING_CURSOR`); expands to a labeled pill on `data-cursor-label` hover (desktop pointer only; off when `prefers-reduced-motion`)
 - **SpotlightLayer** — radial-gradient overlay painted at the `--mx` / `--my` position that `useSpotlight` tracks; the visual half of the cursor-spotlight effect, co-located so the gradient radius/color live in one place (shared by SpotlightButton, BackToTop, …)
 - **HeroBg** — WebGL (OGL) shader background for the hero section; DPR capped at 1.5 for mobile INP. A CSS gradient placeholder shows until the canvas paints its first frame (`onFirstFrame`), then crossfades out — avoids a late background pop-in on cold load and stays visible as a fallback if WebGL never renders
 - **ContactBg** — WebGL (OGL) aurora-style background for the contact section
@@ -219,7 +219,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 ## Constants
 
-- **animations.ts** — shared Framer Motion animation configs
+- **animations.ts** — shared Framer Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
 - **colors.ts** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
 - **layout.ts** — layout constants (JS-only breakpoints)
 - **site.ts** — site URL, name, and meta description constants

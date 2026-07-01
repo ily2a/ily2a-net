@@ -173,6 +173,7 @@ reach for these before authoring a new transition.
 
 **Springs**
 - `SPRING_SNAP` — `{ duration: 0.18, bounce: 0 }` — instant button feedback
+- `SPRING_CURSOR` — `{ stiffness: 1000, damping: 45, mass: 0.35 }` — custom cursor follow; tight tracking with a hint of ease
 - `SPRING_ENTRANCE` — `{ stiffness: 120, damping: 30, mass: 1 }` — hero elements
 - `SPRING_NAV` — `{ stiffness: 120, damping: 20, mass: 1.5 }` — navbar slide-up
 
@@ -218,9 +219,19 @@ color live in one place (`SpotlightLayer`).
 
 ### Custom cursor
 `SmoothCursor` hides the native cursor (gated on `body.smooth-cursor-active`, and
-only on `(any-hover: hover) and (any-pointer: fine)` devices) and expands on
-project-card hover. Text inputs restore the native text cursor; keyboard focus
-restores `cursor: auto` so focus is always locatable.
+only on `(any-hover: hover) and (any-pointer: fine)` devices) and follows the
+pointer via `useSpring` + `SPRING_CURSOR`. Position updates drive the springs
+directly on `pointermove` (no RAF batching) so tracking stays tight. Hover
+morph, click press (`scale: 0.96`), and label enter/exit all reuse `SPRING_SNAP`.
+
+Any element can opt into the expanded pill + label by setting
+`data-cursor-label="…"` (e.g. `ProjectCard` → `"View project"`). Scroll
+re-checks the last pointer position via RAF-throttled `elementFromPoint` so the
+label clears when content moves away under a stationary cursor.
+
+Text inputs restore the native text cursor; keyboard focus restores
+`cursor: auto` so focus is always locatable. Disabled entirely when
+`prefers-reduced-motion` is set.
 
 ---
 
