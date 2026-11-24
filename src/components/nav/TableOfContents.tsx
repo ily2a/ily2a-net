@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, type MouseEvent } from 'react'
 import { m } from 'motion/react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { SPRING_SNAP } from '@/constants/animations'
 import { scrollToElement } from '@/lib/scroll'
 
 export interface TocItem {
@@ -76,7 +75,8 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
                 color: 'var(--color-text-primary)',
                 borderColor: 'var(--color-border-hover)',
               } : undefined}
-              transition={SPRING_SNAP}
+              // Instant hover / active swaps — frequent pointer sweeps shouldn't lag (Craft hover restraint).
+              transition={{ duration: 0 }}
             >
               {label}
             </m.a>

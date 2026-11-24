@@ -68,7 +68,8 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
         background:  s.background,
         boxShadow:   s.boxShadow,
       }}
-      transition={SPRING_SNAP}
+      // Hover is instant (Craft hover restraint); only press keeps the snap spring.
+      transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
       className={`inline-flex items-center justify-center shrink-0 rounded-[8px] h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2 py-[15px] px-[19px]'}`}
     >
       <Icon color={s.iconColor} />
@@ -76,7 +77,7 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
         <m.span
           className="link-label"
           animate={{ color: s.textColor }}
-          transition={SPRING_SNAP}
+          transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
         >
           {label}
         </m.span>

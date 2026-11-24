@@ -46,7 +46,8 @@ const CloseButton = forwardRef<HTMLButtonElement, { onClick?: () => void }>(func
         borderColor: states[state].borderColor,
         boxShadow:   states[state].boxShadow,
       }}
-      transition={SPRING_SNAP}
+      // Hover is instant (Craft hover restraint); only press keeps the snap spring.
+      transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
       aria-label="Close"
       className="flex items-center justify-center shrink-0 relative overflow-hidden w-11 h-11 min-w-11 min-h-11 rounded-[8px] p-[6px]"
       style={{ border: '2px solid' }}

@@ -32,7 +32,7 @@ export default function BackToTop() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
-          whileTap={{ scale: 0.96 }}
+          whileTap={{ scale: 0.97 }}
           transition={SPRING_SNAP}
           aria-label="Back to top"
           className="fixed bottom-[120px] right-4 lg:bottom-6 lg:right-6 z-50 inline-flex items-center justify-center gap-2 rounded-[8px] w-10 h-10 lg:w-auto lg:px-4 lg:h-11 btn-label text-amethyst-100 overflow-hidden select-none border-none cursor-pointer bg-amethyst-900"

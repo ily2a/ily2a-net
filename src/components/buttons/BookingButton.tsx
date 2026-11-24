@@ -269,7 +269,11 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
           scale: 1,
           boxShadow: '0 10px 30px -10px color-mix(in oklch, var(--color-amethyst-400) 55%, transparent), inset 0 0 0 1px var(--color-spotlight)',
         }}
-        whileHover={HOVER_LIFT}
+        whileHover={{
+          ...HOVER_LIFT,
+          // Instant hover — don't inherit the entrance spring (Craft hover restraint).
+          transition: { duration: 0 },
+        }}
         whileTap={{
           y: 0,
           boxShadow: 'inset 0 0 0 1px var(--color-brand), inset 0 3px 6px var(--color-brand), inset 0 -3px 6px var(--color-brand), inset 3px 0 6px var(--color-brand), inset -3px 0 6px var(--color-brand)',

@@ -16,8 +16,13 @@ export default function TestimonialsButton({ instant = false }: { instant?: bool
     <m.button
       initial={instant ? false : { opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ ...HOVER_LIFT, borderColor: 'var(--color-border-hover)' }}
-      whileTap={isMobile ? { scale: 0.96 } : { y: 0 }}
+      whileHover={{
+        ...HOVER_LIFT,
+        borderColor: 'var(--color-border-hover)',
+        // Instant hover — don't inherit the entrance spring (Craft hover restraint).
+        transition: { duration: 0 },
+      }}
+      whileTap={isMobile ? { scale: 0.97 } : { y: 0 }}
       transition={{ ...SPRING_ENTRANCE, delay: instant ? 0 : HERO_BUTTON_DELAY }}
       onClick={() =>
         scrollToElement(document.getElementById('testimonials'), prefersReduced)

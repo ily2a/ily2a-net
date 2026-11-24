@@ -70,7 +70,8 @@
 ::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 15%); }
 
 html {
-  @apply antialiased overflow-x-clip;
+  /* bg on html paints the document canvas (overscroll); body keeps the same token for the page. */
+  @apply antialiased overflow-x-clip bg-background;
   -moz-osx-font-smoothing: grayscale;
 }
 
