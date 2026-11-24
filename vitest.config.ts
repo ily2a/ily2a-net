@@ -4,11 +4,11 @@ import path from 'path'
 // Node environment is sufficient for the helper-level unit tests in this repo
 // (dedup, scroll controllers, modal-store counter). Components/hooks that need a
 // DOM pass `// @vitest-environment jsdom` per-file — keeps the default
-// environment fast. Vite/esbuild transpiles .ts/.tsx natively.
+// environment fast. Vite 8 / Oxc transpile .ts/.tsx natively.
 export default defineConfig({
   // React 19 automatic JSX runtime — components don't import React, so the
-  // classic runtime (esbuild's default) would throw "React is not defined".
-  esbuild: { jsx: 'automatic' },
+  // classic runtime would throw "React is not defined".
+  oxc: { jsx: { runtime: 'automatic' } },
   test: {
     environment: 'node',
     include: ['src/**/__tests__/**/*.test.{ts,tsx}'],

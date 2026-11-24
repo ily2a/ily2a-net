@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, type MouseEvent } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP } from '@/constants/animations'
 import { scrollToElement } from '@/lib/scroll'

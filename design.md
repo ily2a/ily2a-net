@@ -26,7 +26,7 @@ These three are hard rules. Audit every UI change against them before shipping:
 The app wraps everything in `<LazyMotion features={domAnimation}>`
 (`MotionProvider.tsx`). Consequences:
 
-- Import `m` from `framer-motion`; use `m.div`, `m.button`, etc. Importing
+- Import `m` from `motion/react`; use `m.div`, `m.button`, etc. Importing
   `motion` re-bundles the full feature set and defeats the optimization.
 - Wrap custom components with `m.create(Component)` (e.g. `m.create(Link)`), not
   `motion(Component)`.

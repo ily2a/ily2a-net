@@ -1,7 +1,7 @@
 'use client'
 
 import type { CSSProperties, RefObject } from 'react'
-import { m, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'motion/react'
 import CloseButton from '@/components/buttons/CloseButton'
 import { SPRING_SNAP } from '@/constants/animations'
 
@@ -28,6 +28,7 @@ interface BookingDialogProps {
   frameRef: RefObject<HTMLDivElement | null>
   closeButtonRef: RefObject<HTMLButtonElement | null>
   iframeRef: RefObject<HTMLIFrameElement | null>
+  iframeKey: number
   iframeLoaded: boolean
   iframeError: boolean
   iframeHeight: number
@@ -49,6 +50,7 @@ export default function BookingDialog({
   frameRef,
   closeButtonRef,
   iframeRef,
+  iframeKey,
   iframeLoaded,
   iframeError,
   iframeHeight,
@@ -167,6 +169,7 @@ export default function BookingDialog({
                 {/* sandbox is set below; allow-same-origin+scripts is required for Cal.com auth/cookies. */}
                 {/* react-doctor-disable-next-line react-doctor/iframe-missing-sandbox */}
                 <iframe
+                  key={iframeKey}
                   ref={iframeRef}
                   src={CAL_EMBED_URL}
                   title="Book a call with Ily Ameur"
@@ -182,6 +185,7 @@ export default function BookingDialog({
               // sandbox is set below; allow-same-origin+scripts is required for Cal.com auth/cookies.
               // react-doctor-disable-next-line react-doctor/iframe-missing-sandbox
               <iframe
+                key={iframeKey}
                 ref={iframeRef}
                 src={CAL_EMBED_URL}
                 title="Book a call with Ily Ameur"

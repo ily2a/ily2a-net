@@ -10,7 +10,7 @@
 //     ripple, embedded modal) → bespoke component (e.g. ContactButton,
 //     MobileContactButton, BookingButton).
 
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { SPRING_SNAP } from '@/constants/animations'

@@ -2,7 +2,7 @@
 
 import type { ElementType } from 'react'
 import Link from 'next/link'
-import { m, type Variants } from 'framer-motion'
+import { m, type Variants } from 'motion/react'
 import ProjectCard, { type ProjectCardData } from '@/components/cards/ProjectCard'
 import ViewAllProjectsButton from '@/components/buttons/ViewAllProjectsButton'
 import { CRAFT_DESCRIPTION } from '@/constants/site'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useId, useRef, useEffect, type ChangeEventHandler, type ReactNode, type RefObject } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { EASE_OUT } from '@/constants/animations'
 
 const GAP_PAD  = 4

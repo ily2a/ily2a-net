@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, type AriaAttributes, type CSSProperties } from 'react'
-import { m, animate, type AnimationPlaybackControls } from 'framer-motion'
+import { m, animate, type AnimationPlaybackControls } from 'motion/react'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 

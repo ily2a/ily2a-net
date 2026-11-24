@@ -1,9 +1,9 @@
-// Tests for the lib/scroll.ts identity-guard semantics. We mock framer-motion
+// Tests for the lib/scroll.ts identity-guard semantics. We mock motion/react
 // so we can observe stop() calls and onComplete/onStop wiring without a DOM.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockAnimate = vi.fn()
-vi.mock('framer-motion', () => ({
+vi.mock('motion/react', () => ({
   animate: (...args: unknown[]) => mockAnimate(...args),
 }))
 

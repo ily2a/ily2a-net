@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { ContactFormButton } from '@/components/buttons/ContactFormButton'
 import BookingButton from '@/components/buttons/BookingButton'
 import LinkedInButton from '@/components/buttons/LinkedInButton'

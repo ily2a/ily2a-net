@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, type AriaAttributes, type MouseEvent } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 

@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import BookingDialog from '@/components/buttons/BookingDialog'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
+import { isCalCloseAction, readCalEmbedMessage } from '@/lib/cal-embed-message'
 import { pushModalOpen, popModalOpen } from '@/lib/modal-store'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 import { BREAKPOINTS } from '@/constants/layout'
@@ -24,9 +25,17 @@ function releaseScrollLock() {
 // Iframe is considered failed if it hasn't fired onLoad within this window.
 const IFRAME_LOAD_TIMEOUT_MS = 15_000
 
+// Portal gate. The client snapshot is true and the server snapshot is false.
+// The value never changes after hydration, so the subscription is a no-op.
+// A false server snapshot keeps createPortal off the server render.
+const subscribeMounted = () => () => {}
+const getMountedSnapshot = () => true
+const getMountedServerSnapshot = () => false
+
 export default function BookingButton({ static: isStatic = false }: { static?: boolean }) {
   const [open, setOpen]               = useState(false)
-  const [mounted, setMounted]         = useState(false)
+  const mounted = useSyncExternalStore(subscribeMounted, getMountedSnapshot, getMountedServerSnapshot)
+  const [iframeKey, setIframeKey]     = useState(0)
   const [iframeLoaded, setIframeLoaded] = useState(false)
   const [iframeError, setIframeError]   = useState(false)
   const [iframeHeight, setIframeHeight] = useState(600)
@@ -96,15 +105,6 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
     prefetchAttempted.current = true
     import('@calcom/embed-react').catch(() => {})
   }
-
-  // Mount flag for the portal — must flip after mount, can't read during SSR.
-  // react-doctor-disable-next-line react-doctor/no-initialize-state
-  useEffect(() => { setMounted(true) }, [])
-
-  // Reset iframe state each time modal opens
-  useEffect(() => {
-    if (open) { setIframeLoaded(false); setIframeError(false); setIframeHeight(600) }
-  }, [open])
 
   // If the iframe doesn't load within the timeout, surface an error UI so the
   // spinner doesn't hang indefinitely on flaky networks or Cal.com outages.
@@ -190,18 +190,16 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
       // must not silently pass (would let any cal.com-origin frame trigger
       // close/dimension-change at this handler).
       if (!iframeRef.current || e.source !== iframeRef.current.contentWindow) return
-      if (e.data?.type === 'cal:close' || e.data?.type === '__closeModal') {
+      const { action, height } = readCalEmbedMessage(e.data)
+      if (isCalCloseAction(action)) {
         handleClose()
       }
       // Desktop uses a fixed-height iframe; only narrow layouts read iframeHeight,
       // so skip the state update (and re-render) when it wouldn't be used.
-      // e.data is `any` (MessageEvent) — narrow to a finite number before the
-      // arithmetic so a malformed message can't set height to NaN.
-      const reportedHeight = e.data?.data?.iframeHeight
-      if (isNarrowLayout && e.data?.type === '__dimensionChanged' && typeof reportedHeight === 'number' && Number.isFinite(reportedHeight)) {
+      if (isNarrowLayout && action === '__dimensionChanged' && height !== null) {
         // Floor raised to 400 — Cal.com fires transient near-zero heights during
         // reflow; clamping to 200 would collapse the iframe with no recovery affordance.
-        setIframeHeight(Math.min(3000, Math.max(400, reportedHeight - 40)))
+        setIframeHeight(Math.min(3000, Math.max(400, height - 40)))
       }
     }
 
@@ -245,6 +243,13 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
     modalCounterRef.current = true
     pushModalOpen()
     setOpen(true)
+    // New key remounts the iframe. Clearing loaded/error on the same node
+    // skips onLoad (it already fired) and the 15s timeout then shows a false
+    // "couldn't load" if the dialog is reopened during its exit animation.
+    setIframeKey((key) => key + 1)
+    setIframeLoaded(false)
+    setIframeError(false)
+    setIframeHeight(600)
     openRafRef.current = requestAnimationFrame(() => {
       openRafRef.current = null
       document.body.dataset.scrollY = String(scrollY)
@@ -292,6 +297,7 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
           frameRef={frameRef}
           closeButtonRef={closeButtonRef}
           iframeRef={iframeRef}
+          iframeKey={iframeKey}
           iframeLoaded={iframeLoaded}
           iframeError={iframeError}
           iframeHeight={iframeHeight}

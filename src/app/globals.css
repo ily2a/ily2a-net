@@ -281,7 +281,9 @@ section:focus-visible {
 }
 
 .cap-card {
-  @apply relative overflow-hidden bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
+  /* min-h-min: overflow-hidden would otherwise let CSS Grid shrink this
+     below its content (Skills wraps taller than Tools) and clip the tags. */
+  @apply relative overflow-hidden min-h-min bg-glass-bg border border-glass-border p-5 tab:p-6 flex flex-col gap-4;
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   box-shadow: var(--shadow-glass-card);

@@ -12,7 +12,7 @@ const setScrollY = (y: number) => { (window as unknown as { scrollY: number }).s
 // timing): m.* -> the underlying tag (forwardRef for the spotlight callback
 // ref), AnimatePresence -> passthrough so `{visible && <button/>}` mounts and
 // unmounts synchronously. The app uses LazyMotion's `m`, not `motion`.
-vi.mock('framer-motion', () => ({
+vi.mock('motion/react', () => ({
   m: new Proxy({}, {
     get: (_t, tag) => React.forwardRef(function MotionMock(props: Record<string, unknown>, ref: React.Ref<HTMLElement>) {
       const { children, initial, animate, exit, transition, whileTap, whileHover, variants, ...rest } = props

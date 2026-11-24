@@ -1,6 +1,6 @@
 'use client'
 
-import { m, type HTMLMotionProps } from 'framer-motion'
+import { m, type HTMLMotionProps } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'

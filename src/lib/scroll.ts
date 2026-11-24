@@ -1,4 +1,4 @@
-import { animate, type AnimationPlaybackControls } from 'framer-motion'
+import { animate, type AnimationPlaybackControls } from 'motion/react'
 
 // Shared smooth-scroll helper. Uses Framer Motion's animate() instead of
 // scrollIntoView({ behavior: 'smooth' }) because the browser API exposes no

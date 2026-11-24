@@ -3,7 +3,7 @@
 import { memo, useSyncExternalStore, type SyntheticEvent } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { m, type Variants } from 'framer-motion'
+import { m, type Variants } from 'motion/react'
 import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor } from '@/sanity/lib/image'
 import { EASE_OUT } from '@/constants/animations'

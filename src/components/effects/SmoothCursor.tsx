@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { m, useSpring, AnimatePresence } from 'framer-motion'
+import { m, useSpring, AnimatePresence } from 'motion/react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_CURSOR, SPRING_SNAP } from '@/constants/animations'
 

@@ -8,14 +8,15 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 |---|---|
 | Language | TypeScript (strict mode) |
 | Framework | Next.js 16 (App Router) |
-| UI | React 19 + Framer Motion |
+| UI | React 19 + Motion (`motion/react`, LazyMotion) |
 | Styling | Tailwind CSS v4 (inline utilities, no custom font classes) |
-| CMS | Sanity v5 (hosted Studio at `/studio`) |
+| CMS | Sanity v6 (hosted Studio at `/studio`) |
 | Email | Resend |
 | Booking | Cal.com embed |
 | WebGL | OGL |
 | Font | Satoshi via `next/font/local` (self-hosted) |
 | Analytics | Vercel Speed Insights + Analytics |
+| Runtime | Node.js ≥ 24.15.0 (`engines` in `package.json`) |
 
 ## Pages
 
@@ -83,13 +84,13 @@ npm run dev         # Dev server with Turbopack
 npm run build       # Production build
 npm start           # Start production server
 npm run lint        # Run ESLint
-npm run typecheck   # Type-check with tsc (no emit)
+npm run typecheck   # Type-check with TypeScript 7 native (`@typescript/native`)
 npm test            # Run Vitest once
 npm run test:watch  # Run Vitest in watch mode
 npm run a11y        # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
-Type-checking also runs as part of `npm run build` (Next.js type-checks during the build). To type-check on its own: `npm run typecheck`. The project enables `noUncheckedIndexedAccess` on top of `strict`.
+`npm run typecheck` uses TypeScript 7 via `@typescript/native`. `npm run build` still type-checks with TypeScript 6 (`typescript` → `@typescript/typescript6`) because Next.js needs the classic `typescript/lib/typescript.js` API, which TypeScript 7 does not ship. The project enables `noUncheckedIndexedAccess` on top of `strict`.
 
 ## Project Structure
 ```
@@ -124,7 +125,7 @@ src/
 ├── lib/                  # GROQ queries (sanity-queries.ts), validation
 ├── hooks/                # Custom React hooks
 ├── data/                 # Static data (testimonials.ts)
-└── constants/            # Framer Motion animation configs, layout/site constants
+└── constants/            # Motion animation configs, layout/site constants
 ```
 
 ## Content Management
@@ -178,8 +179,8 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 - **SpotlightButton** — animated CTA button (`default`, `dark` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
-- **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails
-- **BookingDialog** — presentational booking dialog (backdrop, framed card, spinner / error fallback, Cal.com iframe); render-only, lazy-loaded by BookingButton
+- **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails. Each open remounts the iframe (`iframeKey`) so a reopen during the exit animation still gets a fresh `onLoad`. Cal.com `postMessage` close/height events are parsed via [cal-embed-message.ts](src/lib/cal-embed-message.ts) (`fullType` from the current embed SDK and legacy `type` payloads)
+- **BookingDialog** — presentational booking dialog (backdrop, framed card, spinner / error fallback, Cal.com iframe); render-only, portaled by BookingButton
 - **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
 - **LinkedInButton** — LinkedIn profile link
 - **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
@@ -196,7 +197,7 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 - **TextReveal** — scroll-triggered text reveal animation
 
 **Utility**
-- **MotionProvider** — wraps the app with Framer Motion `LazyMotion` provider
+- **MotionProvider** — wraps the app with Motion `LazyMotion` + `domAnimation` (import `m` from `motion/react`, not the full `motion` export)
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
 - **PasswordGate** — locks protected case studies behind a password; uses `sessionStorage` so the gate re-locks on tab close
 - **PortableTextComponents** — Portable Text renderer components for Sanity rich-text fields
@@ -219,7 +220,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 
 ## Constants
 
-- **animations.ts** — shared Framer Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
+- **animations.ts** — shared Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
 - **colors.ts** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
 - **layout.ts** — layout constants (JS-only breakpoints)
 - **site.ts** — site URL, name, and meta description constants
@@ -248,7 +249,8 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typo
 - **json-ld.ts** — safe JSON-LD serialiser for `<script>` injection
 - **modal-store.ts** — framework-agnostic singleton (no React) tracking whether any blocking modal is open via `pushModalOpen` / `popModalOpen`; WebGL backgrounds subscribe imperatively (`subscribeToModalOpen` / `getModalOpen`) to pause their RAF loops while occluded
 - **portable-text.ts** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
-- **scroll.ts** — Framer Motion-based smooth-scroll helper. Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
+- **scroll.ts** — Motion-based smooth-scroll helper (`animate` from `motion/react`). Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
+- **cal-embed-message.ts** — parses Cal.com embed `postMessage` payloads (`CAL::__closeIframe`, `CAL::__dimensionChanged`, plus legacy `type` names) for BookingButton
 - **validation.ts** — shared form validation
 
 ## Deployment
@@ -293,12 +295,14 @@ Vitest is configured with the `node` environment by default ([vitest.config.ts](
 - `src/lib/__tests__/modal-store.test.ts`
 - `src/lib/__tests__/portable-text.test.ts`
 - `src/lib/__tests__/scroll.test.ts`
+- `src/lib/__tests__/cal-embed-message.test.ts`
 - `src/lib/__tests__/validation.test.ts`
 - `src/sanity/lib/__tests__/image.test.ts`
 - `src/hooks/__tests__/useContactForm.test.tsx`
 - `src/components/buttons/__tests__/BackToTop.test.tsx`
+- `src/components/buttons/__tests__/BookingButton.test.tsx`
 
-Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests.
+Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests. Vitest 5 uses Vite’s Oxc JSX transform (`oxc.jsx.runtime: 'automatic'` in [vitest.config.ts](vitest.config.ts)).
 
 ## SEO
 

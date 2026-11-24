@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import BookingButton from '@/components/buttons/BookingButton'
 import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/effects/TextReveal'

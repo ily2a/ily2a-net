@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP } from '@/constants/animations'
 

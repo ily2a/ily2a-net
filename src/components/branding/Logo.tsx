@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { m } from 'framer-motion'
+import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 
 const STATES: ButtonState[] = ['default', 'hover', 'pressed']

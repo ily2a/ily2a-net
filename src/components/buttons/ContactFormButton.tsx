@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
-import { m, type HTMLMotionProps } from 'framer-motion'
+import { m, type HTMLMotionProps } from 'motion/react'
 import { SPRING_SNAP } from '@/constants/animations'
 
 const baseClass =

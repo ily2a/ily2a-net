@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, type ReactNode, type TouchEvent } from 'react'
-import { m, type Variants } from 'framer-motion'
+import { m, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { EASE_OUT } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
@@ -195,7 +195,7 @@ export default function CapabilitiesSection() {
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
                 <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
-                  <Image src={tool.logo} alt="" aria-hidden="true" width={24} height={24} sizes="24px" className="w-6 h-6 object-contain shrink-0" />
+                  <Image src={tool.logo} alt="" aria-hidden="true" width={20} height={20} sizes="20px" className="w-5 h-5 object-contain shrink-0" />
                   {tool.name}
                 </li>
               ))}
