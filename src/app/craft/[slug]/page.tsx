@@ -14,7 +14,7 @@ import { sanityFetch, fetchSanityListStatic } from '@/sanity/lib/live'
 import { CASE_STUDY_BY_SLUG_QUERY, CASE_STUDY_SLUGS_QUERY } from '@/lib/sanity-queries'
 import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import type { SanityImageObject } from '@sanity/image-url'
-import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
+import { SITE_URL, SITE_NAME, SITE_BRAND, CRAFT_DESCRIPTION } from '@/constants/site'
 import { safeJsonLd } from '@/lib/json-ld'
 import TableOfContents, { type TocItem } from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/auth/PasswordGate'
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${data.title} — ${SITE_NAME}`,
       description,
       url: `${SITE_URL}/craft/${slug}`,
-      siteName: SITE_NAME,
+      siteName: SITE_BRAND,
       locale: 'en_GB',
       type: 'article',
       images: [{ ...ogImage, alt: `${data.title} — ${SITE_NAME}` }],

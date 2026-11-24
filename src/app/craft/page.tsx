@@ -5,7 +5,7 @@ import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { fetchSanityList } from '@/sanity/lib/live'
 import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
-import { SITE_URL, SITE_NAME, CRAFT_DESCRIPTION } from '@/constants/site'
+import { SITE_URL, SITE_NAME, SITE_BRAND, CRAFT_DESCRIPTION } from '@/constants/site'
 import type { ProjectCardData } from '@/components/cards/ProjectCard'
 
 export const metadata: Metadata = {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: `Craft — ${SITE_NAME}`,
     description: CRAFT_DESCRIPTION,
     url: `${SITE_URL}/craft`,
-    siteName: SITE_NAME,
+    siteName: SITE_BRAND,
     locale: 'en_GB',
     type: 'website',
     images: [{ url: '/og-image.jpg', width: 1644, height: 916, alt: `Craft — ${SITE_NAME}` }],

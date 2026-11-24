@@ -29,9 +29,9 @@ const CARDS = [
   {
     title: 'Design Engineering',
     icon: '/capabilities-icons/drop.png',
-    description: 'I close the gap between design and code. React components, zero handoff friction.',
+    description: 'I close the gap between design and code. Zero handoff friction.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-600), var(--color-amethyst-900), transparent)',
-    tags: ['React', 'React Native', 'Figma-to-code', 'Component Architecture', 'AI-assisted workflows'],
+    tags: ['Figma-to-code', 'Coded Prototypes', 'Motion & Interaction', 'Production UI'],
   },
 ]
 
@@ -42,7 +42,7 @@ const SKILL_GROUPS = [
   },
   {
     label: 'Code',
-    items: ['React', 'React Native', 'Component Architecture', 'Figma-to-code'],
+    items: ['Figma-to-code', 'Coded Prototypes', 'Motion & Interaction', 'Production UI'],
   },
 ]
 
@@ -195,7 +195,7 @@ export default function CapabilitiesSection() {
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
                 <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
-                  <Image src={tool.logo} alt="" aria-hidden="true" width={20} height={20} sizes="20px" className="w-5 h-5 object-contain shrink-0" />
+                  <Image src={tool.logo} alt="" aria-hidden="true" width={16} height={16} sizes="16px" className="w-4 h-4 object-contain shrink-0" />
                   {tool.name}
                 </li>
               ))}

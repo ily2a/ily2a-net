@@ -2,7 +2,7 @@ import "./globals.css"
 import { Suspense, type ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/constants/site"
+import { SITE_URL, SITE_NAME, SITE_BRAND, SITE_DESCRIPTION } from "@/constants/site"
 import { BACKGROUND } from "@/constants/colors"
 import { safeJsonLd } from "@/lib/json-ld"
 import SmoothCursor from "@/components/effects/SmoothCursor"
@@ -30,7 +30,8 @@ const jsonLd = {
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
-      "name": "Ily Ameur - Design Engineer Portfolio",
+      "name": SITE_BRAND,
+      "alternateName": [SITE_NAME, "ily2a"],
       "url": SITE_URL,
       "description": SITE_DESCRIPTION,
       "inLanguage": "en-GB",
@@ -61,6 +62,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: `${SITE_NAME} : Design Engineer`,
   description: SITE_DESCRIPTION,
+  applicationName: SITE_BRAND,
   keywords: [
     'Design Engineer',
     'Product Designer',
@@ -76,7 +78,7 @@ export const metadata: Metadata = {
     title: `${SITE_NAME} : Design Engineer`,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    siteName: "Ily Ameur - Design Engineer Portfolio",
+    siteName: SITE_BRAND,
     locale: "en_GB",
     type: "website",
     images: [{ url: '/og-image.jpg', width: 1644, height: 916, alt: `${SITE_NAME} — Design Engineer` }],
