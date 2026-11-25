@@ -8,7 +8,7 @@ import FloatingNav from '@/components/nav/FloatingNav'
 import ScrollToSection from '@/components/nav/ScrollToSection'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { fetchSanityList } from '@/sanity/lib/live'
-import { CASE_STUDIES_FEATURED_QUERY } from '@/lib/sanity-queries'
+import { CASE_STUDIES_FEATURED_QUERY } from '@/sanity/lib/queries'
 import { HERO_NAV_DELAY } from '@/constants/animations'
 import type { ProjectCardData } from '@/components/cards/ProjectCard'
 

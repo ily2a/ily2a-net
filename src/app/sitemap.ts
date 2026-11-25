@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { fetchSanityListStatic } from '@/sanity/lib/live'
 import { SITE_URL as BASE_URL } from '@/constants/site'
-import { CASE_STUDY_SITEMAP_QUERY } from '@/lib/sanity-queries'
+import { CASE_STUDY_SITEMAP_QUERY } from '@/sanity/lib/queries'
 
 interface SitemapEntry {
   slug: string

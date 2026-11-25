@@ -6,12 +6,11 @@ import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 interface ContactButtonProps {
-  label?: string
   onClick?: () => void
   'aria-current'?: AriaAttributes['aria-current']
 }
 
-export default function ContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }: ContactButtonProps) {
+export default function ContactButton({ onClick, 'aria-current': ariaCurrent }: ContactButtonProps) {
   const buttonRef      = useRef<HTMLButtonElement>(null)
   const animRef        = useRef<AnimationPlaybackControls | null>(null)
   const angleRef       = useRef(62)
@@ -91,7 +90,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
       />
       <div className="absolute rounded-button-inset [inset:1px] bg-gradient-to-b from-surface to-background" />
       <span className="btn-label relative z-[1] pointer-events-none text-text-primary">
-        {label}
+        Contact
       </span>
     </m.button>
   )

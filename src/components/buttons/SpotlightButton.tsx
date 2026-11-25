@@ -7,8 +7,8 @@
 //   • Icon / nav toggle with discrete default/hover/pressed states → useButtonState
 //     + a `states` style map (e.g. NavbarButton, CloseButton, LinkedInButton).
 //   • One-off visual treatment that none of the above expresses (conic gradient,
-//     ripple, embedded modal) → bespoke component (e.g. ContactButton,
-//     MobileContactButton, BookingButton).
+//     ripple) → bespoke component (e.g. ContactButton, MobileContactButton).
+//     The Cal.com booking trigger + modal lives in src/components/booking/.
 
 import { m } from 'motion/react'
 import Link from 'next/link'
@@ -26,56 +26,33 @@ const SPOTLIGHT = <SpotlightLayer />
 
 type SpotlightVariant = 'default' | 'dark'
 
-const VARIANTS: Record<SpotlightVariant, { bg: string; text: string; height: string }> = {
-  default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950', height: 'h-11' },
-  dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100', height: 'h-11' },
+const VARIANTS: Record<SpotlightVariant, { bg: string; text: string }> = {
+  default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950' },
+  dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100' },
 }
 
 interface SpotlightButtonProps {
-  href?: string
-  children?: ReactNode
-  onClick?: () => void
+  href: string
+  children: ReactNode
   variant?: SpotlightVariant
-  className?: string
 }
 
-export default function SpotlightButton({ href, children, onClick, variant = 'default', className = '' }: SpotlightButtonProps) {
+export default function SpotlightButton({ href, children, variant = 'default' }: SpotlightButtonProps) {
   const { ref, onMouseMove } = useSpotlight()
-
-  const v = VARIANTS[variant] ?? VARIANTS.default
-  const baseClass = `relative inline-flex items-center justify-center rounded-pill px-4 ${v.height} btn-label ${v.text} overflow-hidden select-none no-underline ${className}`
-  const baseStyle = { background: v.bg }
-
-  if (href) {
-    return (
-      <MotionLink
-        ref={ref}
-        href={href}
-        onMouseMove={onMouseMove}
-        whileTap={{ scale: 0.97 }}
-        transition={SPRING_SNAP}
-        className={baseClass}
-        style={baseStyle}
-      >
-        {SPOTLIGHT}
-        <span className="relative z-10">{children}</span>
-      </MotionLink>
-    )
-  }
+  const v = VARIANTS[variant]
 
   return (
-    <m.button
-      type="button"
+    <MotionLink
       ref={ref}
-      onClick={onClick}
+      href={href}
       onMouseMove={onMouseMove}
       whileTap={{ scale: 0.97 }}
       transition={SPRING_SNAP}
-      className={baseClass}
-      style={{ ...baseStyle, border: 'none', font: 'inherit' }}
+      className={`relative inline-flex items-center justify-center rounded-pill px-4 h-11 btn-label ${v.text} overflow-hidden select-none no-underline`}
+      style={{ background: v.bg }}
     >
       {SPOTLIGHT}
       <span className="relative z-10">{children}</span>
-    </m.button>
+    </MotionLink>
   )
 }

@@ -3,7 +3,7 @@
 import { useState, useId, useRef, useEffect, type ChangeEventHandler, type ReactNode, type RefObject } from 'react'
 import { m } from 'motion/react'
 import { EASE_OUT } from '@/constants/animations'
-import { RADII } from '@/constants/radii'
+import { RADII } from '@/constants/tokens'
 
 const GAP_PAD  = 4
 const LBL_LEFT = 14

@@ -2,7 +2,7 @@
 
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useEffect, useRef, type RefObject } from 'react'
-import { AMETHYST } from '@/constants/colors'
+import { AMETHYST } from '@/constants/tokens'
 import { hexToRgbNormalized } from '@/lib/color'
 import { useWebGLBackground, type WebGLBackgroundContext } from '@/hooks/useWebGLBackground'
 

@@ -13,11 +13,9 @@ export default function TestimonialsBg() {
   return (
     <div aria-hidden="true" className="absolute inset-0 z-0">
       <TestimonialsVeil
-        hueShift={0}
         speed={0.3}
         warpAmount={0.6}
         noiseIntensity={0.025}
-        scanlineIntensity={0}
         resolutionScale={0.6}
       />
       <div className="absolute inset-0 bg-gradient-to-br from-amethyst-950 via-amethyst-700 to-amethyst-900 mix-blend-color" />

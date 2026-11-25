@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import { m } from 'motion/react'
-import BookingDialog from '@/components/buttons/BookingDialog'
+import BookingDialog from '@/components/booking/BookingDialog'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { isCalCloseAction, readCalEmbedMessage } from '@/lib/cal-embed-message'
 import { pushModalOpen, popModalOpen } from '@/lib/modal-store'
 import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
-import { BREAKPOINTS } from '@/constants/layout'
+import { BREAKPOINTS } from '@/constants/tokens'
 
 function releaseScrollLock() {
   // No-op when no lock is active — guards against an errant window.scrollTo(0, 0)

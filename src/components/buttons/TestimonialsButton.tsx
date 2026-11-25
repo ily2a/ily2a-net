@@ -4,7 +4,7 @@ import { m } from 'motion/react'
 import { SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
-import { BREAKPOINTS } from '@/constants/layout'
+import { BREAKPOINTS } from '@/constants/tokens'
 import { scrollToElement } from '@/lib/scroll'
 
 export default function TestimonialsButton({ instant = false }: { instant?: boolean }) {

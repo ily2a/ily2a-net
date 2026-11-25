@@ -3,7 +3,7 @@ import React from 'react'
 import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest'
 import { render, screen, cleanup, fireEvent, act, waitFor } from '@testing-library/react'
 import { renderToString } from 'react-dom/server'
-import BookingButton from '@/components/buttons/BookingButton'
+import BookingButton from '@/components/booking/BookingButton'
 
 // Strip Motion: m.* -> the underlying tag. AnimatePresence keeps the last
 // child while `open` is false, which is the exit window where a reused iframe

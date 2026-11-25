@@ -3,7 +3,7 @@
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { useRef } from 'react';
 import { useWebGLBackground, type WebGLBackgroundContext } from '@/hooks/useWebGLBackground';
-import { AMETHYST } from '@/constants/colors';
+import { AMETHYST } from '@/constants/tokens';
 import { hexToRgbNormalized } from '@/lib/color';
 
 const vertexShader = `

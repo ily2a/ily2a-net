@@ -4,7 +4,7 @@ import ContactSection from '@/components/sections/ContactSection'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
 import { fetchSanityList } from '@/sanity/lib/live'
-import { CASE_STUDIES_QUERY } from '@/lib/sanity-queries'
+import { CASE_STUDIES_QUERY } from '@/sanity/lib/queries'
 import { SITE_URL, SITE_NAME, SITE_BRAND, CRAFT_DESCRIPTION } from '@/constants/site'
 import type { ProjectCardData } from '@/components/cards/ProjectCard'
 

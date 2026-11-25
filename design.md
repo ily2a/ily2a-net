@@ -4,7 +4,7 @@ The design language for Ily Ameur's portfolio. A dark, glass-and-amethyst
 aesthetic with weighted spring motion. Every rule here is enforced in code via
 Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Motion configs
 (`src/constants/animations.ts`), and hex mirrors for non-CSS contexts
-(`src/constants/colors.ts`).
+(`src/constants/tokens.ts`).
 
 ## Non-Negotiable Standards
 
@@ -22,7 +22,7 @@ These three are hard rules. Audit every UI change against them before shipping:
      `.booking-spinner` (`animate-spin`), both gated on `prefers-reduced-motion`.
 2. **Design tokens for all color.** Reference `var(--color-*)` or the Tailwind
    token classes (`text-brand`, `bg-surface`, `text-error`, …). No hardcoded hex
-   in component code. The only hex lives in `colors.ts`, and only for contexts CSS
+   in component code. The only hex lives in `tokens.ts`, and only for contexts CSS
    variables can't reach (WebGL shader uniforms, build-time metadata strings,
    CSS `mask-image` stops via `MASK_BLACK`).
 3. **Tailwind for all styling.** Inline `style` only when Tailwind can't express
@@ -140,7 +140,7 @@ inlining a one-off scale.
 
 Spacing uses the default Tailwind scale. Cards pad `p-5` on mobile, `tab:p-6` up.
 
-Radius tokens (`globals.css` `@theme` → `rounded-*`; JS mirrors in `constants/radii.ts`):
+Radius tokens (`globals.css` `@theme` → `rounded-*`; JS mirrors in `constants/tokens.ts` as `RADII`):
 
 | Token | Value | Use |
 |---|---|---|
@@ -152,7 +152,7 @@ Radius tokens (`globals.css` `@theme` → `rounded-*`; JS mirrors in `constants/
 `.testimonial-card` / `.cap-card` use Tailwind `rounded-xl` in JSX (same 12px
 intent as `rounded-glass`). Tags use `rounded-lg`.
 
-Breakpoints are custom tokens — mirror them in `layout.ts` (`BREAKPOINTS`) when a
+Breakpoints are custom tokens — mirror them in `tokens.ts` (`BREAKPOINTS`) when a
 layout decision is made in JS rather than CSS:
 
 | Token | Width | Purpose |
@@ -165,8 +165,8 @@ layout decision is made in JS rather than CSS:
 | `lg` | 1200px | Tablet↔desktop boundary |
 | `xl` | 1440px | Widest step |
 
-Keep `globals.css` `--breakpoint-*` / `--radius-*` in sync with `layout.ts` and
-`radii.ts` — they describe the same lines from two languages.
+Keep `globals.css` `--breakpoint-*` / `--radius-*` in sync with `tokens.ts` —
+they describe the same lines from two languages.
 
 ---
 
@@ -242,13 +242,16 @@ reach for these before authoring a new transition.
 
 ### Buttons — pick the right one (`SpotlightButton.tsx` header)
 
-- **Spotlight CTA** (radial cursor glow on a filled pill) → `SpotlightButton`,
-  optionally wrapped in a named component for a fixed call site (`HomeButton`,
-  `ViewAllProjectsButton` — these thin wrappers are intentional, keep them).
+- **Spotlight CTA** (radial cursor glow on a filled pill, navigates via `href`) →
+  `SpotlightButton`, optionally wrapped in a named component for a fixed call
+  site (`HomeButton`, `ViewAllProjectsButton` — these thin wrappers are
+  intentional, keep them).
 - **Icon / nav toggle** with discrete default/hover/pressed → `useButtonState` +
   a `states` style map (`NavbarButton`, `CloseButton`, `LinkedInButton`).
-- **One-off treatment** none of the above expresses (conic gradient, ripple,
-  embedded modal) → bespoke component (`ContactButton`, `BookingButton`).
+- **One-off treatment** none of the above expresses (conic gradient, ripple) →
+  bespoke component (`ContactButton`, `MobileContactButton`). The Cal.com
+  booking trigger + modal (`BookingButton`, `BookingDialog`) is its own feature
+  in `components/booking/`.
 
 `useButtonState` is the shared default/hover/pressed machine; pass `isMobile` to
 suppress hover on touch.
@@ -305,7 +308,7 @@ lazy `TestimonialsBg`, `NotFoundPasswordBg`) share `useWebGLBackground`: pauses
 RAF when off-screen, tab-hidden, or modal-occluded (via the framework-agnostic
 `modal-store`); honors reduced motion; rebuilds on GL context loss. Hero /
 Contact / NotFoundPassword cap DPR at 1.5; `TestimonialsVeil` hard-codes
-`dpr: 1` (expensive CPPN fragment). Colors come from `colors.ts` hex →
+`dpr: 1` (expensive CPPN fragment). Colors come from `tokens.ts` hex →
 `hexToRgbNormalized` (`lib/color.ts`) since CSS vars can't reach shader uniforms.
 Hero shows a CSS gradient placeholder until the first frame, then crossfades —
 no late pop-in, and a graceful fallback if WebGL never paints.
@@ -318,6 +321,6 @@ no late pop-in, and a graceful fallback if WebGL never paints.
 - `m` from `motion/react` over full `motion`; shared springs over ad-hoc transitions.
 - ~300ms ceiling on interaction feedback (longer entrances/exits OK).
 - Value channels (`{ y }`, `{ scale }`) over `transform` strings.
-- Keep `globals.css` breakpoints ↔ `layout.ts` and radii ↔ `radii.ts` in sync.
+- Keep `globals.css` colors, breakpoints and radii ↔ `constants/tokens.ts` in sync.
 - When in doubt, the existing component for a pattern is the spec — match its
   altitude rather than inventing a parallel one.

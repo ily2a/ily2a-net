@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local, gitignored tooling folders — ESLint doesn't read .gitignore.
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".context/**",
   ]),
   {
     rules: {

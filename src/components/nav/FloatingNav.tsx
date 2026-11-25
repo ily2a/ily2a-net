@@ -5,7 +5,7 @@ import Navbar from '@/components/nav/Navbar'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
 import { SPRING_NAV } from '@/constants/animations'
-import { BREAKPOINTS } from '@/constants/layout'
+import { BREAKPOINTS } from '@/constants/tokens'
 
 export default function FloatingNav({ delay = 0 }: { delay?: number }) {
   const introPlayed = useHeroIntroPlayed()

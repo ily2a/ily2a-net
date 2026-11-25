@@ -3,7 +3,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useWebGLBackground } from '@/hooks/useWebGLBackground'
-import { AMETHYST } from '@/constants/colors'
+import { AMETHYST } from '@/constants/tokens'
 import { hexToRgbNormalized } from '@/lib/color'
 
 const MAX_COLORS = 8
@@ -119,7 +119,6 @@ const prepStops = (stops?: string[]): { arr: [number, number, number][]; count: 
 }
 
 interface HeroBgProps {
-  className?: string
   onFirstFrame?: () => void
   gradientColors?: string[]
   angle?: number
@@ -138,7 +137,6 @@ interface HeroBgProps {
 }
 
 const HeroBg = ({
-  className = '',
   onFirstFrame,
   gradientColors,
   angle = 0,
@@ -381,7 +379,6 @@ const HeroBg = ({
     <div
       ref={containerRef}
       aria-hidden="true"
-      className={className || undefined}
       style={{
         position: 'absolute',
         inset: 0,

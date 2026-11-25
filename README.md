@@ -115,6 +115,7 @@ src/
 ├── components/           # React components (grouped by role)
 │   ├── auth/             # Password gate for protected case studies
 │   ├── backgrounds/      # WebGL effect backgrounds
+│   ├── booking/          # Cal.com booking trigger + dialog
 │   ├── branding/         # Logo mark
 │   ├── buttons/          # Button and CTA components
 │   ├── cards/            # Project cards
@@ -125,11 +126,11 @@ src/
 │   ├── portable-text/    # Sanity Portable Text renderers
 │   ├── providers/        # App-level providers (motion, analytics)
 │   └── sections/         # Home page section components
-├── sanity/               # env, client, live fetch, image helpers, schemaTypes, structure
-├── lib/                  # GROQ queries, API helpers, scroll, validation, dedup, …
+├── sanity/               # env, client, live fetch, GROQ queries, image helpers, schemaTypes, structure
+├── lib/                  # API helpers, scroll, validation, dedup, …
 ├── hooks/                # Custom React hooks
 ├── data/                 # Static data (testimonials.ts)
-└── constants/            # animations, colors, layout, radii, site
+└── constants/            # animations, site, tokens (JS mirrors of globals.css)
 ```
 
 ## Content Management
@@ -152,7 +153,7 @@ npx sanity@latest schema deploy
 
 ### Data fetching: request-time vs build-time
 
-Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/live.ts), and picking the right one matters:
+GROQ queries live in [src/sanity/lib/queries.ts](src/sanity/lib/queries.ts). Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/live.ts), and picking the right one matters:
 
 - **`sanityFetch` / `fetchSanityList`** — request-time. Backed by next-sanity's `defineLive`, which calls `draftMode()` internally for live preview. Use these from page components, `generateMetadata`, and route handlers — anywhere that runs inside a render/request context. `<SanityLive />` is mounted in the root layout in **development only** (it forces dynamic rendering); production content updates go through the ISR webhook.
 - **`fetchSanityListStatic`** — build-time. Queries the plain published client directly. Use this from `generateStaticParams` and `sitemap`, which run at build with **no request**: calling the live fetch there throws `next-dynamic-api-wrong-context` because `draftMode()` isn't available. Don't reach for the live fetch in those functions.
@@ -180,15 +181,17 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 - **FloatingLabelInput** — text input with floating label animation, used in the contact form
 
 **Buttons & CTAs**
-- **SpotlightButton** — animated CTA button (`default`, `dark` variants)
+- **SpotlightButton** — animated CTA link with a cursor spotlight (`href` required; `default`, `dark` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
-- **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails. Each open remounts the iframe (`iframeKey`) so a reopen during the exit animation still gets a fresh `onLoad`. Cal.com `postMessage` close/height events are parsed via [cal-embed-message.ts](src/lib/cal-embed-message.ts) (`fullType` from the current embed SDK and legacy `type` payloads)
-- **BookingDialog** — presentational booking dialog (backdrop, framed card, spinner / error fallback, Cal.com iframe); render-only, portaled by BookingButton
 - **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
 - **LinkedInButton** — LinkedIn profile link
 - **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
 - **NavbarButton** — navbar-specific button variant
+
+**Booking** (`components/booking/`)
+- **BookingButton** — Cal.com booking embed trigger; owns the open/close orchestration, scroll-lock, focus trap, dynamic iframe height, and a 15 s load-timeout fallback that surfaces an "open in new tab" link if the embed fails. Each open remounts the iframe (`iframeKey`) so a reopen during the exit animation still gets a fresh `onLoad`. Cal.com `postMessage` close/height events are parsed via [cal-embed-message.ts](src/lib/cal-embed-message.ts) (`fullType` from the current embed SDK and legacy `type` payloads)
+- **BookingDialog** — presentational booking dialog (backdrop, framed card, spinner / error fallback, Cal.com iframe); render-only, portaled by BookingButton
 
 **Visual Effects**
 - **SmoothCursor** — custom cursor with tight spring tracking (`SPRING_CURSOR`); expands to a labeled pill on `data-cursor-label` hover (desktop pointer only; off when `prefers-reduced-motion`)
@@ -220,14 +223,12 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typograp
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
-- **Breakpoints** — `sm: 390px`, `mobile: 600px`, `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px` (all mirrored in JS via `BREAKPOINTS` in [layout.ts](src/constants/layout.ts))
+- **Breakpoints** — `sm: 390px`, `mobile: 600px`, `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px` (all mirrored in JS via `BREAKPOINTS` in [tokens.ts](src/constants/tokens.ts))
 
 ## Constants
 
 - **animations.ts** — shared Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
-- **colors.ts** — palette hex mirrors of `globals.css` tokens (`BACKGROUND`, `AMETHYST`, `MASK_BLACK`), for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings, CSS mask stops)
-- **layout.ts** — JS mirrors of every `--breakpoint-*` token (`BREAKPOINTS`)
-- **radii.ts** — JS mirrors of every `--radius-*` token (`RADII`) for SVG / inline geometry
+- **tokens.ts** — JS mirrors of the `globals.css` tokens, for contexts where CSS variables can't be used: palette hex (`BACKGROUND`, `AMETHYST`, `MASK_BLACK`) for WebGL shaders, Next.js metadata strings and CSS mask stops; every `--radius-*` token (`RADII`) for SVG / inline geometry; every `--breakpoint-*` token (`BREAKPOINTS`) for layout decisions made in JS
 - **site.ts** — `SITE_URL`, `SITE_NAME`, `SITE_BRAND` (Google site-name / `applicationName`), `SITE_DESCRIPTION`, `CRAFT_DESCRIPTION`
 
 ## Data
@@ -247,7 +248,6 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typograp
 
 ## Lib
 
-- **sanity-queries.ts** — GROQ queries for case studies and home-page content
 - **api.ts** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
 - **color.ts** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
 - **dedup.ts** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
@@ -305,7 +305,7 @@ Vitest is configured with the `node` environment by default ([vitest.config.ts](
 - `src/sanity/lib/__tests__/image.test.ts`
 - `src/hooks/__tests__/useContactForm.test.tsx`
 - `src/components/buttons/__tests__/BackToTop.test.tsx`
-- `src/components/buttons/__tests__/BookingButton.test.tsx`
+- `src/components/booking/__tests__/BookingButton.test.tsx`
 
 Components/hooks that need a DOM should add `// @vitest-environment jsdom` at the top of the test file — the default `node` environment stays fast for helper-level unit tests. Vitest 5 uses Vite’s Oxc JSX transform (`oxc.jsx.runtime: 'automatic'` in [vitest.config.ts](vitest.config.ts)).
 

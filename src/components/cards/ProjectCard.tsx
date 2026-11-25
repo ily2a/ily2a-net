@@ -7,7 +7,7 @@ import { m, type Variants } from 'motion/react'
 import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor } from '@/sanity/lib/image'
 import { EASE_OUT } from '@/constants/animations'
-import { MASK_BLACK } from '@/constants/colors'
+import { MASK_BLACK } from '@/constants/tokens'
 
 const MotionLink = m.create(Link)
 

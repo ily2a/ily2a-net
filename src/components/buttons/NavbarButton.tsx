@@ -4,7 +4,7 @@ import { m, type HTMLMotionProps } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'
-import { BREAKPOINTS } from '@/constants/layout'
+import { BREAKPOINTS } from '@/constants/tokens'
 
 const CraftIcon = ({ color }: { color: string }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

@@ -13,12 +13,11 @@ interface Ripple {
 }
 
 interface MobileContactButtonProps {
-  label?: string
   onClick?: () => void
   'aria-current'?: AriaAttributes['aria-current']
 }
 
-export default function MobileContactButton({ label = 'Contact', onClick, 'aria-current': ariaCurrent }: MobileContactButtonProps) {
+export default function MobileContactButton({ onClick, 'aria-current': ariaCurrent }: MobileContactButtonProps) {
   const [ripples, setRipples] = useState<Ripple[]>([])
   const buttonRef  = useRef<HTMLButtonElement>(null)
   const prefersReduced = usePrefersReducedMotion()
@@ -59,7 +58,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <span className="btn-label relative z-[1] text-text-primary pointer-events-none">
-        {label}
+        Contact
       </span>
       <span className="absolute inset-0 pointer-events-none">
         {!prefersReduced && ripples.map((ripple) => (

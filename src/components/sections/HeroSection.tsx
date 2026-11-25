@@ -2,11 +2,11 @@
 
 import { useState, type ReactNode } from 'react'
 import { m } from 'motion/react'
-import BookingButton from '@/components/buttons/BookingButton'
+import BookingButton from '@/components/booking/BookingButton'
 import TestimonialsButton from '@/components/buttons/TestimonialsButton'
 import TextReveal from '@/components/effects/TextReveal'
 import { useHeroIntroPlayed } from '@/hooks/useHeroIntroPlayed'
-import { AMETHYST } from '@/constants/colors'
+import { AMETHYST } from '@/constants/tokens'
 import HeroBg from '@/components/backgrounds/HeroBg'
 import { HERO_SUBTITLE_DELAY, EASE_OUT } from '@/constants/animations'
 

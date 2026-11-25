@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { RADII } from '@/constants/radii'
+import { RADII } from '@/constants/tokens'
 
 // Stable empty default so an omitted `style` prop keeps the same reference
 // across renders instead of allocating a fresh object each time.
