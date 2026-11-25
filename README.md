@@ -16,7 +16,7 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 | WebGL | OGL |
 | Font | Satoshi via `next/font/local` (self-hosted) |
 | Analytics | Vercel Speed Insights + Analytics |
-| Runtime | Node.js ≥ 24.15.0 (`engines` in `package.json`) |
+| Runtime | Node.js 26 (`engines` in `package.json`; keep the Vercel project setting on 26.x to match) |
 
 ## Pages
 
@@ -91,6 +91,8 @@ npm run a11y        # Run @axe-core/cli (`axe`) against http://localhost:3000 (W
 ```
 
 `npm run typecheck` uses TypeScript 7 via `@typescript/native`. `npm run build` still type-checks with TypeScript 6 (`typescript` → `@typescript/typescript6`) because Next.js needs the classic `typescript/lib/typescript.js` API, which TypeScript 7 does not ship. The project enables `noUncheckedIndexedAccess` on top of `strict`.
+
+`.npmrc` passes `--no-experimental-webstorage` to Node for every npm script. Node 26 otherwise exposes an experimental `localStorage` global that a Sanity dependency touches during server rendering, which prints a warning on every build.
 
 `npm run a11y` needs the server running on port 3000 and a Chrome for Testing build with a matching ChromeDriver. Install the pair once per machine with `npx browser-driver-manager@2.0.1 install chrome`. It downloads to `~/.browser-driver-manager`, which `axe` picks up automatically; rerun it to update. npm's own `chromedriver` download is turned off in `allowScripts`, because `@axe-core/cli` pins it to an older Chrome.
 
