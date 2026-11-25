@@ -9,7 +9,7 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 | Language | TypeScript (strict mode) |
 | Framework | Next.js 16 (App Router) |
 | UI | React 19 + Motion (`motion/react`, LazyMotion) |
-| Styling | Tailwind CSS v4 (inline utilities, no custom font classes) |
+| Styling | Tailwind CSS v4 (semantic type classes in `globals.css`; see design.md) |
 | CMS | Sanity v6 (hosted Studio at `/studio`) |
 | Email | Resend |
 | Booking | Cal.com embed |
@@ -132,7 +132,7 @@ src/
 
 Case studies are managed in Sanity. Each document includes:
 
-- **Meta** — title, slug, client, role, timeline, platform, industry, tags, cover/card images
+- **Meta** — title, slug, client, role, timeline, platform, industry, short description, tags, display order, cover/card images, password-protection flag
 - **Context** — brief, problem statement, goals, UX strategy (rich text)
 - **Content** — flexible body blocks (text + images), Figma embed URL
 
@@ -158,7 +158,7 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 **Layout & Navigation**
 - **FloatingNav** — fixed bottom navbar with spring animation
 - **Navbar** / **NavbarButton** — top navbar with glass surface and scroll-aware behaviour
-- **GlassSurface** — frosted-glass surface (CSS `backdrop-blur` + saturate) used in the navbar
+- **GlassSurface** — navbar glass surface (`bg-surface/35`, blur 20px / saturate 300) — denser than card/panel glass; see design.md
 - **Logo** — animated logo mark
 - **BackToTop** — scroll-to-top utility
 
@@ -211,19 +211,20 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 
 [**design.md**](design.md) is the full design-system reference — color, typography utilities, breakpoints, glass surfaces, motion configs, interaction patterns, and accessibility conventions.
 
-Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. All typography is inlined as Tailwind utilities — no custom font classes. Key tokens at a glance:
+Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typography uses semantic classes from `globals.css` (`.heading-*`, `.text-*`, `.btn-label`, …) — see [design.md](design.md). Key tokens at a glance:
 
 - **Brand palette** — `amethyst-*` (50–950)
 - **Background** — `#0D1012`
 - **Text** — `#F3F5F6`
-- **Breakpoints** — `sm: 390px`, `mobile: 600px`, `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px` (`mobile`, `md`, and `lg` are also mirrored in JS via `BREAKPOINTS` in [layout.ts](src/constants/layout.ts))
+- **Breakpoints** — `sm: 390px`, `mobile: 600px`, `tab: 730px`, `md: 810px`, `desk: 1088px`, `lg: 1200px`, `xl: 1440px` (all mirrored in JS via `BREAKPOINTS` in [layout.ts](src/constants/layout.ts))
 
 ## Constants
 
 - **animations.ts** — shared Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
-- **colors.ts** — palette hex mirrors of `globals.css` tokens, for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings)
-- **layout.ts** — layout constants (JS-only breakpoints)
-- **site.ts** — site URL, name, and meta description constants
+- **colors.ts** — palette hex mirrors of `globals.css` tokens (`BACKGROUND`, `AMETHYST`, `MASK_BLACK`), for contexts where CSS variables can't be used (WebGL shaders, Next.js metadata strings, CSS mask stops)
+- **layout.ts** — JS mirrors of every `--breakpoint-*` token (`BREAKPOINTS`)
+- **radii.ts** — JS mirrors of every `--radius-*` token (`RADII`) for SVG / inline geometry
+- **site.ts** — `SITE_URL`, `SITE_NAME`, `SITE_BRAND` (Google site-name / `applicationName`), `SITE_DESCRIPTION`, `CRAFT_DESCRIPTION`
 
 ## Data
 
@@ -308,5 +309,5 @@ Components/hooks that need a DOM should add `// @vitest-environment jsdom` at th
 
 - **Sitemap** — generated at build time by [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity
 - **robots.txt** — static, lives at [public/robots.txt](public/robots.txt)
-- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.tsx](src/app/layout.tsx); the `WebSite.name` controls Google's site-name display in search results
+- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.tsx](src/app/layout.tsx); `WebSite.name` / `applicationName` / OG `siteName` use `SITE_BRAND` from [site.ts](src/constants/site.ts)
 - **OG image** — static [public/og-image.jpg](public/og-image.jpg) referenced from `metadata.openGraph` and `metadata.twitter`

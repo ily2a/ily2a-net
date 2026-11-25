@@ -2,7 +2,7 @@
 
 The design language for Ily Ameur's portfolio. A dark, glass-and-amethyst
 aesthetic with weighted spring motion. Every rule here is enforced in code via
-Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Framer Motion configs
+Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Motion configs
 (`src/constants/animations.ts`), and hex mirrors for non-CSS contexts
 (`src/constants/colors.ts`).
 
@@ -10,14 +10,14 @@ Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Framer Motion config
 
 These three are hard rules. Audit every UI change against them before shipping:
 
-1. **Framer Motion for all animation.** Use `m.*` elements, variants, and the
-   `animate()` utility. No raw CSS transitions for interactive states. Sanctioned
-   CSS exceptions (only these):
+1. **Motion for all animation.** Use `m.*` elements, variants, and the
+   `animate()` utility from `motion/react`. No raw CSS transitions for interactive
+   states. Sanctioned CSS exceptions (only these):
    - `.gradient-button` — `background-position` sweep across a multi-stop
      gradient, plus the paired `color` change on the same hover/active. Pure CSS
      expresses the gradient interpolation cleaner than a JS driver.
    - `Logo` state SVGs — `opacity` crossfade (`80ms`). Nesting `m.div` inside
-     the logo `m.button` breaks Framer gesture detection on mobile, so CSS stays.
+     the logo `m.button` breaks Motion gesture detection on mobile, so CSS stays.
 2. **Design tokens for all color.** Reference `var(--color-*)` or the Tailwind
    token classes (`text-brand`, `bg-surface`, `text-error`, …). No hardcoded hex
    in component code. The only hex lives in `colors.ts`, and only for contexts CSS
@@ -26,7 +26,7 @@ These three are hard rules. Audit every UI change against them before shipping:
 3. **Tailwind for all styling.** Inline `style` only when Tailwind can't express
    it — dynamic CSS vars (`--mx`/`--my`), conic/linear gradients, computed values.
 
-### Framer Motion: import `m`, not `motion`
+### Motion: import `m`, not `motion`
 
 The app wraps everything in `<LazyMotion features={domAnimation}>`
 (`MotionProvider.tsx`). Consequences:
@@ -167,14 +167,24 @@ same lines from two languages.
 
 ## Glass Surfaces
 
-The signature material. Defined once and reused (`.testimonial-card`,
-`.cap-card`, navbar `GlassSurface`):
+Two recipes — do not conflate them.
+
+**Card / panel glass** (`.testimonial-card`, `.cap-card`; also the contact info
+card and craft sidebar via the same tokens):
 
 - Fill `bg-glass-bg`, edge `border-glass-border`
-- `backdrop-filter: blur(16px) saturate(180%)` on mobile, stepping to
-  `blur(32px)` at ≥730px (`tab`)
+- `.testimonial-card` / `.cap-card`: `backdrop-filter: blur(16px) saturate(180%)`
+  on mobile, stepping to `blur(32px)` at ≥730px (`tab`)
+- Contact info card + craft sidebar: fixed `backdrop-blur-[32px]` /
+  `backdrop-saturate-[180%]` with `rounded-glass`
 - `--shadow-glass-card`: two inset highlights (1px top light, 1px bottom dark)
   plus a deep `0 8px 32px rgba(0,0,0,.3)` drop
+
+**Navbar `GlassSurface`** is a separate, denser recipe — not the card glass above:
+
+- Fill `bg-surface/35`, `backdrop-blur-[20px] backdrop-saturate-300`
+- Inset edge highlights via Tailwind shadow utilities (glass-border / glass-bg)
+- Default radius `RADII.GLASS` (`12px`)
 
 **ProjectCard** uses a 7-layer stacked `backdrop-filter` blur ladder
 (0.5/1/2/4/8/16/32) for its progressive-blur reveal. This is deliberate — do not
@@ -190,7 +200,7 @@ reach for these before authoring a new transition.
 
 **Springs**
 - `SPRING_SNAP` — `{ duration: 0.18, bounce: 0 }` — instant button feedback
-- `SPRING_CURSOR` — `{ stiffness: 1000, damping: 45, mass: 0.35 }` — custom cursor follow; tight tracking with a hint of ease
+- `SPRING_CURSOR` — `{ stiffness: 1000, damping: 45, mass: 0.35, restDelta: 0.001 }` — custom cursor follow; tight tracking with a hint of ease
 - `SPRING_ENTRANCE` — `{ stiffness: 120, damping: 30, mass: 1 }` — hero elements
 - `SPRING_NAV` — `{ stiffness: 120, damping: 20, mass: 1.5 }` — navbar slide-up
 
@@ -290,7 +300,7 @@ never paints.
 ## Conventions Recap
 
 - Tokens over literals; semantic type classes over raw sizes.
-- `m` over `motion`; shared springs over ad-hoc transitions.
+- `m` from `motion/react` over full `motion`; shared springs over ad-hoc transitions.
 - ~300ms ceiling on interaction feedback.
 - Value channels (`{ y }`, `{ scale }`) over `transform` strings.
 - Keep `globals.css` breakpoints and `layout.ts` in sync.
