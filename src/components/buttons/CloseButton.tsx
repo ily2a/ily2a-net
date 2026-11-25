@@ -6,7 +6,7 @@ import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP } from '@/constants/animations'
 
 interface CloseButtonStyle {
-  background: string
+  backgroundColor: string
   borderColor: string
   boxShadow: string
   fill: string
@@ -14,22 +14,22 @@ interface CloseButtonStyle {
 
 const states: Record<ButtonState, CloseButtonStyle> = {
   default: {
-    background:  'var(--color-amethyst-50)',
-    borderColor: 'var(--color-amethyst-700)',
-    boxShadow:   'none',
-    fill:        'var(--color-amethyst-700)',
+    backgroundColor: 'var(--color-amethyst-50)',
+    borderColor:     'var(--color-amethyst-700)',
+    boxShadow:       'none',
+    fill:            'var(--color-amethyst-700)',
   },
   hover: {
-    background:  'var(--color-amethyst-200)',
-    borderColor: 'var(--color-amethyst-900)',
-    boxShadow:   'none',
-    fill:        'var(--color-amethyst-900)',
+    backgroundColor: 'var(--color-amethyst-200)',
+    borderColor:     'var(--color-amethyst-900)',
+    boxShadow:       'none',
+    fill:            'var(--color-amethyst-900)',
   },
   pressed: {
-    background:  'var(--color-amethyst-700)',
-    borderColor: 'var(--color-amethyst-50)',
-    boxShadow:   'inset 0px -3px 3px var(--color-shadow), inset 0px 2px 3px var(--color-shadow)',
-    fill:        'var(--color-amethyst-50)',
+    backgroundColor: 'var(--color-amethyst-700)',
+    borderColor:     'var(--color-amethyst-50)',
+    boxShadow:       'inset 0px -3px 3px var(--color-shadow), inset 0px 2px 3px var(--color-shadow)',
+    fill:            'var(--color-amethyst-50)',
   },
 }
 
@@ -42,9 +42,9 @@ const CloseButton = forwardRef<HTMLButtonElement, { onClick?: () => void }>(func
       onClick={onClick}
       {...handlers}
       animate={{
-        background:  states[state].background,
-        borderColor: states[state].borderColor,
-        boxShadow:   states[state].boxShadow,
+        backgroundColor: states[state].backgroundColor,
+        borderColor:     states[state].borderColor,
+        boxShadow:       states[state].boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}

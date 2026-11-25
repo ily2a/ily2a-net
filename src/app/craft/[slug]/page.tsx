@@ -301,7 +301,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                     {/* react-doctor-disable-next-line react-doctor/iframe-missing-sandbox */}
                     <iframe
                       src={figmaEmbedUrl}
-                      allowFullScreen
                       allow="fullscreen"
                       loading="lazy"
                       sandbox="allow-same-origin allow-scripts allow-popups allow-presentation"

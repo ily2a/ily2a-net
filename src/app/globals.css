@@ -33,6 +33,7 @@
   --color-border-hover:   rgba(255, 255, 255, 0.25);
   --color-image-outline:  rgba(255, 255, 255, 0.10);
   --color-scrim:          rgba(0, 0, 0, 0.7);
+  --color-clear:          rgba(0, 0, 0, 0); /* "transparent" in a form Motion can animate */
 
   /* ─── Radius ──────────────────────────────────────────────── */
   --radius-pill:         8px;  /* buttons / pills */

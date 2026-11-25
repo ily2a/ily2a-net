@@ -24,21 +24,21 @@ const ICONS = { craft: CraftIcon, skills: SkillsIcon }
 
 interface NavbarStateStyle {
   borderColor: string
-  background: string
+  backgroundColor: string
   iconColor: string
   boxShadow: string
   textColor?: string
 }
 
 const webStates: Record<ButtonState, NavbarStateStyle> = {
-  default: { borderColor: 'transparent',               background: 'transparent',          iconColor: 'var(--color-amethyst-400)', textColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
-  hover:   { borderColor: 'var(--color-amethyst-300)', background: 'transparent',          iconColor: 'var(--color-amethyst-200)', textColor: 'var(--color-amethyst-200)', boxShadow: 'none' },
-  pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  textColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
+  default: { borderColor: 'var(--color-clear)',        backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-400)', textColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
+  hover:   { borderColor: 'var(--color-amethyst-300)', backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-200)', textColor: 'var(--color-amethyst-200)', boxShadow: 'none' },
+  pressed: { borderColor: 'var(--color-amethyst-50)',  backgroundColor: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  textColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 
 const mobileStates: Partial<Record<ButtonState, NavbarStateStyle>> = {
-  default: { borderColor: 'transparent',               background: 'transparent',          iconColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
-  pressed: { borderColor: 'var(--color-amethyst-50)',  background: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
+  default: { borderColor: 'var(--color-clear)',        backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
+  pressed: { borderColor: 'var(--color-amethyst-50)',  backgroundColor: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 
 interface NavbarButtonProps extends HTMLMotionProps<'button'> {
@@ -64,9 +64,9 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
       aria-label={isMobile ? label : undefined}
       aria-current={ariaCurrent}
       animate={{
-        borderColor: s.borderColor,
-        background:  s.background,
-        boxShadow:   s.boxShadow,
+        borderColor:     s.borderColor,
+        backgroundColor: s.backgroundColor,
+        boxShadow:       s.boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}

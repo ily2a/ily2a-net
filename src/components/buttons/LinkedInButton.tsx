@@ -6,29 +6,29 @@ import { SPRING_SNAP } from '@/constants/animations'
 
 interface LinkedInButtonStyle {
   borderColor: string
-  background: string
+  backgroundColor: string
   iconColor: string
   boxShadow: string
 }
 
 const states: Record<ButtonState, LinkedInButtonStyle> = {
   default: {
-    borderColor: 'transparent',
-    background:  'transparent',
-    iconColor:   'var(--color-amethyst-400)',
-    boxShadow:   'none',
+    borderColor:     'var(--color-clear)',
+    backgroundColor: 'var(--color-clear)',
+    iconColor:       'var(--color-amethyst-400)',
+    boxShadow:       'none',
   },
   hover: {
-    borderColor: 'var(--color-amethyst-300)',
-    background:  'transparent',
-    iconColor:   'var(--color-amethyst-200)',
-    boxShadow:   'none',
+    borderColor:     'var(--color-amethyst-300)',
+    backgroundColor: 'var(--color-clear)',
+    iconColor:       'var(--color-amethyst-200)',
+    boxShadow:       'none',
   },
   pressed: {
-    borderColor: 'var(--color-amethyst-50)',
-    background:  'var(--color-surface)',
-    iconColor:   'var(--color-amethyst-50)',
-    boxShadow:   'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)',
+    borderColor:     'var(--color-amethyst-50)',
+    backgroundColor: 'var(--color-surface)',
+    iconColor:       'var(--color-amethyst-50)',
+    boxShadow:       'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)',
   },
 }
 
@@ -51,9 +51,9 @@ export default function LinkedInButton() {
       aria-label="LinkedIn profile"
       {...handlers}
       animate={{
-        borderColor: states[state].borderColor,
-        background:  states[state].background,
-        boxShadow:   states[state].boxShadow,
+        borderColor:     states[state].borderColor,
+        backgroundColor: states[state].backgroundColor,
+        boxShadow:       states[state].boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}

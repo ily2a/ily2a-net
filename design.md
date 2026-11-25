@@ -84,6 +84,7 @@ Dark theme only. Amethyst is the single brand hue.
 | `border-hover` | `rgba(255,255,255,.25)` | Hover edge |
 | `image-outline` | `rgba(255,255,255,.10)` | 1px inset edge ring on images (`.img-outline`) |
 | `scrim` | `rgba(0,0,0,.7)` | Project-card bottom fade |
+| `clear` | `rgba(0,0,0,0)` | See-through value for Motion color animations (Motion can't animate `transparent`) |
 | `shadow` / `shadow-strong` | `rgba(0,0,0,.25)` / `.40` | Elevation |
 
 ---
@@ -224,6 +225,10 @@ reach for these before authoring a new transition.
   desktop, craft tag color taps).
 - `fadeUp(delay)` — scroll-triggered section entrance: `opacity 0→1`, `y 16→0`,
   `viewport once, margin -80px`, spring `{ stiffness: 260, damping: 24 }`.
+- **Never animate to `'transparent'`.** Motion can't interpolate the keyword, so
+  the change snaps and logs a warning on every page. Use `var(--color-clear)` for
+  see-through states, and animate `backgroundColor`, not the `background`
+  shorthand (`NavbarButton`, `LinkedInButton`).
 - **Interaction feedback ceiling: ~300ms.** Hover/press/tap stays snappy.
   Longer Motion tweens are fine for section entrances/exits (hero crossfade,
   password-gate leave ~0.4–0.5s).
@@ -287,8 +292,8 @@ Text inputs restore the native text cursor; keyboard focus restores
 - **Explicit `role="list"`** on `<ul>` with `list-style: none` — Safari+VoiceOver
   strips the implicit role, so it's re-declared on purpose (eslint scoped to allow
   it). Don't "fix" these.
-- Skip-to-content link, `lang="en-GB"`, axe CI target WCAG 2.0/2.1/2.2 AA
-  (`npm run a11y`).
+- Skip-to-content link, `lang="en-GB"`, axe target WCAG 2.0/2.1/2.2 AA
+  (`npm run a11y`, run locally; one-time Chrome setup in the README).
 - 6px custom scrollbar at 10% white, hover 15%.
 
 ---

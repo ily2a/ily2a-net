@@ -92,6 +92,8 @@ npm run a11y        # Run @axe-core/cli (`axe`) against http://localhost:3000 (W
 
 `npm run typecheck` uses TypeScript 7 via `@typescript/native`. `npm run build` still type-checks with TypeScript 6 (`typescript` → `@typescript/typescript6`) because Next.js needs the classic `typescript/lib/typescript.js` API, which TypeScript 7 does not ship. The project enables `noUncheckedIndexedAccess` on top of `strict`.
 
+`npm run a11y` needs the server running on port 3000 and a Chrome for Testing build with a matching ChromeDriver. Install the pair once per machine with `npx browser-driver-manager@2.0.1 install chrome`. It downloads to `~/.browser-driver-manager`, which `axe` picks up automatically; rerun it to update. npm's own `chromedriver` download is turned off in `allowScripts`, because `@axe-core/cli` pins it to an older Chrome.
+
 ## Project Structure
 ```
 src/
@@ -268,7 +270,7 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 [next.config.ts](next.config.ts) ships:
 
 - A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site (`/((?!studio).*)`), allowlisting Sanity, Cal.com (incl. Pusher websocket origins for the embed), Figma embeds, and Vercel telemetry / Live. Fonts are self-hosted; `font-src` is `'self' https://vercel.live`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set. Dev builds also allow `'unsafe-eval'` on `script-src` for React callstacks.
-- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src. Studio does **not** inherit the public-site HSTS / framing / permissions headers — only its CSP.
+- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src. It also allows Sanity 6's UI font host (`design-system-static.sanity.io`) and helper script (`core.sanity-cdn.com`). Studio does **not** inherit the public-site HSTS / framing / permissions headers — only its CSP.
 - On public routes: HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
 
 ### Sanity → ISR webhook

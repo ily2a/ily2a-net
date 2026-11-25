@@ -34,12 +34,10 @@
   },
   "overrides": {
     "@vercel/frameworks": {
-      "js-yaml": "3.15.2"
+      "js-yaml": "3.15.2",
+      "smol-toml": "^1.9.1"
     },
     "vite": "^8.3.6",
-    "eslint-plugin-jsx-a11y": {
-      "eslint": "$eslint"
-    },
     "dompurify": "^3.4.17",
     "uuid": "^14.0.3",
     "postcss": "^8.5.32",
@@ -47,6 +45,9 @@
     "form-data": "^4.0.6",
     "jsdom": {
       "undici": "^7.30.2"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "@typescript/native": "$@typescript/native"
     }
   },
   "devDependencies": {
@@ -58,12 +59,15 @@
     "@types/react": "^19.3.1",
     "@types/react-dom": "^19.3.0",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "eslint": "^10.15.0",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.6",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "jsdom": "^31.0.1",
     "tailwindcss": "^4.3.5",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "vitest": "^5.1.1"
+  },
+  "allowScripts": {
+    "chromedriver": false
   }
 }
