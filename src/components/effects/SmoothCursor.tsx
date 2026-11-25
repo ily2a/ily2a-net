@@ -121,7 +121,7 @@ export default function SmoothCursor() {
 
   return (
     <m.div
-      className="fixed top-0 left-0 z-[9999] pointer-events-none will-change-transform"
+      className="fixed top-0 left-0 z-[9999] pointer-events-none"
       style={{ x: cursorX, y: cursorY }}
       animate={{ opacity: isVisible ? 1 : 0 }}
       transition={SPRING_SNAP}

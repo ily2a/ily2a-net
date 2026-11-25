@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { m, AnimatePresence } from 'motion/react'
 import { SPRING_SNAP } from '@/constants/animations'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
@@ -22,11 +22,15 @@ export default function PasswordGate() {
   const [password,  setPassword]  = useState('')
   const [status,    setStatus]    = useState<GateStatus>('idle') // idle | checking | error | success
   const [showPass,  setShowPass]  = useState(false)
+  // Sync guard: status alone can't block a second submit before the next paint.
+  const busyRef = useRef(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!password.trim()) return
+    if (!password.trim() || busyRef.current) return
+    busyRef.current = true
     setStatus('checking')
+    let succeeded = false
     try {
       const res  = await fetch('/api/unlock', {
         method:  'POST',
@@ -39,6 +43,7 @@ export default function PasswordGate() {
       }
       const data = await res.json()
       if (data.success) {
+        succeeded = true
         sessionStorage.setItem(SESSION_KEY, '1')
         setStatus('success')
         setTimeout(() => setUnlocked(true), 800)
@@ -48,6 +53,9 @@ export default function PasswordGate() {
       }
     } catch {
       setStatus('error')
+    } finally {
+      // Keep locked after success so Enter can't fire again during the exit delay.
+      if (!succeeded) busyRef.current = false
     }
   }
 
@@ -183,7 +191,7 @@ export default function PasswordGate() {
 
               <button
                 type="submit"
-                disabled={status === 'checking' || status === 'ratelimited'}
+                disabled={status === 'checking' || status === 'success' || status === 'ratelimited'}
                 aria-busy={status === 'checking'}
                 className="gradient-button w-full rounded-[8px] px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
               >
