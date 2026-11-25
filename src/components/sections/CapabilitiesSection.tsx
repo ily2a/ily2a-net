@@ -22,7 +22,7 @@ const CARDS = [
   {
     title: 'Product Design',
     icon: '/capabilities-icons/cube.png',
-    description: 'Discovery to shipped product. Complex flows, scalable systems, clear logic.',
+    description: 'Discovery to shipped product. Complex flows, scalable systems.',
     gradient: 'linear-gradient(90deg, var(--color-amethyst-400), var(--color-amethyst-700), transparent)',
     tags: ['Mobile & Web Apps', 'SaaS', 'Design Systems', 'Complex Flows', 'End-to-end'],
   },
