@@ -342,7 +342,7 @@ function SidebarContent({ metaFields, tags, headingAs: Heading = 'h3' }: { metaF
   const hasTags = !!tags && tags.length > 0
   return (
     <div
-      className="flex flex-col bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border rounded-xl p-6"
+      className="flex flex-col bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border rounded-glass p-6"
       style={{ boxShadow: 'var(--shadow-glass-card)' }}
     >
       <Heading className="heading-article text-brand">

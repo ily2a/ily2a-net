@@ -10,15 +10,8 @@ import { SPRING_SNAP } from '@/constants/animations'
 const CAL_BOOKING_URL = 'https://cal.com/ily2a/intro'
 const CAL_EMBED_URL   = `${CAL_BOOKING_URL}?embed=true`
 
-// Shared style for the iframe frame in both narrow and wide layouts. Position-
-// dependent properties are merged in below; these five never change.
-const FRAME_BASE: CSSProperties = {
-  background:     'transparent',
-  border:         '1px solid var(--color-brand)',
-  borderRadius:   '8px',
-  overflow:       'hidden',
-  backdropFilter: 'blur(8px)',
-}
+const FRAME_CLASS =
+  'bg-transparent border border-brand rounded-pill overflow-hidden backdrop-blur-[8px]'
 
 interface BookingDialogProps {
   open: boolean
@@ -57,23 +50,9 @@ export default function BookingDialog({
   onIframeLoad,
   onIframeError,
 }: BookingDialogProps) {
-  const backdropStyle: CSSProperties = {
-    position:        'fixed',
-    inset:           0,
-    background:      'var(--color-surface-blur)',
-    backdropFilter:  'blur(4px)',
-    zIndex:          9999,
-    overscrollBehavior: 'none',
-    ...(isNarrowLayout && {
-      display:        'flex',
-      alignItems:     'center',
-      justifyContent: 'center',
-      padding:        isMobile ? '20px' : '40px',
-    }),
-  }
-
+  // Geometry that depends on viewport band — Tailwind can't express these
+  // computed heights / absolute insets without duplicating the JS breakpoint logic.
   const frameStyle: CSSProperties = isNarrowLayout ? {
-    ...FRAME_BASE,
     position:  'relative',
     width:     '100%',
     maxWidth:  '860px',
@@ -83,7 +62,6 @@ export default function BookingDialog({
     height:    isMobile ? 'calc(100dvh - 40px)' : 'calc(100dvh - 80px)',
     maxHeight: '800px',
   } : {
-    ...FRAME_BASE,
     position: 'absolute',
     top:      '64px',
     bottom:   '64px',
@@ -101,7 +79,9 @@ export default function BookingDialog({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={SPRING_SNAP}
-          style={backdropStyle}
+          className={`fixed inset-0 z-[9999] bg-surface-blur backdrop-blur-[4px] [overscroll-behavior:none]${
+            isNarrowLayout ? ' flex items-center justify-center' : ''
+          }${isNarrowLayout ? (isMobile ? ' p-5' : ' p-10') : ''}`}
         >
           <m.div
             key="frame"
@@ -114,15 +94,11 @@ export default function BookingDialog({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={SPRING_SNAP}
+            className={FRAME_CLASS}
             style={frameStyle}
           >
             <h2 id="booking-dialog-title" className="sr-only">Book a call with Ily Ameur</h2>
-            <div style={{
-              position: 'absolute',
-              top:      '16px',
-              zIndex:   10,
-              ...(isMobile ? { right: '16px' } : { left: '16px' }),
-            }}>
+            <div className={`absolute top-4 z-10 ${isMobile ? 'right-4' : 'left-4'}`}>
               <CloseButton ref={closeButtonRef} onClick={onClose} />
             </div>
 
@@ -149,7 +125,7 @@ export default function BookingDialog({
                   href={CAL_BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-notice underline text-brand"
+                  className="btn-label underline text-brand"
                 >
                   Open it in a new tab
                 </a>
@@ -160,12 +136,7 @@ export default function BookingDialog({
                 Mobile/tablet: scrollable wrapper + dynamic height from Cal.com postMessages.
                 Desktop: iframe fills container, overflow:hidden clips the footer bar. */}
             {!iframeError && (isNarrowLayout ? (
-              <div style={{
-                height:                  '100%',
-                overflowY:               'auto',
-                WebkitOverflowScrolling: 'touch',
-                touchAction:             'pan-y',
-              }}>
+              <div className="h-full overflow-y-auto [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
                 {/* sandbox is set below; allow-same-origin+scripts is required for Cal.com auth/cookies. */}
                 {/* react-doctor-disable-next-line react-doctor/iframe-missing-sandbox */}
                 <iframe

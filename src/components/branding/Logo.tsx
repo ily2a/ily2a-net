@@ -28,8 +28,8 @@ export default function Logo({ isMobile = false, onClick }: LogoProps) {
       {STATES.map((s) => (
         // SVGs don't benefit from Next.js image optimisation; unoptimized skips
         // the image pipeline while still using the <Image> component API.
-        // CSS transition is intentional here — m.div wrappers inside
-        // m.button interfere with FM gesture detection on mobile.
+        // CSS opacity crossfade is a sanctioned exception (see design.md) —
+        // nesting m.div inside m.button breaks FM gesture detection on mobile.
         <Image
           key={s}
           src={`/assets/logo-${s}.svg`}

@@ -3,12 +3,13 @@
 import { useState, useId, useRef, useEffect, type ChangeEventHandler, type ReactNode, type RefObject } from 'react'
 import { m } from 'motion/react'
 import { EASE_OUT } from '@/constants/animations'
+import { RADII } from '@/constants/radii'
 
 const GAP_PAD  = 4
 const LBL_LEFT = 14
-const R        = 10
+const R        = RADII.INPUT
 
-const INPUT_CLS = "text-field-input block w-full rounded-[10px] px-3.5 py-3 outline-none border-0 text-text-primary bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
+const INPUT_CLS = "text-field-input block w-full rounded-input px-3.5 py-3 outline-none border-0 text-text-primary bg-[color-mix(in_srgb,var(--color-surface)_60%,var(--color-background))]"
 
 interface Dims {
   w: number

@@ -7,6 +7,7 @@ import NavbarButton from '@/components/buttons/NavbarButton'
 import ContactButton from '@/components/buttons/ContactButton'
 import MobileContactButton from '@/components/buttons/MobileContactButton'
 import GlassSurface from '@/components/effects/GlassSurface'
+import { RADII } from '@/constants/radii'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { scrollToElement } from '@/lib/scroll'
@@ -51,7 +52,7 @@ const Navbar = memo(function Navbar({ isMobile = false }: { isMobile?: boolean }
     <GlassSurface
       width={isMobile ? 'calc(100vw - 32px)' : '472px'}
       height={64}
-      borderRadius={12}
+      borderRadius={RADII.GLASS}
       style={isMobile ? GLASS_STYLE_MOBILE : GLASS_STYLE_DESKTOP}
     >
       <nav

@@ -35,7 +35,7 @@ export default function BackToTop() {
           whileTap={{ scale: 0.97 }}
           transition={SPRING_SNAP}
           aria-label="Back to top"
-          className="fixed bottom-[120px] right-4 lg:bottom-6 lg:right-6 z-50 inline-flex items-center justify-center gap-2 rounded-[8px] w-10 h-10 lg:w-auto lg:px-4 lg:h-11 btn-label text-amethyst-100 overflow-hidden select-none border-none cursor-pointer bg-amethyst-900"
+          className="fixed bottom-[120px] right-4 lg:bottom-6 lg:right-6 z-50 inline-flex items-center justify-center gap-2 rounded-pill w-10 h-10 lg:w-auto lg:px-4 lg:h-11 btn-label text-amethyst-100 overflow-hidden select-none border-none cursor-pointer bg-amethyst-900"
         >
           <SpotlightLayer />
           <svg className="relative z-10" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

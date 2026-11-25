@@ -49,7 +49,7 @@ const CloseButton = forwardRef<HTMLButtonElement, { onClick?: () => void }>(func
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
       aria-label="Close"
-      className="flex items-center justify-center shrink-0 relative overflow-hidden w-11 h-11 min-w-11 min-h-11 rounded-[8px] p-[6px]"
+      className="flex items-center justify-center shrink-0 relative overflow-hidden w-11 h-11 min-w-11 min-h-11 rounded-pill p-[6px]"
       style={{ border: '2px solid' }}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

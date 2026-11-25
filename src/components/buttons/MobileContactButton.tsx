@@ -55,7 +55,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
       aria-current={ariaCurrent}
       whileTap={{ scale: 0.97 }}
       transition={SPRING_SNAP}
-      className="relative inline-flex items-center justify-center w-full h-11 rounded-[8px] border border-glass-border bg-surface cursor-pointer overflow-hidden select-none"
+      className="relative inline-flex items-center justify-center w-full h-11 rounded-pill border border-glass-border bg-surface cursor-pointer overflow-hidden select-none"
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <span className="btn-label relative z-[1] text-text-primary pointer-events-none">
@@ -67,7 +67,7 @@ export default function MobileContactButton({ label = 'Contact', onClick, 'aria-
             key={ripple.key}
             initial={{ scale: 0.4, opacity: 0.35 }}
             animate={{ scale: 4, opacity: 0 }}
-            transition={{ duration: 0.45, ease: EASE_OUT }}
+            transition={{ duration: 0.3, ease: EASE_OUT }}
             onAnimationComplete={() => setRipples((prev) => prev.filter((r) => r.key !== ripple.key))}
             style={{
               position: 'absolute',

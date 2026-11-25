@@ -43,7 +43,7 @@ export default function SpotlightButton({ href, children, onClick, variant = 'de
   const { ref, onMouseMove } = useSpotlight()
 
   const v = VARIANTS[variant] ?? VARIANTS.default
-  const baseClass = `relative inline-flex items-center justify-center rounded-[8px] px-4 ${v.height} btn-label ${v.text} overflow-hidden select-none no-underline ${className}`
+  const baseClass = `relative inline-flex items-center justify-center rounded-pill px-4 ${v.height} btn-label ${v.text} overflow-hidden select-none no-underline ${className}`
   const baseStyle = { background: v.bg }
 
   if (href) {

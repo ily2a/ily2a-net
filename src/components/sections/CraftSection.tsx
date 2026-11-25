@@ -16,7 +16,7 @@ const GRID_STAGGER: Variants = {
 }
 const CARD_ENTER: Variants = {
   hidden: { opacity: 0, y: 14 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT } },
 }
 
 // Stable empty default so an omitted `projects` prop keeps the same reference

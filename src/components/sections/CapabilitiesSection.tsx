@@ -15,7 +15,7 @@ const STAGGER_PARENT: Variants = {
 }
 const STAGGER_CHILD: Variants = {
   hidden: { opacity: 0, y: 12 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT } },
 }
 
 const CARDS = [
@@ -85,7 +85,7 @@ function SpotlightCard({ children }: { children?: ReactNode }) {
         className="cap-card__spotlight"
         initial={{ opacity: 0 }}
         animate={{ opacity }}
-        transition={{ duration: 0.5, ease: EASE_OUT }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
         style={{ background: `radial-gradient(circle at var(--mx, 50%) var(--my, 50%), ${SPOTLIGHT_COLOR}, transparent 80%)` }}
       />
       {children}
@@ -104,7 +104,7 @@ function Tags({ items }: { items: string[] }) {
   return (
     <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
       {items.map((item) => (
-        <li key={item} className="inline-flex items-center px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
+        <li key={item} className="inline-flex items-center px-3 py-[5px] border border-text-subtle rounded-lg text-tag text-text-primary">
           {item}
         </li>
       ))}
@@ -194,7 +194,7 @@ export default function CapabilitiesSection() {
             <p className="text-body-card text-brand">The stack I work in daily</p>
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {TOOLS.map((tool) => (
-                <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-[6px] text-tag text-text-primary">
+                <li key={tool.name} className="inline-flex items-center gap-[6px] px-3 py-[5px] border border-text-subtle rounded-lg text-tag text-text-primary">
                   <Image src={tool.logo} alt="" aria-hidden="true" width={16} height={16} sizes="16px" className="w-4 h-4 object-contain shrink-0" />
                   {tool.name}
                 </li>

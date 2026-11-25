@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react'
 import { m, AnimatePresence } from 'motion/react'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import NotFoundPasswordBg from '@/components/backgrounds/NotFoundPasswordBg'
 import FloatingNav from '@/components/nav/FloatingNav'
 import SilentErrorBoundary from '@/components/errors/SilentErrorBoundary'
@@ -65,7 +65,7 @@ export default function PasswordGate() {
         <m.div
           key="gate"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
+          exit={{ opacity: 0, transition: { duration: 0.4, ease: EASE_OUT } }}
           className="fixed inset-0 z-[200] overflow-hidden bg-background"
         >
           <NotFoundPasswordBg />
@@ -84,7 +84,7 @@ export default function PasswordGate() {
                   ? { x: [0, -8, 8, -6, 6, -3, 3, 0] }
                   : { x: 0 }
               }
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              transition={{ duration: 0.5, ease: EASE_OUT }}
             >
               <AnimatePresence mode="wait">
                 {status === 'success' ? (
@@ -102,7 +102,7 @@ export default function PasswordGate() {
                       stroke="var(--color-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.4, ease: 'easeOut' }}
+                      transition={{ duration: 0.4, ease: EASE_OUT }}
                     />
                   </m.svg>
                 ) : (
@@ -189,14 +189,16 @@ export default function PasswordGate() {
                 </div>
               </div>
 
-              <button
+              <m.button
                 type="submit"
                 disabled={status === 'checking' || status === 'success' || status === 'ratelimited'}
                 aria-busy={status === 'checking'}
-                className="gradient-button w-full rounded-[8px] px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
+                whileTap={{ scale: 0.97 }}
+                transition={SPRING_SNAP}
+                className="gradient-button w-full rounded-pill px-9 py-3 btn-label disabled:opacity-50 disabled:pointer-events-none"
               >
                 {status === 'checking' ? 'Checking…' : 'Unlock case study'}
-              </button>
+              </m.button>
             </form>
 
           </m.div>

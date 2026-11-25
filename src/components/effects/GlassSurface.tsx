@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
+import { RADII } from '@/constants/radii'
 
 // Stable empty default so an omitted `style` prop keeps the same reference
 // across renders instead of allocating a fresh object each time.
@@ -16,7 +17,7 @@ const GlassSurface = ({
   children,
   width = '100%',
   height = 64,
-  borderRadius = 12,
+  borderRadius = RADII.GLASS,
   style = EMPTY_STYLE,
 }: GlassSurfaceProps) => (
   <div

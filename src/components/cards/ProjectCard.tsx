@@ -7,6 +7,7 @@ import { m, type Variants } from 'motion/react'
 import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor } from '@/sanity/lib/image'
 import { EASE_OUT } from '@/constants/animations'
+import { MASK_BLACK } from '@/constants/colors'
 
 const MotionLink = m.create(Link)
 
@@ -23,14 +24,15 @@ export interface ProjectCardData {
   cardImageHover?: CardImage
 }
 
+const K = MASK_BLACK
 const BLUR_LAYERS = [
-  { blur: 0.5, mask: 'linear-gradient(transparent 0%,#000 12.5%,#000 25%,transparent 37.5%)' },
-  { blur: 1,   mask: 'linear-gradient(transparent 12.5%,#000 25%,#000 37.5%,transparent 50%)' },
-  { blur: 2,   mask: 'linear-gradient(transparent 25%,#000 37.5%,#000 50%,transparent 62.5%)' },
-  { blur: 4,   mask: 'linear-gradient(transparent 37.5%,#000 50%,#000 62.5%,transparent 75%)' },
-  { blur: 8,   mask: 'linear-gradient(transparent 50%,#000 62.5%,#000 75%,transparent 87.5%)' },
-  { blur: 16,  mask: 'linear-gradient(transparent 62.5%,#000 75%,#000 87.5%,#000 100%)' },
-  { blur: 32,  mask: 'linear-gradient(transparent 75%,#000 87.5%,#000 100%)' },
+  { blur: 0.5, mask: `linear-gradient(transparent 0%,${K} 12.5%,${K} 25%,transparent 37.5%)` },
+  { blur: 1,   mask: `linear-gradient(transparent 12.5%,${K} 25%,${K} 37.5%,transparent 50%)` },
+  { blur: 2,   mask: `linear-gradient(transparent 25%,${K} 37.5%,${K} 50%,transparent 62.5%)` },
+  { blur: 4,   mask: `linear-gradient(transparent 37.5%,${K} 50%,${K} 62.5%,transparent 75%)` },
+  { blur: 8,   mask: `linear-gradient(transparent 50%,${K} 62.5%,${K} 75%,transparent 87.5%)` },
+  { blur: 16,  mask: `linear-gradient(transparent 62.5%,${K} 75%,${K} 87.5%,${K} 100%)` },
+  { blur: 32,  mask: `linear-gradient(transparent 75%,${K} 87.5%,${K} 100%)` },
 ].map(({ blur, mask }) => ({
   blur,
   style: {
@@ -53,7 +55,7 @@ const contentVariants: Variants = {
 
 const hoverImgVariants: Variants = {
   rest:  { opacity: 0 },
-  hover: { opacity: 1, transition: { duration: 0.4, ease: EASE_OUT } },
+  hover: { opacity: 1, transition: { duration: 0.3, ease: EASE_OUT } },
 }
 
 const imgUrl = (source: CardImage) => urlFor(source).width(800).auto('format').url()

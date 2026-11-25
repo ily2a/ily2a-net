@@ -57,7 +57,7 @@ export default function LinkedInButton() {
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
-      className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-[8px] border border-transparent"
+      className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-pill border border-transparent"
     >
       <LinkedInIcon color={states[state].iconColor} size={22} />
     </m.a>

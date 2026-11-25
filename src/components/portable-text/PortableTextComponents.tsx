@@ -47,7 +47,7 @@ const getBlockText = (value: PortableTextBlock): string =>
 // break by default), so a bare <code> sets a min-content wider than a phone column
 // and overflows the page. `anywhere` lets it wrap and keeps the column shrinkable.
 const InlineCode = ({ children }: { children?: ReactNode }) => (
-  <code className="rounded-md border border-glass-border bg-glass-bg px-1.5 py-0.5 font-mono text-[0.85em] text-text-primary [overflow-wrap:anywhere]">
+  <code className="text-inline-code">
     {children}
   </code>
 )

@@ -31,7 +31,7 @@ export default function TestimonialsButton({ instant = false }: { instant?: bool
         background:  'var(--color-surface-blur)',
         borderColor: 'var(--color-glass-border)',
       }}
-      className="inline-flex items-center justify-center h-11 px-4 rounded-[8px] cursor-pointer border border-solid text-text-primary backdrop-blur-md"
+      className="inline-flex items-center justify-center h-11 px-4 rounded-pill cursor-pointer border border-solid text-text-primary backdrop-blur-md"
     >
       <span className="btn-label leading-none">Echoes about me</span>
     </m.button>

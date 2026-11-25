@@ -156,7 +156,7 @@ export default function ContactSection() {
                     <button
                       type="button"
                       onClick={reset}
-                      className="text-form-status underline text-brand"
+                      className="text-form-status underline text-brand bg-transparent border-none cursor-pointer"
                     >
                       Send another
                     </button>
@@ -170,7 +170,7 @@ export default function ContactSection() {
                     <button
                       type="button"
                       onClick={resetError}
-                      className="text-form-status underline text-error"
+                      className="text-form-status underline text-error bg-transparent border-none cursor-pointer"
                     >
                       Retry
                     </button>
@@ -207,7 +207,7 @@ export default function ContactSection() {
 
         {/* ── Info card ── */}
         <m.div
-          className="relative flex flex-row items-center justify-between rounded-[12px] p-4 md:py-5 md:px-10 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
+          className="relative flex flex-row items-center justify-between rounded-glass p-5 tab:p-6 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
           style={{ boxShadow: 'var(--shadow-glass-card)' }}
           {...fadeUp(0.15)}
         >

@@ -27,7 +27,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
     if (prefersReduced) return
     animRef.current?.stop()
     animRef.current = animate(angleRef.current, targetAngle, {
-      duration: 0.4,
+      duration: 0.3,
       ease: EASE_OUT,
       onUpdate: (v) => {
         angleRef.current = v
@@ -40,7 +40,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
   const handleMouseEnter = () => animateTo(224)
   const handleMouseLeave = () => animateTo(62)
 
-  const layerClass = 'absolute inset-0 rounded-[8px] overflow-hidden pointer-events-none'
+  const layerClass = 'absolute inset-0 rounded-pill overflow-hidden pointer-events-none'
   const gradient   = 'conic-gradient(from var(--ca, 62deg), transparent 249deg, var(--color-amethyst-400) 249.6deg)'
 
   return (
@@ -56,7 +56,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
       // Visible label span below carries the accessible name — adding aria-label
       // here would override the visible text and drift if either changes.
       aria-current={ariaCurrent}
-      className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-[8px] overflow-visible select-none shrink-0 appearance-none border-0 bg-transparent"
+      className="relative inline-flex items-center justify-center p-0 w-[104px] h-11 rounded-pill overflow-visible select-none shrink-0 appearance-none border-0 bg-transparent"
       style={{
         '--ca': '62deg',
         font: 'inherit',
@@ -89,7 +89,7 @@ export default function ContactButton({ label = 'Contact', onClick, 'aria-curren
         className={`${layerClass} blur rotate-180`}
         style={{ background: gradient }}
       />
-      <div className="absolute rounded-[7px] [inset:1px] bg-gradient-to-b from-surface to-background" />
+      <div className="absolute rounded-button-inset [inset:1px] bg-gradient-to-b from-surface to-background" />
       <span className="btn-label relative z-[1] pointer-events-none text-text-primary">
         {label}
       </span>

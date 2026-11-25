@@ -1,7 +1,11 @@
 // Palette hex values — mirrors globals.css @theme tokens.
 // Use these only where CSS variables cannot be used (e.g. WebGL / canvas,
-// Next.js metadata that must be a string at build time).
+// Next.js metadata that must be a string at build time, CSS mask stops).
 export const BACKGROUND = '#0D1012'
+
+// Opaque black for CSS `mask-image` gradients — masks need solid coverage,
+// not a brand colour. Kept here so component files stay hex-free.
+export const MASK_BLACK = '#000'
 
 export const AMETHYST = {
   50:  '#f6f6f9',

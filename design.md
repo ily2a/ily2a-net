@@ -11,13 +11,18 @@ Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Framer Motion config
 These three are hard rules. Audit every UI change against them before shipping:
 
 1. **Framer Motion for all animation.** Use `m.*` elements, variants, and the
-   `animate()` utility. No raw CSS transitions for interactive states. The one
-   sanctioned exception is `.gradient-button`'s `background-position` sweep across
-   a multi-stop gradient — a case pure CSS expresses cleaner than a JS driver.
+   `animate()` utility. No raw CSS transitions for interactive states. Sanctioned
+   CSS exceptions (only these):
+   - `.gradient-button` — `background-position` sweep across a multi-stop
+     gradient, plus the paired `color` change on the same hover/active. Pure CSS
+     expresses the gradient interpolation cleaner than a JS driver.
+   - `Logo` state SVGs — `opacity` crossfade (`80ms`). Nesting `m.div` inside
+     the logo `m.button` breaks Framer gesture detection on mobile, so CSS stays.
 2. **Design tokens for all color.** Reference `var(--color-*)` or the Tailwind
    token classes (`text-brand`, `bg-surface`, `text-error`, …). No hardcoded hex
    in component code. The only hex lives in `colors.ts`, and only for contexts CSS
-   variables can't reach (WebGL shader uniforms, build-time metadata strings).
+   variables can't reach (WebGL shader uniforms, build-time metadata strings,
+   CSS `mask-image` stops via `MASK_BLACK`).
 3. **Tailwind for all styling.** Inline `style` only when Tailwind can't express
    it — dynamic CSS vars (`--mx`/`--my`), conic/linear gradients, computed values.
 
@@ -76,6 +81,7 @@ Dark theme only. Amethyst is the single brand hue.
 | `glass-border` | `rgba(255,255,255,.08)` | Glass card edge |
 | `border-hover` | `rgba(255,255,255,.25)` | Hover edge |
 | `image-outline` | `rgba(255,255,255,.10)` | 1px inset edge ring on images (`.img-outline`) |
+| `scrim` | `rgba(0,0,0,.7)` | Project-card bottom fade |
 | `shadow` / `shadow-strong` | `rgba(0,0,0,.25)` / `.40` | Elevation |
 
 ---
@@ -111,6 +117,7 @@ All scale fluidly across breakpoints and use `text-balance` on display copy.
 - `.text-eyebrow` — 11px uppercase, `0.07em` tracking
 - `.text-overline` — 11px uppercase, semibold, `0.10em` tracking
 - `.text-tag`, `.text-skill-label`, `.text-meta`, `.text-toc`, `.text-cursor`
+- `.text-inline-code` — mono, `0.85em`, glass chip (portable-text `<code>`)
 
 **UI / component**
 - `.btn-label` — 16 → 18px bold (primary button text)
@@ -128,7 +135,17 @@ inlining a one-off scale.
 ## Spacing, Radius & Breakpoints
 
 Spacing uses the default Tailwind scale. Cards pad `p-5` on mobile, `tab:p-6` up.
-Pills/buttons use `rounded-[8px]`; tags `rounded-lg`.
+
+Radius tokens (`globals.css` `@theme` → `rounded-*`; JS mirrors in `constants/radii.ts`):
+
+| Token | Value | Use |
+|---|---|---|
+| `pill` | 8px | Buttons / pills (`rounded-pill`) |
+| `input` | 10px | Form fields (`rounded-input`) |
+| `button-inset` | 7px | 1px-inset fill inside an 8px pill |
+| `glass` | 12px | Glass cards / panels (`rounded-glass`) |
+
+Tags use `rounded-lg`.
 
 Breakpoints are custom tokens — mirror them in `layout.ts` (`BREAKPOINTS`) when a
 layout decision is made in JS rather than CSS:
@@ -186,7 +203,7 @@ reach for these before authoring a new transition.
 - `HOVER_LIFT = { y: -1 }` — 1px tactile rise on button hover. Kept as a value
   channel (`{ y }`), never a `transform` string, so it composes with concurrent
   `scale`/entrance channels instead of overriding them.
-- `whileTap={{ scale: 0.96 }}` — standard press feedback on CTAs.
+- `whileTap={{ scale: 0.97 }}` — standard press feedback on CTAs.
 - `fadeUp(delay)` — scroll-triggered section entrance: `opacity 0→1`, `y 16→0`,
   `viewport once, margin -80px`, spring `{ stiffness: 260, damping: 24 }`.
 - **UI-animation ceiling: ~300ms.** Interaction feedback stays snappy; durations
