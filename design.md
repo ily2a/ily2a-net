@@ -18,6 +18,8 @@ These three are hard rules. Audit every UI change against them before shipping:
      expresses the gradient interpolation cleaner than a JS driver.
    - `Logo` state SVGs — `opacity` crossfade (`80ms`). Nesting `m.div` inside
      the logo `m.button` breaks Motion gesture detection on mobile, so CSS stays.
+   - Non-interactive loading chrome — `.skeleton` (`animate-pulse`) and
+     `.booking-spinner` (`animate-spin`), both gated on `prefers-reduced-motion`.
 2. **Design tokens for all color.** Reference `var(--color-*)` or the Tailwind
    token classes (`text-brand`, `bg-surface`, `text-error`, …). No hardcoded hex
    in component code. The only hex lives in `colors.ts`, and only for contexts CSS
@@ -94,23 +96,24 @@ zoom-on-focus.
 
 Type is **not** ad-hoc per component. Use the semantic utility classes from
 `globals.css` — they bundle size, weight, tracking, leading, and responsive steps.
-All scale fluidly across breakpoints and use `text-balance` on display copy.
+Display headings use `text-balance`; longer body leads use `text-pretty`.
+Not every class steps at every breakpoint — check `globals.css` for the exact ladder.
 
 **Headings**
-- `.heading-hero` — 36 → 64px, bold, `leading-none`
-- `.heading-page` — 32 → 48px, bold
-- `.heading-display` — 20 → 32px, bold
-- `.heading-section` — 20 → 24px, bold
+- `.heading-hero` — 36 → 38 → 56 → 64px, bold, `leading-none`
+- `.heading-page` — 32 → 40 → 48px, bold
+- `.heading-display` — 20 → 24 → 28 → 32px, bold
+- `.heading-section` — 20 → 24px (xl only), bold
 - `.heading-sub` — 18 → 20px, bold
 - `.heading-article` / `.heading-2` — article + section bodies
-- `.heading-error` — 24 → 32px, **light**, wide tracking (error/404 voice)
+- `.heading-error` — 24 → 26 → 28 → 32px, **light**, wide tracking (error/404 voice)
 
 **Body**
-- `.text-intro` — 24 → 32px, medium (lead paragraphs)
+- `.text-intro` — 24 → 28 → 26 → 32px, medium (lead paragraphs; lg dips before xl)
 - `.text-md` — 16 → 20px
 - `.text-body` — 15 → 16px, generous `170%` leading
-- `.text-body-card` — 14 → 16px, card copy
-- `.text-blockquote` — italic, for pull quotes
+- `.text-body-card` — 14 → 15 (desk) → 16px, card copy
+- `.text-blockquote` — italic `text-base`, for pull quotes
 
 **Labels & captions**
 - `.text-caption` — 12 → 14px, medium
@@ -143,9 +146,10 @@ Radius tokens (`globals.css` `@theme` → `rounded-*`; JS mirrors in `constants/
 | `pill` | 8px | Buttons / pills (`rounded-pill`) |
 | `input` | 10px | Form fields (`rounded-input`) |
 | `button-inset` | 7px | 1px-inset fill inside an 8px pill |
-| `glass` | 12px | Glass cards / panels (`rounded-glass`) |
+| `glass` | 12px | Glass cards / panels (`rounded-glass`); also `GlassSurface` default |
 
-Tags use `rounded-lg`.
+`.testimonial-card` / `.cap-card` use Tailwind `rounded-xl` in JSX (same 12px
+intent as `rounded-glass`). Tags use `rounded-lg`.
 
 Breakpoints are custom tokens — mirror them in `layout.ts` (`BREAKPOINTS`) when a
 layout decision is made in JS rather than CSS:
@@ -160,8 +164,8 @@ layout decision is made in JS rather than CSS:
 | `lg` | 1200px | Tablet↔desktop boundary |
 | `xl` | 1440px | Widest step |
 
-Keep `globals.css` `--breakpoint-*` and `layout.ts` in sync — they describe the
-same lines from two languages.
+Keep `globals.css` `--breakpoint-*` / `--radius-*` in sync with `layout.ts` and
+`radii.ts` — they describe the same lines from two languages.
 
 ---
 
@@ -175,6 +179,8 @@ card and craft sidebar via the same tokens):
 - Fill `bg-glass-bg`, edge `border-glass-border`
 - `.testimonial-card` / `.cap-card`: `backdrop-filter: blur(16px) saturate(180%)`
   on mobile, stepping to `blur(32px)` at ≥730px (`tab`)
+- Cap cards also paint an amethyst `color-mix` radial at `--mx`/`--my` via
+  `useSpotlight` (not `SpotlightLayer` / `--color-spotlight`)
 - Contact info card + craft sidebar: fixed `backdrop-blur-[32px]` /
   `backdrop-saturate-[180%]` with `rounded-glass`
 - `--shadow-glass-card`: two inset highlights (1px top light, 1px bottom dark)
@@ -213,11 +219,14 @@ reach for these before authoring a new transition.
 - `HOVER_LIFT = { y: -1 }` — 1px tactile rise on button hover. Kept as a value
   channel (`{ y }`), never a `transform` string, so it composes with concurrent
   `scale`/entrance channels instead of overriding them.
-- `whileTap={{ scale: 0.97 }}` — standard press feedback on CTAs.
+- `whileTap={{ scale: 0.97 }}` — default press feedback on filled CTAs; some
+  buttons opt out (e.g. `BookingButton` inset shadow, `TestimonialsButton` on
+  desktop, craft tag color taps).
 - `fadeUp(delay)` — scroll-triggered section entrance: `opacity 0→1`, `y 16→0`,
   `viewport once, margin -80px`, spring `{ stiffness: 260, damping: 24 }`.
-- **UI-animation ceiling: ~300ms.** Interaction feedback stays snappy; durations
-  were intentionally cut to stay under this.
+- **Interaction feedback ceiling: ~300ms.** Hover/press/tap stays snappy.
+  Longer Motion tweens are fine for section entrances/exits (hero crossfade,
+  password-gate leave ~0.4–0.5s).
 - **Hero entrance choreography** (seconds, timed to `TextReveal` at 0.06s/word):
   subtitle `1.2`, CTA buttons `2.0`, navbar `2.4`. Plays once per session
   (`useHeroIntroPlayed`).
@@ -240,9 +249,9 @@ reach for these before authoring a new transition.
 suppress hover on touch.
 
 ### Cursor spotlight
-`useSpotlight` writes RAF-throttled `--mx`/`--my` CSS vars on the target;
-`SpotlightLayer` paints the radial gradient at that point. The gradient radius and
-color live in one place (`SpotlightLayer`).
+`useSpotlight` writes RAF-throttled `--mx`/`--my` CSS vars on the target.
+`SpotlightLayer` paints the white radial for filled CTAs (`SpotlightButton`,
+`BackToTop`); capability cards reuse the hook with their own amethyst gradient.
 
 ### Custom cursor
 `SmoothCursor` hides the native cursor (gated on `body.smooth-cursor-active`, and
@@ -286,14 +295,15 @@ Text inputs restore the native text cursor; keyboard focus restores
 
 ## WebGL Backgrounds
 
-OGL-driven shader backgrounds (`HeroBg`, `ContactBg`, `TestimonialsVeil`,
-`NotFoundPasswordBg`) share `useWebGLBackground`: pauses RAF when off-screen,
-tab-hidden, or modal-occluded (via the framework-agnostic `modal-store`); honors
-reduced motion; rebuilds on GL context loss. DPR capped at 1.5 for mobile INP.
-Colors come from `colors.ts` hex → `hexToRgbNormalized` (`lib/color.ts`) since CSS
-vars can't reach shader uniforms. Hero shows a CSS gradient placeholder until the
-first frame, then crossfades — no late pop-in, and a graceful fallback if WebGL
-never paints.
+OGL-driven shader backgrounds (`HeroBg`, `ContactBg`, `TestimonialsVeil` via
+lazy `TestimonialsBg`, `NotFoundPasswordBg`) share `useWebGLBackground`: pauses
+RAF when off-screen, tab-hidden, or modal-occluded (via the framework-agnostic
+`modal-store`); honors reduced motion; rebuilds on GL context loss. Hero /
+Contact / NotFoundPassword cap DPR at 1.5; `TestimonialsVeil` hard-codes
+`dpr: 1` (expensive CPPN fragment). Colors come from `colors.ts` hex →
+`hexToRgbNormalized` (`lib/color.ts`) since CSS vars can't reach shader uniforms.
+Hero shows a CSS gradient placeholder until the first frame, then crossfades —
+no late pop-in, and a graceful fallback if WebGL never paints.
 
 ---
 
@@ -301,8 +311,8 @@ never paints.
 
 - Tokens over literals; semantic type classes over raw sizes.
 - `m` from `motion/react` over full `motion`; shared springs over ad-hoc transitions.
-- ~300ms ceiling on interaction feedback.
+- ~300ms ceiling on interaction feedback (longer entrances/exits OK).
 - Value channels (`{ y }`, `{ scale }`) over `transform` strings.
-- Keep `globals.css` breakpoints and `layout.ts` in sync.
+- Keep `globals.css` breakpoints ↔ `layout.ts` and radii ↔ `radii.ts` in sync.
 - When in doubt, the existing component for a pattern is the spec — match its
   altitude rather than inventing a parallel one.

@@ -69,7 +69,7 @@ SANITY_API_READ_TOKEN=your_sanity_read_token
 NEXT_PUBLIC_SANITY_API_VERSION=2026-03-13
 ```
 
-`NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` are required — [src/sanity/env.ts](src/sanity/env.ts) throws at startup if either is missing, so misconfiguration fails fast with a clear message rather than surfacing as an opaque runtime error later.
+`NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` are required — [src/sanity/env.ts](src/sanity/env.ts) throws on first import if either is missing, so misconfiguration fails fast with a clear message rather than surfacing as an opaque runtime error later.
 
 ### 3. Run the dev server
 ```bash
@@ -87,7 +87,7 @@ npm run lint        # Run ESLint
 npm run typecheck   # Type-check with TypeScript 7 native (`@typescript/native`)
 npm test            # Run Vitest once
 npm run test:watch  # Run Vitest in watch mode
-npm run a11y        # Run axe-cli against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
+npm run a11y        # Run @axe-core/cli (`axe`) against http://localhost:3000 (WCAG 2.0/2.1/2.2 AA)
 ```
 
 `npm run typecheck` uses TypeScript 7 via `@typescript/native`. `npm run build` still type-checks with TypeScript 6 (`typescript` → `@typescript/typescript6`) because Next.js needs the classic `typescript/lib/typescript.js` API, which TypeScript 7 does not ship. The project enables `noUncheckedIndexedAccess` on top of `strict`.
@@ -121,20 +121,20 @@ src/
 │   ├── portable-text/    # Sanity Portable Text renderers
 │   ├── providers/        # App-level providers (motion, analytics)
 │   └── sections/         # Home page section components
-├── sanity/               # Sanity client, schema types, image helpers
-├── lib/                  # GROQ queries (sanity-queries.ts), validation
+├── sanity/               # env, client, live fetch, image helpers, schemaTypes, structure
+├── lib/                  # GROQ queries, API helpers, scroll, validation, dedup, …
 ├── hooks/                # Custom React hooks
 ├── data/                 # Static data (testimonials.ts)
-└── constants/            # Motion animation configs, layout/site constants
+└── constants/            # animations, colors, layout, radii, site
 ```
 
 ## Content Management
 
 Case studies are managed in Sanity. Each document includes:
 
-- **Meta** — title, slug, client, role, timeline, platform, industry, short description, tags, display order, cover/card images, password-protection flag
+- **Meta** — title, slug, client, role, timeline, platform, industry, short description, tags, unique display `order`, `coverImage` (+ required alt), `cardImageDefault` / `cardImageHover`, `isPasswordProtected`
 - **Context** — brief, problem statement, goals, UX strategy (rich text)
-- **Content** — flexible body blocks (text + images), Figma embed URL
+- **Content** — flexible body blocks (text + images with required alt / optional caption), Figma embed URL
 
 To manage content, visit `/studio` in the browser or run the Sanity Studio locally:
 ```bash
@@ -150,7 +150,7 @@ npx sanity@latest schema deploy
 
 Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/live.ts), and picking the right one matters:
 
-- **`sanityFetch` / `fetchSanityList`** — request-time. Backed by next-sanity's `defineLive`, which calls `draftMode()` internally for live preview. Use these from page components, `generateMetadata`, and route handlers — anywhere that runs inside a render/request context.
+- **`sanityFetch` / `fetchSanityList`** — request-time. Backed by next-sanity's `defineLive`, which calls `draftMode()` internally for live preview. Use these from page components, `generateMetadata`, and route handlers — anywhere that runs inside a render/request context. `<SanityLive />` is mounted in the root layout in **development only** (it forces dynamic rendering); production content updates go through the ISR webhook.
 - **`fetchSanityListStatic`** — build-time. Queries the plain published client directly. Use this from `generateStaticParams` and `sitemap`, which run at build with **no request**: calling the live fetch there throws `next-dynamic-api-wrong-context` because `draftMode()` isn't available. Don't reach for the live fetch in those functions.
 
 ## Components
@@ -199,7 +199,7 @@ Content is read through two helpers in [src/sanity/lib/live.ts](src/sanity/lib/l
 **Utility**
 - **MotionProvider** — wraps the app with Motion `LazyMotion` + `domAnimation` (import `m` from `motion/react`, not the full `motion` export)
 - **SpeedInsightsWrapper** — client wrapper for Vercel Speed Insights that strips `/studio` routes from reporting
-- **PasswordGate** — locks protected case studies behind a password; uses `sessionStorage` so the gate re-locks on tab close
+- **PasswordGate** — client overlay for protected case studies (`sessionStorage` re-locks on tab close). Soft security only: the page HTML still renders server-side; this is intentional, not access control
 - **PortableTextComponents** — Portable Text renderer components for Sanity rich-text fields
 - **PortableTextLink** — animated external link used inside Portable Text; renders an external-link icon and an SR-only "(opens in a new tab)" announcement
 - **TableOfContents** — in-page navigation for long case studies
@@ -267,9 +267,9 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 
 [next.config.ts](next.config.ts) ships:
 
-- A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site, allowlisting only the third-party origins actually used (Sanity, Cal.com, Figma embeds, Vercel telemetry). Fonts are self-hosted, so `font-src` stays on `'self'`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
-- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src.
-- HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
+- A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site (`/((?!studio).*)`), allowlisting Sanity, Cal.com (incl. Pusher websocket origins for the embed), Figma embeds, and Vercel telemetry / Live. Fonts are self-hosted; `font-src` is `'self' https://vercel.live`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set. Dev builds also allow `'unsafe-eval'` on `script-src` for React callstacks.
+- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src. Studio does **not** inherit the public-site HSTS / framing / permissions headers — only its CSP.
+- On public routes: HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
 
 ### Sanity → ISR webhook
 
@@ -280,7 +280,7 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 3. Set the **secret** to the same value as `SANITY_REVALIDATION_SECRET` in your Vercel environment variables.
 4. Set the HTTP header to `x-sanity-webhook-secret: <secret>`.
 
-The route uses constant-time secret comparison and a fixed-key sliding-window rate limit (60/hr) so a leaked secret can't drain the cache or exhaust Sanity API quota.
+The route uses constant-time secret comparison, a pre-auth IP limit (120/hr), and a post-auth fixed-key sliding-window limit (60/hr) so a leaked secret can't drain the cache or exhaust Sanity API quota.
 
 ## Tests
 
@@ -307,7 +307,7 @@ Components/hooks that need a DOM should add `// @vitest-environment jsdom` at th
 
 ## SEO
 
-- **Sitemap** — generated at build time by [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity
-- **robots.txt** — static, lives at [public/robots.txt](public/robots.txt)
-- **JSON-LD** — `WebSite` + `Person` graph injected from [src/app/layout.tsx](src/app/layout.tsx); `WebSite.name` / `applicationName` / OG `siteName` use `SITE_BRAND` from [site.ts](src/constants/site.ts)
-- **OG image** — static [public/og-image.jpg](public/og-image.jpg) referenced from `metadata.openGraph` and `metadata.twitter`
+- **Sitemap** — App Router [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity via `fetchSanityListStatic`
+- **robots.txt** — static, lives at [public/robots.txt](public/robots.txt) (sitemap URL hardcoded to production `ily2a.net`)
+- **JSON-LD** — root `WebSite` + `Person` from [src/app/layout.tsx](src/app/layout.tsx) (`SITE_BRAND` / `SITE_NAME`); case studies also emit `CreativeWork` on [craft/[slug]](src/app/craft/[slug]/page.tsx)
+- **OG image** — site default [public/og-image.jpg](public/og-image.jpg); case studies prefer the Sanity cover (1200×630) with that file as fallback
