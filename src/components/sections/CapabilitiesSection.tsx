@@ -42,7 +42,7 @@ const SKILL_GROUPS = [
   },
   {
     label: 'Code',
-    items: ['React', 'React Native', 'Component Architecture', 'Figma-to-code'],
+    items: ['React', 'React Native', 'TypeScript', 'Component Architecture'],
   },
 ]
 
