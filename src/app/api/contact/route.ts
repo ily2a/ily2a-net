@@ -92,7 +92,7 @@ export async function POST(request: Request) {
   // execution slot open for the full platform timeout (~10s).
   const sendPromise = resend.emails.send({
     from:    'Contact Form <contact@ily2a.net>',
-    to:      'contact@ily2a.net',
+    to:      'ily.a.ameur@gmail.com',
     replyTo: safeEmail,
     subject: 'New portfolio inquiry',
     text:    `Name: ${safeName}
