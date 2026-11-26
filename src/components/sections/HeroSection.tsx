@@ -76,7 +76,7 @@ export default function HeroSection({ children }: { children?: ReactNode }) {
               instant={introPlayed}
             />
             <TextReveal
-              text="End-to-end product design with zero handoff friction."
+              text="End-to-end design with zero handoff friction."
               className="text-md"
               scale={2}
               initialDelay={HERO_SUBTITLE_DELAY}
