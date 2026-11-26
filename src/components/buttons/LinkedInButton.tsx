@@ -4,14 +4,15 @@ import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP } from '@/constants/animations'
 
-interface LinkedInButtonStyle {
+export interface IconLinkButtonStyle {
   borderColor: string
   backgroundColor: string
   iconColor: string
   boxShadow: string
 }
 
-const states: Record<ButtonState, LinkedInButtonStyle> = {
+// Shared with CopyEmailButton so the contact icon buttons stay one family.
+export const ICON_LINK_BUTTON_STATES: Record<ButtonState, IconLinkButtonStyle> = {
   default: {
     borderColor:     'var(--color-clear)',
     backgroundColor: 'var(--color-clear)',
@@ -39,6 +40,8 @@ function LinkedInIcon({ color, size = 28 }: { color: string; size?: number }) {
     </svg>
   )
 }
+
+const states = ICON_LINK_BUTTON_STATES
 
 export default function LinkedInButton() {
   const { state, handlers } = useButtonState()

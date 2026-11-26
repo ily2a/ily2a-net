@@ -32,7 +32,7 @@ const subscribeMounted = () => () => {}
 const getMountedSnapshot = () => true
 const getMountedServerSnapshot = () => false
 
-export default function BookingButton({ static: isStatic = false }: { static?: boolean }) {
+export default function BookingButton({ static: isStatic = false, className = '' }: { static?: boolean; className?: string }) {
   const [open, setOpen]               = useState(false)
   const mounted = useSyncExternalStore(subscribeMounted, getMountedSnapshot, getMountedServerSnapshot)
   const [iframeKey, setIframeKey]     = useState(0)
@@ -287,7 +287,7 @@ export default function BookingButton({ static: isStatic = false }: { static?: b
         style={{
           background: 'linear-gradient(to bottom, var(--color-amethyst-100), var(--color-amethyst-400))',
         }}
-        className="inline-flex items-center justify-center h-11 px-4 rounded-pill cursor-pointer border-0 text-amethyst-950"
+        className={`inline-flex items-center justify-center h-11 px-4 rounded-pill cursor-pointer border-0 text-amethyst-950 ${className}`}
       >
         <span className="btn-label leading-none">Book a call</span>
       </m.button>

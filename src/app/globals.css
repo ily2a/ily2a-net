@@ -185,9 +185,8 @@ section:focus-visible {
 /* Inline <code> in portable text — relative em keeps it nested to surrounding type */
 .text-inline-code { @apply rounded-md border border-glass-border bg-glass-bg px-1.5 py-0.5 font-mono text-[0.85em] text-text-primary [overflow-wrap:anywhere]; }
 
-/* Form microcopy — inline field validation (12px) and form-level status (13px) */
-.text-form-error  { @apply text-[12px]; }
-.text-form-status { @apply text-[13px]; }
+/* Form microcopy — inline field validation */
+.text-form-error { @apply text-[12px]; }
 
 /* Testimonials */
 .text-testimonial-name  { @apply font-semibold text-[15px] tracking-[-0.01em] leading-[1.2]; }

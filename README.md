@@ -11,7 +11,6 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 | UI | React 19 + Motion (`motion/react`, LazyMotion) |
 | Styling | Tailwind CSS v4 (semantic type classes in `globals.css`; see design.md) |
 | CMS | Sanity v6 (hosted Studio at `/studio`) |
-| Email | Resend |
 | Booking | Cal.com embed |
 | WebGL | OGL |
 | Font | Satoshi via `next/font/local` (self-hosted) |
@@ -24,7 +23,6 @@ Personal portfolio and case study site for Ily Ameur — design engineer. Built 
 - `/craft` — Full project gallery
 - `/craft/[slug]` — Individual case study with rich text, media, and Figma prototype embeds
 - `/studio` — Sanity Studio (content management)
-- `/api/contact` — Contact form submission endpoint (Resend)
 - `/api/revalidate` — On-demand ISR revalidation webhook (triggered by Sanity)
 - `/api/unlock` — Password gate unlock endpoint for protected case studies
 
@@ -43,9 +41,6 @@ Create `.env.local` at the project root:
 NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
 NEXT_PUBLIC_SANITY_DATASET=production
 
-# Resend (contact form)
-RESEND_API_KEY=your_resend_api_key
-
 # Sanity → /api/revalidate webhook secret (must match the secret configured
 # in the Sanity Studio webhook settings — used to authenticate publish events)
 SANITY_REVALIDATION_SECRET=your_webhook_secret
@@ -55,11 +50,6 @@ CASE_STUDY_PASSWORD=your_shared_password
 
 # Optional — site URL override (defaults to https://ily2a.net for canonical/OG)
 NEXT_PUBLIC_SITE_URL=https://ily2a.net
-
-# Optional — shared secret that keys the /api/contact dedup cache so all warm
-# serverless instances agree on what's already been sent. Falls back to a
-# per-process random key in dev; set it in production.
-DEDUP_SECRET=your_dedup_secret
 
 # Optional — Sanity read token for the Live Content API (server-side only).
 # Not required for the public published-content fetch.
@@ -108,7 +98,6 @@ src/
 │   ├── sitemap.ts        # Dynamic sitemap
 │   ├── craft/            # Project gallery + dynamic case study pages
 │   ├── api/
-│   │   ├── contact/      # Contact form API (Resend)
 │   │   ├── revalidate/   # On-demand ISR revalidation webhook
 │   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
@@ -127,7 +116,7 @@ src/
 │   ├── providers/        # App-level providers (motion, analytics)
 │   └── sections/         # Home page section components
 ├── sanity/               # env, client, live fetch, GROQ queries, image helpers, schemaTypes, structure
-├── lib/                  # API helpers, scroll, validation, dedup, …
+├── lib/                  # API helpers, scroll, color, modal store, …
 ├── hooks/                # Custom React hooks
 ├── data/                 # Static data (testimonials.ts)
 └── constants/            # animations, site, tokens (JS mirrors of globals.css)
@@ -172,19 +161,20 @@ GROQ queries live in [src/sanity/lib/queries.ts](src/sanity/lib/queries.ts). Con
 - **CraftSection** — featured projects grid on the home page
 - **CapabilitiesSection** — services / capabilities list
 - **TestimonialsSection** — client testimonials carousel
-- **ContactSection** — contact form and CTA
+- **ContactSection** — contact card: Book a call CTA, email (copy-to-clipboard) and LinkedIn
 
 **Project Cards**
 - **ProjectCard** — hover card with blur overlay and image swap; handles both desktop and touch layouts
 
 **Forms**
-- **FloatingLabelInput** — text input with floating label animation, used in the contact form
+- **FloatingLabelInput** — text input with floating label animation, used by the password gate
 
 **Buttons & CTAs**
 - **SpotlightButton** — animated CTA link with a cursor spotlight (`href` required; `default`, `dark` variants)
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
-- **ContactButton** / **ContactFormButton** / **MobileContactButton** — context-specific contact triggers
+- **ContactButton** / **MobileContactButton** — navbar triggers that scroll to the contact section
+- **CopyEmailButton** — copies the contact email, swaps to a check for 2 s; shares `LinkedInButton`'s state styles
 - **LinkedInButton** — LinkedIn profile link
 - **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
 - **NavbarButton** — navbar-specific button variant
@@ -242,7 +232,6 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typograp
 - **usePrefersReducedMotion** — reads `prefers-reduced-motion` media query
 - **useHeroIntroPlayed** — session flag to skip hero entrance animation after first load
 - **useActiveSection** — tracks which home-page section is in the viewport for nav highlighting
-- **useContactForm** — manages contact form state, validation, submission, and AbortController cleanup
 - **useWebGLBackground** — shared lifecycle for the OGL backgrounds: pauses the RAF loop when the canvas is off-screen, the tab is hidden, or a modal covers it; honours `prefers-reduced-motion` (one static frame); and rebuilds cleanly on GL context loss/restore. Each background supplies a `setup(container)` that returns its renderer hooks (typed as `WebGLBackgroundContext`)
 - **useSpotlight** — RAF-throttled pointer tracker that writes `--mx` / `--my` CSS variables on the target element, used by buttons that paint a radial spotlight at the cursor
 
@@ -250,13 +239,11 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typograp
 
 - **api.ts** — shared API helpers (sliding-window rate limiter, IP extraction, constant-time string compare) used by route handlers
 - **color.ts** — `hexToRgbNormalized`, converts a design-token hex string into a `0..1` `[r, g, b]` array for WebGL `vec3` uniforms; shared by the OGL backgrounds where CSS variables can't reach
-- **dedup.ts** — payload dedup cache (HMAC-SHA-256 keyed by `DEDUP_SECRET` + TTL) used by `/api/contact` so the same submission isn't sent twice when a fetch is aborted client-side after the server already started the Resend request
 - **json-ld.ts** — safe JSON-LD serialiser for `<script>` injection
 - **modal-store.ts** — framework-agnostic singleton (no React) tracking whether any blocking modal is open via `pushModalOpen` / `popModalOpen`; WebGL backgrounds subscribe imperatively (`subscribeToModalOpen` / `getModalOpen`) to pause their RAF loops while occluded
 - **portable-text.ts** — pure helpers (`toId`, `dedupeIds`) for Portable Text content, server-safe
 - **scroll.ts** — Motion-based smooth-scroll helper (`animate` from `motion/react`). Holds a module-level controller and stops any in-flight animation before starting a new one, so concurrent calls (rapid nav clicks, ToC + BackToTop overlap) don't fight for `window.scrollY`. Respects `prefers-reduced-motion`
 - **cal-embed-message.ts** — parses Cal.com embed `postMessage` payloads (`CAL::__closeIframe`, `CAL::__dimensionChanged`, plus legacy `type` names) for BookingButton
-- **validation.ts** — shared form validation
 
 ## Deployment
 
@@ -290,22 +277,18 @@ The route uses constant-time secret comparison, a pre-auth IP limit (120/hr), an
 
 Vitest is configured with the `node` environment by default ([vitest.config.ts](vitest.config.ts)). Tests live next to the code they cover under `__tests__/` folders:
 
-- `src/app/api/__tests__/contact.test.ts`
 - `src/app/api/__tests__/revalidate.test.ts`
 - `src/app/api/__tests__/unlock.test.ts`
 - `src/lib/__tests__/api.test.ts`
 - `src/lib/__tests__/color.test.ts`
-- `src/lib/__tests__/dedup.test.ts`
 - `src/lib/__tests__/json-ld.test.ts`
 - `src/lib/__tests__/modal-store.test.ts`
 - `src/lib/__tests__/portable-text.test.ts`
 - `src/lib/__tests__/scroll.test.ts`
 - `src/lib/__tests__/cal-embed-message.test.ts`
-- `src/lib/__tests__/validation.test.ts`
 - `src/sanity/lib/__tests__/image.test.ts`
 - `src/constants/__tests__/tokens.test.ts`
 - `src/data/__tests__/testimonials.test.ts`
-- `src/hooks/__tests__/useContactForm.test.tsx`
 - `src/components/buttons/__tests__/BackToTop.test.tsx`
 - `src/components/booking/__tests__/BookingButton.test.tsx`
 

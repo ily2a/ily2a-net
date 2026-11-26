@@ -127,7 +127,7 @@ Not every class steps at every breakpoint — check `globals.css` for the exact 
 - `.btn-label` — 16 → 18px bold (primary button text)
 - `.btn-label-flat`, `.link-label`
 - `.text-field-label`, `.text-field-input`, `.text-notice`
-- `.text-form-error` (12px) / `.text-form-status` (13px) — form microcopy
+- `.text-form-error` (12px) — inline field validation (password gate)
 - `.text-testimonial-name` / `.text-testimonial-role`
 
 Rule of thumb: if you're reaching for raw `text-[NNpx]` in a component, check

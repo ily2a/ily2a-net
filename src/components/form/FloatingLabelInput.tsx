@@ -82,17 +82,16 @@ interface FloatingLabelProps {
   hasError?: boolean
   focused: boolean
   children?: ReactNode
-  restingTop?: string
   required?: boolean
 }
 
-function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, restingTop = '50%', required }: FloatingLabelProps) {
+function FloatingLabel({ htmlFor, labelRef, floated, hasError, focused, children, required }: FloatingLabelProps) {
   return (
     <m.label
       htmlFor={htmlFor}
       className="text-field-label absolute left-[14px] pointer-events-none select-none origin-top-left -translate-y-1/2"
       animate={{
-        top:   floated ? 0 : restingTop,
+        top:   floated ? 0 : '50%',
         scale: floated ? 0.8 : 1,
         color: hasError ? 'var(--color-error)' : focused ? 'var(--color-brand)' : 'var(--color-text-secondary)',
       }}
@@ -146,47 +145,6 @@ export function FloatingLabelInput({
       )}
       <NotchedBorder floated={floated} hasError={hasError} focused={focused} labelWidth={labelWidth} width={wrapDims.w} height={wrapDims.h} />
       <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} required={required}>
-        {label}
-      </FloatingLabel>
-    </div>
-  )
-}
-
-interface FloatingLabelTextareaProps {
-  id?: string
-  label?: ReactNode
-  name?: string
-  value?: string
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>
-  hasError?: boolean
-  errorId?: string
-  rows?: number
-  required?: boolean
-  maxLength?: number
-}
-
-export function FloatingLabelTextarea({
-  id: idProp, label, name, value, onChange,
-  hasError, errorId, rows = 6, required, maxLength,
-}: FloatingLabelTextareaProps) {
-  const { uid, focused, setFocused, wrapRef, labelRef, wrapDims, labelWidth } = useFloatingLabel()
-  const id = idProp ?? uid
-  const floated = focused || !!value
-
-  return (
-    <div ref={wrapRef} className="relative">
-      {/* Labeled by <FloatingLabel htmlFor={id}> below — the rule can't see the cross-component association. */}
-      {/* react-doctor-disable-next-line react-doctor/control-has-associated-label */}
-      <textarea
-        id={id} name={name} value={value} onChange={onChange}
-        onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        required={required} rows={rows} maxLength={maxLength} placeholder=""
-        className={`${INPUT_CLS} resize-y`}
-        aria-invalid={hasError || undefined}
-        aria-describedby={hasError ? errorId : undefined}
-      />
-      <NotchedBorder floated={floated} hasError={hasError} focused={focused} labelWidth={labelWidth} width={wrapDims.w} height={wrapDims.h} />
-      <FloatingLabel htmlFor={id} labelRef={labelRef} floated={floated} hasError={hasError} focused={focused} restingTop="22px" required={required}>
         {label}
       </FloatingLabel>
     </div>
