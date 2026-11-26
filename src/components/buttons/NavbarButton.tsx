@@ -1,6 +1,7 @@
 'use client'
 
-import { m, type HTMLMotionProps } from 'motion/react'
+import type { AriaAttributes } from 'react'
+import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { SPRING_SNAP } from '@/constants/animations'
@@ -25,40 +26,35 @@ const ICONS = { craft: CraftIcon, skills: SkillsIcon }
 interface NavbarStateStyle {
   borderColor: string
   backgroundColor: string
-  iconColor: string
+  color: string // icon and label share it
   boxShadow: string
-  textColor?: string
 }
 
-const webStates: Record<ButtonState, NavbarStateStyle> = {
-  default: { borderColor: 'var(--color-clear)',        backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-400)', textColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
-  hover:   { borderColor: 'var(--color-amethyst-300)', backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-200)', textColor: 'var(--color-amethyst-200)', boxShadow: 'none' },
-  pressed: { borderColor: 'var(--color-amethyst-50)',  backgroundColor: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  textColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
+// One table for both layouts: on mobile useButtonState never enters `hover`.
+const states: Record<ButtonState, NavbarStateStyle> = {
+  default: { borderColor: 'var(--color-clear)',        backgroundColor: 'var(--color-clear)',   color: 'var(--color-amethyst-400)', boxShadow: 'none' },
+  hover:   { borderColor: 'var(--color-amethyst-300)', backgroundColor: 'var(--color-clear)',   color: 'var(--color-amethyst-200)', boxShadow: 'none' },
+  pressed: { borderColor: 'var(--color-amethyst-50)',  backgroundColor: 'var(--color-surface)', color: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
 }
 
-const mobileStates: Partial<Record<ButtonState, NavbarStateStyle>> = {
-  default: { borderColor: 'var(--color-clear)',        backgroundColor: 'var(--color-clear)',   iconColor: 'var(--color-amethyst-400)', boxShadow: 'none' },
-  pressed: { borderColor: 'var(--color-amethyst-50)',  backgroundColor: 'var(--color-surface)', iconColor: 'var(--color-amethyst-50)',  boxShadow: 'inset -4px 0px 4px var(--color-amethyst-950), inset 4px 0px 4px var(--color-amethyst-950), inset 0px -4px 4px var(--color-amethyst-950), inset 0px 4px 4px var(--color-amethyst-950)' },
+interface NavbarButtonProps {
+  icon: keyof typeof ICONS
+  label: string
+  onClick: () => void
+  'aria-current'?: AriaAttributes['aria-current']
 }
 
-interface NavbarButtonProps extends HTMLMotionProps<'button'> {
-  icon?: keyof typeof ICONS
-  label?: string
-}
-
-export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick, 'aria-current': ariaCurrent, ...rest }: NavbarButtonProps) {
+export default function NavbarButton({ icon, label, onClick, 'aria-current': ariaCurrent }: NavbarButtonProps) {
   const width    = useWindowWidth()
   const isMobile = width > 0 && width <= BREAKPOINTS.MOBILE
   const { state, handlers } = useButtonState({ isMobile })
-  const Icon   = ICONS[icon] ?? CraftIcon
-  const styles = isMobile ? mobileStates : webStates
-  const s      = styles[state] ?? webStates.default
+  const Icon = ICONS[icon]
+  const s    = states[state]
 
   return (
     <m.button
       onClick={onClick}
       {...handlers}
-      {...rest}
       // Mobile renders icon-only, so aria-label is required; desktop renders
       // the visible label span and would otherwise double-name the control.
       aria-label={isMobile ? label : undefined}
@@ -72,11 +68,11 @@ export default function NavbarButton({ icon = 'craft', label = 'Craft', onClick,
       transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
       className={`inline-flex items-center justify-center shrink-0 rounded-pill h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2 py-[15px] px-[19px]'}`}
     >
-      <Icon color={s.iconColor} />
+      <Icon color={s.color} />
       {!isMobile && (
         <m.span
           className="link-label"
-          animate={{ color: s.textColor }}
+          animate={{ color: s.color }}
           transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
         >
           {label}

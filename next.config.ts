@@ -33,13 +33,13 @@ const ContentSecurityPolicy = [
 // Scoped to /studio only so the main site CSP remains strict.
 const StudioCSP = [
   "default-src 'self'",
-  // Sanity 6 loads a helper script from core.sanity-cdn.com and its UI font from design-system-static.sanity.io.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.sanity.io https://*.sanity.io https://core.sanity-cdn.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.sanity.io https://*.sanity.io",
   "style-src 'self' 'unsafe-inline' https://cdn.sanity.io",
   "img-src * data: blob:",
   `connect-src 'self' https://*.sanity.io wss://*.sanity.io`,
   "frame-src 'self' https://*.sanity.io",
   "worker-src 'self' blob:",
+  // Sanity 6 loads its UI font from design-system-static.sanity.io.
   "font-src 'self' data: https://cdn.sanity.io https://design-system-static.sanity.io",
   "object-src 'none'",
   "base-uri 'self'",

@@ -20,6 +20,17 @@ import TableOfContents, { type TocItem } from '@/components/nav/TableOfContents'
 import PasswordGate from '@/components/auth/PasswordGate'
 import { toId, dedupeIds } from '@/lib/portable-text'
 import { makePtBody, ptSection } from '@/components/portable-text/PortableTextComponents'
+import { BREAKPOINTS } from '@/constants/tokens'
+
+// Mirrors the column width at each breakpoint (page padding, then minus the
+// lg/xl sidebar) so retina screens stop fetching the 2× candidate for a ~900px slot.
+const COVER_SIZES = [
+  `(max-width: ${BREAKPOINTS.TAB - 1}px) min(100vw - 40px, 600px)`,
+  `(max-width: ${BREAKPOINTS.DESK - 1}px) calc(100vw - 80px)`,
+  `(max-width: ${BREAKPOINTS.LG - 1}px) calc(100vw - 112px)`,
+  `(max-width: ${BREAKPOINTS.XL - 1}px) calc(100vw - 468px)`,
+  '904px',
+].join(', ')
 
 type CoverImage = SanityImageObject & { url?: string; lqip?: string; alt?: string; dimensions?: SanityImageDimensions }
 
@@ -254,10 +265,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                   width={1400}
                   height={coverHeight}
                   priority
-                  // Mirrors the column width at each breakpoint (page padding,
-                  // then minus the lg/xl sidebar) so retina screens stop
-                  // fetching the 2× candidate for a ~900px slot.
-                  sizes="(max-width: 729px) min(100vw - 40px, 600px), (max-width: 1087px) calc(100vw - 80px), (max-width: 1199px) calc(100vw - 112px), (max-width: 1439px) calc(100vw - 468px), 904px"
+                  sizes={COVER_SIZES}
                   className="w-full h-auto block object-cover"
                   placeholder={data.coverImage?.lqip ? 'blur' : 'empty'}
                   blurDataURL={data.coverImage?.lqip}

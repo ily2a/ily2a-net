@@ -7,9 +7,11 @@ import { m, type Variants } from 'motion/react'
 import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor } from '@/sanity/lib/image'
 import { EASE_OUT } from '@/constants/animations'
-import { MASK_BLACK } from '@/constants/tokens'
+import { BREAKPOINTS, MASK_BLACK } from '@/constants/tokens'
 
 const MotionLink = m.create(Link)
+
+const CARD_IMAGE_SIZES = `(max-width: ${BREAKPOINTS.MOBILE}px) 100vw, 50vw`
 
 // A Sanity image with the lqip placeholder string projected by the GROQ query.
 type CardImage = SanityImageObject & { lqip?: string }
@@ -106,7 +108,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }: { p
               src={imgUrl(project.cardImageDefault)}
               alt={project.title}
               fill
-              sizes="(max-width: 600px) 100vw, 50vw"
+              sizes={CARD_IMAGE_SIZES}
               priority={priority}
               className="project-card__img"
               placeholder={project.cardImageDefault.lqip ? 'blur' : 'empty'}
@@ -124,7 +126,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }: { p
                 aria-hidden="true"
                 fill
                 loading="lazy"
-                sizes="(max-width: 600px) 100vw, 50vw"
+                sizes={CARD_IMAGE_SIZES}
                 className="project-card__img"
                 placeholder={project.cardImageHover.lqip ? 'blur' : 'empty'}
                 blurDataURL={project.cardImageHover.lqip}

@@ -5,6 +5,13 @@ import { m, animate, type AnimationPlaybackControls } from 'motion/react'
 import { SPRING_SNAP, EASE_OUT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
+const LAYER_CLASS = 'absolute inset-0 rounded-pill overflow-hidden pointer-events-none'
+const GRADIENT    = 'conic-gradient(from var(--ca, 62deg), transparent 249deg, var(--color-amethyst-400) 249.6deg)'
+// The conic edge four times: sharp + blurred glow, each mirrored by rotate-180.
+const GRADIENT_LAYERS = ['', 'blur', 'rotate-180', 'blur rotate-180']
+const LAYER_VARIANTS   = { rest: { opacity: 0 }, hover: { opacity: 1 } }
+const LAYER_TRANSITION = { duration: 0.3, ease: EASE_OUT }
+
 interface ContactButtonProps {
   onClick?: () => void
   'aria-current'?: AriaAttributes['aria-current']
@@ -39,9 +46,6 @@ export default function ContactButton({ onClick, 'aria-current': ariaCurrent }: 
   const handleMouseEnter = () => animateTo(224)
   const handleMouseLeave = () => animateTo(62)
 
-  const layerClass = 'absolute inset-0 rounded-pill overflow-hidden pointer-events-none'
-  const gradient   = 'conic-gradient(from var(--ca, 62deg), transparent 249deg, var(--color-amethyst-400) 249.6deg)'
-
   return (
     <m.button
       ref={buttonRef}
@@ -62,32 +66,17 @@ export default function ContactButton({ onClick, 'aria-current': ariaCurrent }: 
         WebkitTapHighlightColor: 'transparent',
       } as CSSProperties}
     >
-      <div className={`${layerClass} bg-surface`} />
-      {/* Gradient layers fade in on hover via Framer Motion variants */}
-      <m.div
-        variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: EASE_OUT }}
-        className={layerClass}
-        style={{ background: gradient }}
-      />
-      <m.div
-        variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: EASE_OUT }}
-        className={`${layerClass} blur`}
-        style={{ background: gradient }}
-      />
-      <m.div
-        variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: EASE_OUT }}
-        className={`${layerClass} rotate-180`}
-        style={{ background: gradient }}
-      />
-      <m.div
-        variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
-        transition={{ duration: 0.3, ease: EASE_OUT }}
-        className={`${layerClass} blur rotate-180`}
-        style={{ background: gradient }}
-      />
+      <div className={`${LAYER_CLASS} bg-surface`} />
+      {/* Gradient layers fade in on hover via Motion variants */}
+      {GRADIENT_LAYERS.map((extra) => (
+        <m.div
+          key={extra || 'base'}
+          variants={LAYER_VARIANTS}
+          transition={LAYER_TRANSITION}
+          className={extra ? `${LAYER_CLASS} ${extra}` : LAYER_CLASS}
+          style={{ background: GRADIENT }}
+        />
+      ))}
       <div className="absolute rounded-button-inset [inset:1px] bg-gradient-to-b from-surface to-background" />
       <span className="btn-label relative z-[1] pointer-events-none text-text-primary">
         Contact

@@ -34,7 +34,6 @@ function HeroBackground() {
         spotlightSoftness={1.2}
         spotlightOpacity={0.8}
         mirrorGradient
-        mixBlendMode="lighten"
         autoAnimate
         autoSpeed={0.35}
         attractRadius={0.35}

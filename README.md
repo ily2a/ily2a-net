@@ -92,7 +92,7 @@ npm run a11y        # Run @axe-core/cli (`axe`) against http://localhost:3000 (W
 
 `npm run typecheck` uses TypeScript 7 via `@typescript/native`. `npm run build` still type-checks with TypeScript 6 (`typescript` → `@typescript/typescript6`) because Next.js needs the classic `typescript/lib/typescript.js` API, which TypeScript 7 does not ship. The project enables `noUncheckedIndexedAccess` on top of `strict`.
 
-`.npmrc` passes `--no-experimental-webstorage` to Node for every npm script. Node 26 otherwise exposes an experimental `localStorage` global that a Sanity dependency touches during server rendering, which prints a warning on every build.
+`.npmrc` passes `--no-experimental-webstorage` to Node for every npm script. Node 26 otherwise exposes an experimental `localStorage` global that a Sanity dependency touches during server rendering, which prints a warning on every build. npm *replaces* `NODE_OPTIONS` with this value rather than adding to it, so any other Node flag (for example `--max-old-space-size`) has to go on the same `node-options` line, space-separated. Setting it in the environment or the Vercel dashboard has no effect on npm scripts.
 
 `npm run a11y` needs the server running on port 3000 and a Chrome for Testing build with a matching ChromeDriver. Install the pair once per machine with `npx browser-driver-manager@2.0.1 install chrome`. It downloads to `~/.browser-driver-manager`, which `axe` picks up automatically; rerun it to update. npm's own `chromedriver` download is turned off in `allowScripts`, because `@axe-core/cli` pins it to an older Chrome.
 
@@ -112,7 +112,7 @@ src/
 │   │   ├── revalidate/   # On-demand ISR revalidation webhook
 │   │   └── unlock/       # Password gate unlock endpoint
 │   └── studio/           # Embedded Sanity Studio
-├── components/           # React components (grouped by role)
+├── components/           # React components (grouped by role or feature)
 │   ├── auth/             # Password gate for protected case studies
 │   ├── backgrounds/      # WebGL effect backgrounds
 │   ├── booking/          # Cal.com booking trigger + dialog
@@ -272,7 +272,7 @@ Image optimization is configured for `cdn.sanity.io`. The following permanent (3
 [next.config.ts](next.config.ts) ships:
 
 - A strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) for the public site (`/((?!studio).*)`), allowlisting Sanity, Cal.com (incl. Pusher websocket origins for the embed), Figma embeds, and Vercel telemetry / Live. Fonts are self-hosted; `font-src` is `'self' https://vercel.live`. The CSP tightens to your specific Sanity project's origins when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set. Dev builds also allow `'unsafe-eval'` on `script-src` for React callstacks.
-- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src. It also allows Sanity 6's UI font host (`design-system-static.sanity.io`) and helper script (`core.sanity-cdn.com`). Studio does **not** inherit the public-site HSTS / framing / permissions headers — only its CSP.
+- A separate, more permissive CSP scoped to `/studio(.*)` because Sanity Studio's plugin system needs `unsafe-eval` and broader connect-src. It also allows Sanity 6's UI font host (`design-system-static.sanity.io`). The Studio uses `next-sanity/studio/client-component`, which skips the `core.sanity-cdn.com` dashboard bridge script, so that host isn't allowed. Studio does **not** inherit the public-site HSTS / framing / permissions headers — only its CSP.
 - On public routes: HSTS preload (1 year, `includeSubDomains`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` denying camera/microphone/geolocation.
 
 ### Sanity → ISR webhook
@@ -303,6 +303,8 @@ Vitest is configured with the `node` environment by default ([vitest.config.ts](
 - `src/lib/__tests__/cal-embed-message.test.ts`
 - `src/lib/__tests__/validation.test.ts`
 - `src/sanity/lib/__tests__/image.test.ts`
+- `src/constants/__tests__/tokens.test.ts`
+- `src/data/__tests__/testimonials.test.ts`
 - `src/hooks/__tests__/useContactForm.test.tsx`
 - `src/components/buttons/__tests__/BackToTop.test.tsx`
 - `src/components/booking/__tests__/BookingButton.test.tsx`

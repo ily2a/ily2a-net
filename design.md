@@ -3,8 +3,8 @@
 The design language for Ily Ameur's portfolio. A dark, glass-and-amethyst
 aesthetic with weighted spring motion. Every rule here is enforced in code via
 Tailwind v4 `@theme` tokens (`src/app/globals.css`), shared Motion configs
-(`src/constants/animations.ts`), and hex mirrors for non-CSS contexts
-(`src/constants/tokens.ts`).
+(`src/constants/animations.ts`), and JS mirrors of the palette, radii and
+breakpoints for non-CSS contexts (`src/constants/tokens.ts`).
 
 ## Non-Negotiable Standards
 
@@ -165,8 +165,10 @@ layout decision is made in JS rather than CSS:
 | `lg` | 1200px | Tablet↔desktop boundary |
 | `xl` | 1440px | Widest step |
 
-Keep `globals.css` `--breakpoint-*` / `--radius-*` in sync with `tokens.ts` —
-they describe the same lines from two languages.
+Mirrored in `tokens.ts`: `BACKGROUND`, `AMETHYST`, every `--radius-*` (`RADII`)
+and every `--breakpoint-*` (`BREAKPOINTS`). `MASK_BLACK` is JS-only; other
+`--color-*` tokens stay CSS-only. `src/constants/__tests__/tokens.test.ts` fails
+on any drift.
 
 ---
 
@@ -321,6 +323,6 @@ no late pop-in, and a graceful fallback if WebGL never paints.
 - `m` from `motion/react` over full `motion`; shared springs over ad-hoc transitions.
 - ~300ms ceiling on interaction feedback (longer entrances/exits OK).
 - Value channels (`{ y }`, `{ scale }`) over `transform` strings.
-- Keep `globals.css` colors, breakpoints and radii ↔ `constants/tokens.ts` in sync.
+- Only the tokens listed under Breakpoints are mirrored in `constants/tokens.ts`; never copy other `--color-*` hex into JS.
 - When in doubt, the existing component for a pattern is the spec — match its
   altitude rather than inventing a parallel one.

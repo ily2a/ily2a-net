@@ -182,28 +182,27 @@ function setupNotFoundPasswordBg(container: HTMLElement): WebGLBackgroundContext
   }
 
   const geometry = new Triangle(gl);
-  const program = new Program(gl, {
-    vertex: vertexShader,
-    fragment: fragmentShader,
-    uniforms: {
-      uTime:           { value: 0 },
-      uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
-      uSpeed:          { value: SPEED },
-      uInnerLines:     { value: INNER_LINE_COUNT },
-      uOuterLines:     { value: OUTER_LINE_COUNT },
-      uWarpIntensity:  { value: WARP_INTENSITY },
-      uRotation:       { value: (ROTATION_DEG * Math.PI) / 180 },
-      uEdgeFadeWidth:  { value: EDGE_FADE_WIDTH },
-      uColorCycleSpeed:{ value: COLOR_CYCLE_SPEED },
-      uBrightness:     { value: BRIGHTNESS },
-      uColor1:         { value: hexToRgbNormalized(COLOR1) },
-      uColor2:         { value: hexToRgbNormalized(COLOR2) },
-      uColor3:         { value: hexToRgbNormalized(COLOR3) },
-      uMouse:          { value: new Float32Array([0.5, 0.5]) },
-      uMouseInfluence: { value: MOUSE_INFLUENCE },
-      uEnableMouse:    { value: ENABLE_MOUSE_INTERACTION },
-    },
-  });
+  // Written through directly (ogl keeps this object as program.uniforms), so a
+  // misspelled or removed uniform fails typecheck instead of throwing per frame.
+  const uniforms = {
+    uTime:           { value: 0 },
+    uResolution:     { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+    uSpeed:          { value: SPEED },
+    uInnerLines:     { value: INNER_LINE_COUNT },
+    uOuterLines:     { value: OUTER_LINE_COUNT },
+    uWarpIntensity:  { value: WARP_INTENSITY },
+    uRotation:       { value: (ROTATION_DEG * Math.PI) / 180 },
+    uEdgeFadeWidth:  { value: EDGE_FADE_WIDTH },
+    uColorCycleSpeed:{ value: COLOR_CYCLE_SPEED },
+    uBrightness:     { value: BRIGHTNESS },
+    uColor1:         { value: hexToRgbNormalized(COLOR1) },
+    uColor2:         { value: hexToRgbNormalized(COLOR2) },
+    uColor3:         { value: hexToRgbNormalized(COLOR3) },
+    uMouse:          { value: new Float32Array([0.5, 0.5]) },
+    uMouseInfluence: { value: MOUSE_INFLUENCE },
+    uEnableMouse:    { value: ENABLE_MOUSE_INTERACTION },
+  };
+  const program = new Program(gl, { vertex: vertexShader, fragment: fragmentShader, uniforms });
   const mesh = new Mesh(gl, { geometry, program });
 
   container.appendChild(gl.canvas);
@@ -212,7 +211,7 @@ function setupNotFoundPasswordBg(container: HTMLElement): WebGLBackgroundContext
 
   function resize() {
     renderer.setSize(container.offsetWidth, container.offsetHeight);
-    program.uniforms.uResolution.value = [
+    uniforms.uResolution.value = [
       gl.canvas.width,
       gl.canvas.height,
       gl.canvas.width / gl.canvas.height,
@@ -223,21 +222,22 @@ function setupNotFoundPasswordBg(container: HTMLElement): WebGLBackgroundContext
     canvas: gl.canvas,
     isContextLost: () => gl.isContextLost(),
     resize,
+    maxFps: 60,
     render(time: number) {
-      program.uniforms.uTime.value = time * 0.001;
+      uniforms.uTime.value = time * 0.001;
       if (ENABLE_MOUSE_INTERACTION) {
         currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
         currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
-        program.uniforms.uMouse.value[0] = currentMouse[0];
-        program.uniforms.uMouse.value[1] = currentMouse[1];
+        uniforms.uMouse.value[0] = currentMouse[0];
+        uniforms.uMouse.value[1] = currentMouse[1];
       } else {
-        program.uniforms.uMouse.value[0] = 0.5;
-        program.uniforms.uMouse.value[1] = 0.5;
+        uniforms.uMouse.value[0] = 0.5;
+        uniforms.uMouse.value[1] = 0.5;
       }
       renderer.render({ scene: mesh });
     },
     renderStatic() {
-      program.uniforms.uTime.value = 0;
+      uniforms.uTime.value = 0;
       renderer.render({ scene: mesh });
     },
     dispose() {

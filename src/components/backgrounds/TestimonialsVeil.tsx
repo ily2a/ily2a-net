@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, type RefObject } from 'react'
+import { useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl'
 import { useWebGLBackground, type WebGLBackgroundContext } from '@/hooks/useWebGLBackground'
 
@@ -17,8 +17,6 @@ uniform vec2 uResolution;
 uniform float uTime;
 uniform float uNoise;
 uniform float uWarp;
-#define iTime uTime
-#define iResolution uResolution
 
 vec4 buf[8];
 float rand(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}
@@ -66,7 +64,7 @@ interface TestimonialsVeilProps {
   resolutionScale?: number
 }
 
-type TestimonialsVeilState = Required<TestimonialsVeilProps>
+type TestimonialsVeilSettings = Required<TestimonialsVeilProps>
 
 export default function TestimonialsVeil({
   noiseIntensity = 0,
@@ -75,14 +73,13 @@ export default function TestimonialsVeil({
   resolutionScale = 1,
 }: TestimonialsVeilProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const propsRef = useRef<TestimonialsVeilState>({ noiseIntensity, speed, warpAmount, resolutionScale })
 
-  // Shallow sync — keeps propsRef current without touching the GL context.
-  useEffect(() => {
-    propsRef.current = { noiseIntensity, speed, warpAmount, resolutionScale }
-  }, [noiseIntensity, speed, warpAmount, resolutionScale])
-
-  useWebGLBackground(containerRef, (container) => setupTestimonialsVeil(container, propsRef), [])
+  // Props are read once at setup: the only caller passes constants.
+  useWebGLBackground(
+    containerRef,
+    (container) => setupTestimonialsVeil(container, { noiseIntensity, speed, warpAmount, resolutionScale }),
+    [],
+  )
 
   return (
     <div
@@ -94,42 +91,40 @@ export default function TestimonialsVeil({
 }
 
 // Builds the ogl CPPN renderer/program/mesh and returns the lifecycle contract
-// for useWebGLBackground. Live props are read from propsRef inside render().
-function setupTestimonialsVeil(container: HTMLElement, propsRef: RefObject<TestimonialsVeilState>): WebGLBackgroundContext {
+// for useWebGLBackground.
+function setupTestimonialsVeil(container: HTMLElement, settings: TestimonialsVeilSettings): WebGLBackgroundContext {
   // dpr:1 (not capped devicePixelRatio) — this CPPN fragment shader is very
   // heavy (~500 FLOPs/px) and resolutionScale (0.6) was being multiplied back up
   // by a 1.5 dpr to ~0.9x. At dpr:1 the effective resolution is ~0.6x (≈2.3x less
   // GPU work); the stacked mix-blend + bg-background/30 overlays mask the softness.
-  const renderer = new Renderer({ dpr: 1 })
+  // depth:false — one full-screen triangle never needs a depth buffer.
+  const renderer = new Renderer({ dpr: 1, depth: false })
   const gl = renderer.gl
   const geometry = new Triangle(gl)
 
-  const p0 = propsRef.current
-  const program = new Program(gl, {
-    vertex,
-    fragment,
-    uniforms: {
-      uTime:       { value: 0 },
-      uResolution: { value: new Vec2() },
-      uNoise:      { value: p0.noiseIntensity },
-      uWarp:       { value: p0.warpAmount },
-    },
-  })
+  // Written through directly (ogl keeps this object as program.uniforms), so a
+  // misspelled or removed uniform fails typecheck instead of throwing per frame.
+  const uniforms = {
+    uTime:       { value: 0 },
+    uResolution: { value: new Vec2() },
+    uNoise:      { value: settings.noiseIntensity },
+    uWarp:       { value: settings.warpAmount },
+  }
+  const program = new Program(gl, { vertex, fragment, uniforms })
   const mesh = new Mesh(gl, { geometry, program })
 
   container.appendChild(gl.canvas)
   gl.canvas.style.display = 'block'
 
   function resize() {
-    const p = propsRef.current
     const w = container.offsetWidth
     const h = container.offsetHeight
     if (w === 0 || h === 0) return
-    renderer.setSize(w * p.resolutionScale, h * p.resolutionScale)
+    renderer.setSize(w * settings.resolutionScale, h * settings.resolutionScale)
     // reset CSS so the canvas scales to fill parent regardless of pixel resolution
     gl.canvas.style.width  = '100%'
     gl.canvas.style.height = '100%'
-    program.uniforms.uResolution.value.set(w, h)
+    uniforms.uResolution.value.set(w, h)
   }
 
   const start = performance.now()
@@ -138,17 +133,17 @@ function setupTestimonialsVeil(container: HTMLElement, propsRef: RefObject<Testi
     canvas: gl.canvas,
     isContextLost: () => gl.isContextLost(),
     resize,
+    maxFps: 60,
     render() {
-      const p = propsRef.current
-      program.uniforms.uTime.value  = ((performance.now() - start) / 1000) * p.speed
-      program.uniforms.uNoise.value = p.noiseIntensity
-      program.uniforms.uWarp.value  = p.warpAmount
+      uniforms.uTime.value  = ((performance.now() - start) / 1000) * settings.speed
+      uniforms.uNoise.value = settings.noiseIntensity
+      uniforms.uWarp.value  = settings.warpAmount
       renderer.render({ scene: mesh })
     },
     renderStatic() {
-      program.uniforms.uTime.value  = 0
-      program.uniforms.uNoise.value = 0
-      program.uniforms.uWarp.value  = 0
+      uniforms.uTime.value  = 0
+      uniforms.uNoise.value = 0
+      uniforms.uWarp.value  = 0
       renderer.render({ scene: mesh })
     },
     dispose() {

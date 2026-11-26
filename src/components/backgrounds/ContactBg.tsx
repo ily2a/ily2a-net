@@ -168,17 +168,16 @@ function setupContactBg(container: HTMLElement, propsRef: RefObject<ContactBgSta
   let lastStops = propsRef.current.colorStops
   let cachedStops = lastStops.map(hexToRgbNormalized)
 
-  const program = new Program(gl, {
-    vertex: VERT,
-    fragment: FRAG,
-    uniforms: {
-      uTime:       { value: 0 },
-      uAmplitude:  { value: propsRef.current.amplitude },
-      uColorStops: { value: cachedStops },
-      uResolution: { value: [container.offsetWidth, container.offsetHeight] },
-      uBlend:      { value: propsRef.current.blend },
-    },
-  })
+  // Written through directly (ogl keeps this object as program.uniforms), so a
+  // misspelled or removed uniform fails typecheck instead of throwing per frame.
+  const uniforms = {
+    uTime:       { value: 0 },
+    uAmplitude:  { value: propsRef.current.amplitude },
+    uColorStops: { value: cachedStops },
+    uResolution: { value: [container.offsetWidth, container.offsetHeight] },
+    uBlend:      { value: propsRef.current.blend },
+  }
+  const program = new Program(gl, { vertex: VERT, fragment: FRAG, uniforms })
 
   const mesh = new Mesh(gl, { geometry, program })
   container.appendChild(gl.canvas)
@@ -187,23 +186,24 @@ function setupContactBg(container: HTMLElement, propsRef: RefObject<ContactBgSta
     const width = container.offsetWidth
     const height = container.offsetHeight
     renderer.setSize(width, height)
-    program.uniforms.uResolution.value = [width, height]
+    uniforms.uResolution.value = [width, height]
   }
 
   return {
     canvas: gl.canvas,
     isContextLost: () => gl.isContextLost(),
     resize,
+    maxFps: 60,
     render(t: number) {
       const p = propsRef.current
       if (p.colorStops !== lastStops) {
         lastStops = p.colorStops
         cachedStops = p.colorStops.map(hexToRgbNormalized)
       }
-      program.uniforms.uTime.value = t * 0.001 * (p.speed ?? 1.0)
-      program.uniforms.uAmplitude.value = p.amplitude ?? 1.0
-      program.uniforms.uBlend.value = p.blend ?? 0.5
-      program.uniforms.uColorStops.value = cachedStops
+      uniforms.uTime.value = t * 0.001 * (p.speed ?? 1.0)
+      uniforms.uAmplitude.value = p.amplitude ?? 1.0
+      uniforms.uBlend.value = p.blend ?? 0.5
+      uniforms.uColorStops.value = cachedStops
       renderer.render({ scene: mesh })
     },
     renderStatic() {

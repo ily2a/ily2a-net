@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { m, useSpring, AnimatePresence } from 'motion/react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { SPRING_CURSOR, SPRING_SNAP } from '@/constants/animations'
+import { RADII } from '@/constants/tokens'
 
 const DESKTOP_QUERY  = '(any-hover: hover) and (any-pointer: fine)'
 // Any element can opt into the expanded cursor label by declaring
@@ -136,7 +137,7 @@ export default function SmoothCursor() {
           width:        isHovering ? 120 : 16,
           height:       isHovering ? 36  : 16,
           scale:        isClicking ? 0.96 : 1,
-          borderRadius: isHovering ? 8   : 9999,
+          borderRadius: isHovering ? RADII.PILL : 9999,
         }}
         transition={SPRING_SNAP}
         style={{

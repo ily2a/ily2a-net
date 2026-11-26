@@ -12,6 +12,9 @@ import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import { toId } from '@/lib/portable-text'
 import PortableTextLink from '@/components/portable-text/PortableTextLink'
+import { BREAKPOINTS } from '@/constants/tokens'
+
+const BODY_IMAGE_SIZES = `(max-width: ${BREAKPOINTS.MOBILE}px) 100vw, (max-width: ${BREAKPOINTS.DESK}px) 90vw, 900px`
 
 // Portable Text component overrides used by case-study pages.
 //
@@ -114,7 +117,7 @@ export function makePtBody(headingIdMap: Record<string, string> = {}): PortableT
               alt={value.alt || value.caption || ''}
               width={1200}
               height={height}
-              sizes="(max-width: 600px) 100vw, (max-width: 1088px) 90vw, 900px"
+              sizes={BODY_IMAGE_SIZES}
               className="w-full h-auto rounded-xl block img-outline"
               placeholder={value.lqip ? 'blur' : 'empty'}
               blurDataURL={value.lqip}

@@ -22,6 +22,9 @@ export interface WebGLBackgroundContext {
   resize?: () => void
   // Optional — tear down GL state and remove the canvas.
   dispose?: () => void
+  // Optional — cap the loop's frame rate. Ambient backgrounds gain nothing from
+  // 120/144 Hz; omit it for pointer-driven effects that should track the display.
+  maxFps?: number
 }
 
 // setup may return null/undefined to bail (e.g. the container is not ready).
@@ -65,9 +68,13 @@ export function useWebGLBackground(
 
     const canRun = () => isVisible && tabVisible && !modalOpen && !reduced
 
+    let lastFrame = 0
     const loop = (t: number) => {
       if (!ctx || ctx.isContextLost()) { raf = 0; return }
       raf = requestAnimationFrame(loop)
+      // 10% slack so frame-timing jitter on a 60 Hz display never drops frames.
+      if (ctx.maxFps && t - lastFrame < (1000 / ctx.maxFps) * 0.9) return
+      lastFrame = t
       ctx.render(t)
     }
     const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = 0 } }
@@ -90,7 +97,12 @@ export function useWebGLBackground(
       if (!ctx) return
       ctx.resize?.()
 
-      ro = new ResizeObserver(() => ctx?.resize?.())
+      // A real resize clears the drawing buffer. Under reduced motion no loop
+      // redraws it, so repaint the still frame or the background stays blank.
+      ro = new ResizeObserver(() => {
+        ctx?.resize?.()
+        if (reduced) paintStatic()
+      })
       ro.observe(container)
 
       onContextLost = (e: Event) => {

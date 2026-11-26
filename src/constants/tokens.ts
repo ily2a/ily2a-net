@@ -1,8 +1,11 @@
 // JS mirrors of the design tokens in src/app/globals.css (@theme).
 // Use these only where a CSS variable or Tailwind class can't be used — WebGL /
 // canvas, Next.js metadata strings, CSS mask stops, SVG geometry, and layout
-// decisions made in JS. Keep every value in sync with globals.css: they
-// describe the same tokens from two languages.
+// decisions made in JS.
+//
+// Mirrored: BACKGROUND, AMETHYST, every --radius-* (RADII) and every
+// --breakpoint-* (BREAKPOINTS). MASK_BLACK is JS-only. Other --color-* tokens
+// stay CSS-only. src/constants/__tests__/tokens.test.ts fails on any drift.
 
 // ─── Colours ─────────────────────────────────────────────────────
 export const BACKGROUND = '#0D1012'
@@ -23,7 +26,7 @@ export const AMETHYST = {
   800: '#5a516c',
   900: '#484257',
   950: '#2e2937',
-}
+} as const
 
 // ─── Radii (px) ──────────────────────────────────────────────────
 // For the few places JS needs a number (e.g. SVG path geometry).
@@ -45,4 +48,4 @@ export const BREAKPOINTS = {
   DESK:   1088, // --breakpoint-desk: compact desktop
   LG:     1200, // --breakpoint-lg: tablet↔desktop boundary (booking modal frame)
   XL:     1440, // --breakpoint-xl
-}
+} as const

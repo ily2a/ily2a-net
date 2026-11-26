@@ -3,7 +3,9 @@
 // Which button pattern to use (src/components/buttons/):
 //   • Spotlight CTA (radial cursor glow on a filled pill) → SpotlightButton
 //     (this file), optionally wrapped in a named component for a fixed call site
-//     (e.g. HomeButton, ViewAllProjectsButton).
+//     (e.g. HomeButton, ViewAllProjectsButton). It is link-only (href required);
+//     for an action, build an m.button from useSpotlight + SpotlightLayer as
+//     BackToTop does.
 //   • Icon / nav toggle with discrete default/hover/pressed states → useButtonState
 //     + a `states` style map (e.g. NavbarButton, CloseButton, LinkedInButton).
 //   • One-off visual treatment that none of the above expresses (conic gradient,
@@ -26,9 +28,9 @@ const SPOTLIGHT = <SpotlightLayer />
 
 type SpotlightVariant = 'default' | 'dark'
 
-const VARIANTS: Record<SpotlightVariant, { bg: string; text: string }> = {
-  default: { bg: 'var(--color-amethyst-400)', text: 'text-amethyst-950' },
-  dark:    { bg: 'var(--color-amethyst-700)', text: 'text-amethyst-100' },
+const VARIANTS: Record<SpotlightVariant, string> = {
+  default: 'bg-amethyst-400 text-amethyst-950',
+  dark:    'bg-amethyst-700 text-amethyst-100',
 }
 
 interface SpotlightButtonProps {
@@ -39,8 +41,6 @@ interface SpotlightButtonProps {
 
 export default function SpotlightButton({ href, children, variant = 'default' }: SpotlightButtonProps) {
   const { ref, onMouseMove } = useSpotlight()
-  const v = VARIANTS[variant]
-
   return (
     <MotionLink
       ref={ref}
@@ -48,8 +48,7 @@ export default function SpotlightButton({ href, children, variant = 'default' }:
       onMouseMove={onMouseMove}
       whileTap={{ scale: 0.97 }}
       transition={SPRING_SNAP}
-      className={`relative inline-flex items-center justify-center rounded-pill px-4 h-11 btn-label ${v.text} overflow-hidden select-none no-underline`}
-      style={{ background: v.bg }}
+      className={`relative inline-flex items-center justify-center rounded-pill px-4 h-11 btn-label ${VARIANTS[variant]} overflow-hidden select-none no-underline`}
     >
       {SPOTLIGHT}
       <span className="relative z-10">{children}</span>

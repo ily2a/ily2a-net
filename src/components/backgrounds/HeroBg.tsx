@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef } from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useWebGLBackground } from '@/hooks/useWebGLBackground'
 import { AMETHYST } from '@/constants/tokens'
@@ -130,7 +130,6 @@ interface HeroBgProps {
   spotlightRadius?: number
   spotlightSoftness?: number
   spotlightOpacity?: number
-  mixBlendMode?: CSSProperties['mixBlendMode']
   autoAnimate?: boolean
   autoSpeed?: number
   attractRadius?: number
@@ -148,17 +147,12 @@ const HeroBg = ({
   spotlightRadius = 0.5,
   spotlightSoftness = 1,
   spotlightOpacity = 1,
-  mixBlendMode = 'lighten',
   autoAnimate = false,
   autoSpeed = 0.4,
   attractRadius = 0.35,
 }: HeroBgProps) => {
   const containerRef    = useRef<HTMLDivElement>(null)
   const didFirstFrameRef = useRef(false)
-  const programRef      = useRef<Program | null>(null)
-  const meshRef         = useRef<Mesh | null>(null)
-  const geometryRef     = useRef<Triangle | null>(null)
-  const rendererRef     = useRef<Renderer | null>(null)
   const mouseTargetRef  = useRef<[number, number]>([0, 0])
   const canvasRectRef   = useRef<DOMRect | null>(null)
   const lastTimeRef     = useRef(0)
@@ -185,22 +179,8 @@ const HeroBg = ({
     onFirstFrameRef.current   = onFirstFrame
   }, [mouseDampening, autoAnimate, autoSpeed, attractRadius, blindCount, blindMinWidth, onFirstFrame])
 
-  // ── Uniform update — no context rebuild ────────────────────────────────────
-  // Updates shader uniforms in-place whenever visual props change.
-  useEffect(() => {
-    const uniforms = programRef.current?.uniforms
-    if (!uniforms) return
-    uniforms.uAngle.value             = (angle * Math.PI) / 180
-    uniforms.uNoise.value             = noise
-    uniforms.uBlindCount.value        = Math.max(1, blindCount)
-    uniforms.uMirror.value            = mirrorGradient ? 1 : 0
-    uniforms.uSpotlightRadius.value   = spotlightRadius
-    uniforms.uSpotlightSoftness.value = spotlightSoftness
-    uniforms.uSpotlightOpacity.value  = spotlightOpacity
-    const { arr: colorArr, count: colorCount } = prepStops(gradientColors)
-    for (let i = 0; i < MAX_COLORS; i++) uniforms[`uColor${i}`].value = colorArr[i]
-    uniforms.uColorCount.value = colorCount
-  }, [angle, noise, blindCount, mirrorGradient, spotlightRadius, spotlightSoftness, spotlightOpacity, gradientColors])
+  // Visual props (angle, noise, colours, spotlight) are read once at setup.
+  // The only caller passes constants, so they never need a live update.
 
   // ── GL setup — pause/resume, reduced motion, and context-loss recovery are
   // owned by useWebGLBackground. setup() builds the renderer/program/mesh and
@@ -214,7 +194,6 @@ const HeroBg = ({
       alpha: true,
       antialias: false, // doubles pixel work on Retina for no visible gain in a shader effect
     })
-    rendererRef.current = renderer
     const gl = renderer.gl
     const canvas = gl.canvas
 
@@ -245,11 +224,8 @@ const HeroBg = ({
     }
 
     const program = new Program(gl, { vertex: VERTEX_SHADER, fragment: FRAGMENT_SHADER, uniforms })
-    programRef.current = program
     const geometry = new Triangle(gl)
-    geometryRef.current = geometry
     const mesh = new Mesh(gl, { geometry, program })
-    meshRef.current = mesh
 
     const resize = () => {
       const rect = container.getBoundingClientRect()
@@ -293,8 +269,7 @@ const HeroBg = ({
 
     const paintFrame = () => {
       try {
-        const m = meshRef.current
-        if (m) renderer.render({ scene: m })
+        renderer.render({ scene: mesh })
         if (!didFirstFrameRef.current) {
           didFirstFrameRef.current = true
           try { onFirstFrameRef.current?.() } catch {}
@@ -358,19 +333,11 @@ const HeroBg = ({
         canvas.removeEventListener('pointermove', onPointerMove)
         window.removeEventListener('scroll', onScroll)
         if (canvas.parentElement === container) container.removeChild(canvas)
-        const callIfFn = (obj: unknown, key: string) => {
-          if (!obj || typeof obj !== 'object') return
-          const fn = (obj as Record<string, unknown>)[key]
-          if (typeof fn === 'function') fn.call(obj)
-        }
-        callIfFn(programRef.current, 'remove')
-        callIfFn(geometryRef.current, 'remove')
-        callIfFn(meshRef.current, 'remove')
-        callIfFn(rendererRef.current, 'destroy')
-        programRef.current = null
-        geometryRef.current = null
-        meshRef.current = null
-        rendererRef.current = null
+        program.remove()
+        geometry.remove()
+        // ogl's Renderer has no destroy(); release the context explicitly, as
+        // the other backgrounds do, instead of waiting for GC.
+        gl.getExtension('WEBGL_lose_context')?.loseContext()
       },
     }
   }, [])
@@ -379,13 +346,7 @@ const HeroBg = ({
     <div
       ref={containerRef}
       aria-hidden="true"
-      style={{
-        position: 'absolute',
-        inset: 0,
-        width: '100%',
-        height: '100%',
-        mixBlendMode: mixBlendMode || undefined,
-      }}
+      className="absolute inset-0 w-full h-full mix-blend-lighten"
     />
   )
 }
