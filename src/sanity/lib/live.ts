@@ -12,6 +12,13 @@ const { sanityFetch: baseSanityFetch, SanityLive } = defineLive({
 
 export { SanityLive }
 
+// Dev only: read the 'drafts' perspective so unpublished case studies can be
+// previewed on `npm run dev` before publishing. NODE_ENV is statically replaced
+// at build time, so production always serves published content. Needs
+// SANITY_API_READ_TOKEN (server-side only; browserToken stays false).
+// Callers can still pass their own `perspective` to override it.
+const DEV_PERSPECTIVE = process.env.NODE_ENV === 'development' ? { perspective: 'drafts' as const } : {}
+
 // Inject a stable 'sanity' cache tag on every fetch. The publish webhook
 // (src/app/api/revalidate/route.ts) calls revalidateTag('sanity'); without this
 // tag, defineLive only attaches per-query `sanity:<hash>` sync tags, which the
@@ -19,7 +26,7 @@ export { SanityLive }
 // revalidate in production until a redeploy. Callers may still pass their own
 // `tags`, which are merged in.
 export const sanityFetch = ((options: Parameters<typeof baseSanityFetch>[0]) =>
-  baseSanityFetch({ ...options, tags: ['sanity', ...(options.tags ?? [])] })
+  baseSanityFetch({ ...DEV_PERSPECTIVE, ...options, tags: ['sanity', ...(options.tags ?? [])] })
 ) as typeof baseSanityFetch
 
 // Typed convenience over sanityFetch for collection queries that should degrade
