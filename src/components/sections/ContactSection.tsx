@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import BookingButton from '@/components/booking/BookingButton'
 import LinkedInButton from '@/components/buttons/LinkedInButton'
 import CopyEmailButton from '@/components/buttons/CopyEmailButton'
+import TestimonialsBg from '@/components/backgrounds/TestimonialsBg'
 import { fadeUp } from '@/constants/animations'
 import { AMETHYST } from '@/constants/tokens'
 
@@ -41,8 +42,13 @@ export default function ContactSection() {
   useEffect(() => { setYear(new Date().getFullYear()) }, []) // react-doctor-disable-line react-doctor/no-initialize-state
 
   return (
-    <section id="contact" tabIndex={-1} className="outline-none w-full flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
-      <div className="w-full max-w-[600px] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
+    <section id="contact" tabIndex={-1} className="outline-none w-full relative overflow-hidden flex justify-center px-5 pt-7 pb-[124px] tab:px-10 tab:pt-8 desk:px-14 desk:pt-10 xl:px-20">
+      {/* ── WebGL background (shared with Testimonials) ── */}
+      <div className="absolute inset-0 opacity-15">
+        <TestimonialsBg />
+      </div>
+
+      <div className="w-full max-w-[600px] relative z-[1] flex flex-col gap-5 tab:gap-8 tab:max-w-none xl:max-w-[1440px]">
 
         {/* ── Full-width header ── */}
         <m.div className="flex flex-col gap-2" {...fadeUp(0)}>
