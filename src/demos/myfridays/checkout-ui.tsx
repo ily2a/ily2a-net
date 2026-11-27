@@ -9,6 +9,7 @@ import {
 import { CAUSES, SPLIT_CAUSES } from './data'
 import { money, moneyShort, type Checkout, type GiveTime, type PayMethod } from './checkout'
 import { RollingText, type DonationTarget } from './landing'
+import { useCanHover } from '../device'
 
 // Payment's controls in the file's light style (Payment, the receipt).
 // Each reads its colours from the .mf-light variables.
@@ -38,8 +39,9 @@ export function PanelHead({ id, title, children }: { id: string; title: string; 
 }
 
 export function BackLink({ onClick }: { onClick: () => void }) {
+  const canHover = useCanHover()
   return (
-    <m.button type="button" onClick={onClick} whileHover="hover" className="flex shrink-0 items-center gap-2 rounded-md">
+    <m.button type="button" onClick={onClick} whileHover={canHover ? 'hover' : undefined} className="flex shrink-0 items-center gap-2 rounded-md">
       <m.span className="flex" variants={{ hover: { x: -2 } }} transition={SPRING}>
         <Svg src="back-arrow.svg" width={24} height={24} />
       </m.span>
@@ -76,7 +78,7 @@ const BUTTON = 'mf-skeuo flex h-10 shrink-0 items-center justify-center rounded-
 export function SecondaryButton({ onClick, children, className = '' }: { onClick: () => void; children: ReactNode; className?: string }) {
   return (
     <m.button type="button" onClick={onClick} whileTap={{ scale: 0.98 }}
-      className={`${BUTTON} border border-(--mf-border) px-[39px] bg-(--mf-bg-primary) text-(--mf-text-secondary) hover:bg-(--mf-bg-secondary) ${className}`}>
+      className={`${BUTTON} border border-(--mf-border) px-[39px] bg-(--mf-bg-primary) text-(--mf-text-secondary) demo-hover:bg-(--mf-bg-secondary) ${className}`}>
       <span className="mf-trim px-0.5">{children}</span>
     </m.button>
   )
@@ -95,7 +97,7 @@ export function PrimaryButton({ onClick, children, incomplete = false, busy = fa
   return (
     <m.button type="button" onClick={busy ? undefined : onClick} whileTap={incomplete || busy ? undefined : { scale: 0.98 }}
       aria-disabled={incomplete || undefined} aria-busy={busy || undefined}
-      className={`${BUTTON} relative border-2 border-white/12 bg-(--mf-gray-800) ${className || 'px-[38px]'} text-(--mf-white) ${incomplete ? 'opacity-50' : 'hover:bg-(--mf-gray-900)'}`}>
+      className={`${BUTTON} relative border-2 border-white/12 bg-(--mf-gray-800) ${className || 'px-[38px]'} text-(--mf-white) ${incomplete ? 'opacity-50' : 'demo-hover:bg-(--mf-gray-900)'}`}>
       <span className={`mf-trim px-0.5 ${busy ? 'invisible' : ''}`}>{children}</span>
       {busy && (
         <m.span aria-hidden className="absolute size-4 rounded-full border-2 border-white/30 border-t-white"
@@ -243,7 +245,7 @@ export function CityAutocomplete({ id, label, cities, value, onChange, onBlur, e
               <m.button key="clear" type="button" aria-label={`Clear ${label.toLowerCase()}`}
                 onMouseDown={e => e.preventDefault()} onClick={() => { onChange(''); inputRef.current?.focus({ preventScroll: true }) }}
                 initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.15 }}
-                className="ml-2 flex size-5 shrink-0 items-center justify-center rounded-md text-(--mf-fg-quaternary) transition-colors hover:text-(--mf-text)">
+                className="ml-2 flex size-5 shrink-0 items-center justify-center rounded-md text-(--mf-fg-quaternary) transition-colors demo-hover:text-(--mf-text)">
                 <MaskSvg src="cancel-square.svg" width={17.08} height={17.08} />
               </m.button>
             )}
@@ -272,6 +274,7 @@ interface CityFieldProps {
 
 /** "Enter the name of your city": type freely, or pick one of the suggestions. */
 export function CityField({ id, cities, value, onChange, onBlur, error, labelledBy }: CityFieldProps) {
+  const canHover = useCanHover()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -330,7 +333,7 @@ export function CityField({ id, cities, value, onChange, onBlur, error, labelled
             {matches.map((city, i) => (
               // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- keys are handled on the input (aria-activedescendant)
               <li key={city} id={`${listId}-${i}`} role="option" aria-selected={i === active}
-                onMouseDown={e => e.preventDefault()} onClick={() => pick(city)} onPointerEnter={() => setActive(i)}
+                onMouseDown={e => e.preventDefault()} onClick={() => pick(city)} onPointerEnter={canHover ? () => setActive(i) : undefined}
                 className={`flex h-10 shrink-0 cursor-pointer items-center rounded-md px-2.5 transition-colors ${i === active ? 'bg-(--mf-bg-tertiary)' : ''}`}>
                 <span className="mf-ff-body text-[16px] leading-[1.45] text-(--mf-text)">{city}</span>
               </li>
@@ -447,7 +450,7 @@ function SummaryRow({ label, value, action }: { label: string; value: string; ac
 function RowAction({ on, what, onClick }: { on: boolean; what: string; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick}
-      className="mf-trim text-[16px] leading-[1.45] text-(--mf-text-tertiary) underline decoration-from-font [text-underline-position:from-font] [font-feature-settings:'ss05'_1] transition-colors hover:text-(--mf-text)">
+      className="mf-trim text-[16px] leading-[1.45] text-(--mf-text-tertiary) underline decoration-from-font [text-underline-position:from-font] [font-feature-settings:'ss05'_1] transition-colors demo-hover:text-(--mf-text)">
       {on ? 'Remove' : 'Add'}<span className="sr-only"> {what}</span>
     </button>
   )

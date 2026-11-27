@@ -218,7 +218,7 @@ export function SearchField({ query, onSearch, className }: { query: string; onS
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.15 }}
-            className="flex size-6 shrink-0 items-center justify-center rounded-md text-(--mf-text-secondary) transition-colors hover:text-(--mf-white)"
+            className="flex size-6 shrink-0 items-center justify-center rounded-md text-(--mf-text-secondary) transition-colors demo-hover:text-(--mf-white)"
           >
             <MaskSvg src="cancel-square.svg" width={17.08} height={17.08} />
           </m.button>

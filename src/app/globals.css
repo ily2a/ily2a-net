@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Hover inside a live demo: only for pointers that can hover, and never in a
+   phone frame (phones have no hover), even when it's viewed with a mouse.
+   DeviceFrame sets data-device; :where() keeps hover's usual specificity. */
+@custom-variant demo-hover {
+  @media (hover: hover) {
+    &:hover:not(:where([data-device="phone"] *)) {
+      @slot;
+    }
+  }
+}
+
 @theme inline {
 
   /* ─── Brand Palette (amethyst) ────────────────────────────── */

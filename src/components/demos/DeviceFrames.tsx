@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import type { DemoDevice, DemoScreen } from '@/demos/catalog'
+import { DemoDeviceContext } from '@/demos/device'
 
 // Demos are built at their exact design size (e.g. phone 375×812, web
 // 1440×1024). The frame scales that fixed screen to whatever width the
@@ -43,21 +44,30 @@ function ScaledScreen({ width, height, className = '', children }: DemoScreen & 
   )
 }
 
-// Visitors should see the whole phone without scrolling, so the bezel is
-// never taller than the viewport less this: the floating nav at the bottom
-// (24px offset, 64px pill, a 24px gap above it) and 24px of room on top.
-const PHONE_CLEARANCE = 136
-// The bezel adds 10px of padding and a 1px border on each side.
-const BEZEL = 22
+// Visitors should see the whole demo without scrolling, so a frame is never
+// taller than the viewport less this: the floating nav at the bottom (24px
+// offset, 64px pill, a 24px gap above it) and 24px of room on top.
+const CLEARANCE = 136
+
+// What each frame adds around its screen, in px. The phone bezel: 10px of
+// padding and a 1px border on each side. The browser window: a 1px border
+// and its 40px address bar.
+const CHROME: Record<DemoDevice, { x: number; y: number }> = {
+  phone: { x: 22, y: 22 },
+  browser: { x: 2, y: 42 },
+}
 
 /**
- * How wide the phone bezel may get: its design width, or narrower when that
- * would make it taller than the viewport allows. Its height follows its width
- * through the screen's aspect ratio, so capping the width caps the height.
- * svh, not dvh, so it doesn't rescale as mobile browser bars come and go.
+ * How wide a frame may get so all of it fits on screen. Its height follows
+ * its width through the screen's aspect ratio, so capping the width caps the
+ * height. The phone also stops at its design width. svh, not dvh, so it
+ * doesn't rescale as mobile browser bars come and go.
  */
-const phoneMaxWidth = ({ width, height }: DemoScreen) =>
-  `max(220px, min(${width + 20}px, calc((100svh - ${PHONE_CLEARANCE + BEZEL}px) * ${width / height} + ${BEZEL}px)))`
+function frameMaxWidth(device: DemoDevice, { width, height }: DemoScreen) {
+  const { x, y } = CHROME[device]
+  const fit = `calc((100svh - ${CLEARANCE + y}px) * ${width / height} + ${x}px)`
+  return device === 'phone' ? `max(220px, min(${width + 20}px, ${fit}))` : `max(360px, ${fit})`
+}
 
 interface DeviceFrameProps {
   device: DemoDevice
@@ -76,11 +86,13 @@ export function DeviceFrame({ device, screen, url, children }: DeviceFrameProps)
   const phone = device === 'phone'
   return (
     <div
-      className={`w-full border border-glass-border bg-surface shadow-[0_8px_32px_var(--color-shadow-strong)] ${
-        phone ? 'mx-auto rounded-[56px] p-2.5' : 'overflow-hidden rounded-glass'
+      // Read by the demo-hover: variant, which keeps hover off inside a phone.
+      data-device={device}
+      className={`mx-auto w-full border border-glass-border bg-surface shadow-[0_8px_32px_var(--color-shadow-strong)] ${
+        phone ? 'rounded-[56px] p-2.5' : 'overflow-hidden rounded-glass'
       }`}
-      // The bezel hugs the screen, and the whole phone fits on screen.
-      style={phone ? { maxWidth: phoneMaxWidth(screen) } : undefined}
+      // The whole frame fits on screen; the phone bezel also hugs its screen.
+      style={{ maxWidth: frameMaxWidth(device, screen) }}
     >
       {!phone && (
         <div aria-hidden className="flex items-center gap-3 px-4 h-10 border-b border-glass-border">
@@ -97,7 +109,7 @@ export function DeviceFrame({ device, screen, url, children }: DeviceFrameProps)
         </div>
       )}
       <ScaledScreen width={screen.width} height={screen.height} className={phone ? 'rounded-[46px] img-outline' : ''}>
-        {children}
+        <DemoDeviceContext value={device}>{children}</DemoDeviceContext>
       </ScaledScreen>
     </div>
   )

@@ -5,6 +5,7 @@ import { m } from 'motion/react'
 import { CauseIcon, CharityLogo, Svg } from './assets'
 import { CountrySelect } from './CountrySelect'
 import { AmountRow, BODY, Countdown, Reveal, SearchField, Tabs, TITLE, type Landing } from './landing'
+import { useCanHover } from '../device'
 
 // MyFridays landing on web (Figma: Donor › Landing, the two 1440×1024
 // "landing" frames). Causes / Charities tabs, live search, and a selectable
@@ -45,15 +46,16 @@ interface CardProps {
 /** A cause or charity card. Click anywhere to select it; the title is the keyboard control. */
 function Card({ selected, onSelect, minHeight, header, description, amountRow, label }: CardProps) {
   const id = useId()
+  const canHover = useCanHover()
   return (
     <m.div
       onClick={onSelect}
-      whileHover={selected ? undefined : { y: -2 }}
+      whileHover={selected || !canHover ? undefined : { y: -2 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className={`mf-card-shadow relative flex cursor-pointer flex-col justify-center rounded-lg border p-5 transition-colors duration-200 ${minHeight} ${
         selected
           ? 'border-(--mf-logo-orange) bg-(--mf-bg-secondary)'
-          : 'border-(--mf-border) bg-(--mf-bg-primary) hover:border-(--mf-logo-orange) focus-within:border-(--mf-logo-orange)'
+          : 'border-(--mf-border) bg-(--mf-bg-primary) demo-hover:border-(--mf-logo-orange) focus-within:border-(--mf-logo-orange)'
       }`}
     >
       <div className="flex flex-col gap-4">

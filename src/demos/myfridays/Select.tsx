@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { AnimatePresence, m } from 'motion/react'
 import { MaskSvg } from './assets'
+import { useCanHover } from '../device'
 
 // The file's "Input dropdown": a field that opens a list of options. Its
 // colours come from the scope's variables, so the same control is dark on
@@ -31,6 +32,7 @@ interface SelectProps {
 
 export function Select({ options, value, onChange, label, muted = false, placeholder, up = false, id, className = '', fieldClassName = '' }: SelectProps) {
   const listId = useId()
+  const canHover = useCanHover()
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -130,7 +132,7 @@ export function Select({ options, value, onChange, label, muted = false, placeho
                   id={`${listId}-${option.id}`}
                   role="option"
                   aria-selected={selected}
-                  onPointerEnter={() => setActive(i)}
+                  onPointerEnter={canHover ? () => setActive(i) : undefined}
                   onClick={() => choose(option)}
                   className={`flex h-10 cursor-pointer items-center gap-2 rounded-md px-2.5 transition-colors ${
                     i === active ? 'bg-(--mf-bg-tertiary)' : selected ? 'bg-(--mf-bg-secondary)' : ''
