@@ -62,7 +62,7 @@ export function TabBar() {
   )
 }
 
-export function HomeIndicator() {
+function HomeIndicator() {
   return (
     <div aria-hidden className="flex h-10 items-end justify-center pb-2">
       <div className="h-[5px] w-[134px] rounded-full bg-(--bare-button-primary)" />
@@ -161,7 +161,7 @@ const MACRO_TAGS = [
 ] as const
 
 /** The four macro pills under a meal: P, C, F, kcal. Read out as one sentence. */
-export function MacroTags({ macros }: { macros: Macros }) {
+function MacroTags({ macros }: { macros: Macros }) {
   const text = `${macros.p}g protein, ${macros.c}g carbs, ${macros.f}g fat, ${macros.kcal} kcal`
   return (
     <div className="flex items-center gap-1" role="img" aria-label={text}>
@@ -203,7 +203,7 @@ function Digit({ value }: { value: number }) {
  * that don't change stay still. A digit that comes or goes (72 → 104)
  * fades in or out at the front. Screen readers get the plain number.
  */
-export function SlidingNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
+function SlidingNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
   const digits = String(value).split('')
   return (
     <span className="inline-flex tabular-nums" style={{ lineHeight: `${LINE}px` }}>
@@ -263,7 +263,7 @@ const MEAL_ICON: Record<MealType, { src: string; width: number; height: number }
   snack: { src: 'icon-taco.svg', width: 17.92, height: 14.58 },
 }
 
-export function MealIcon({ type }: { type: MealType }) {
+function MealIcon({ type }: { type: MealType }) {
   const icon = MEAL_ICON[type]
   return (
     <span className="flex size-5 shrink-0 items-center justify-center">

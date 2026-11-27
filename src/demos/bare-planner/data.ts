@@ -15,7 +15,7 @@ export interface Macros { p: number; c: number; f: number; kcal: number }
 const kcalOf = ({ p, c, f }: Omit<Macros, 'kcal'>) => p * 4 + c * 4 + f * 9
 
 export type CategoryId = 'produce' | 'meat' | 'dairy' | 'bakery' | 'pantry'
-export const CATEGORIES: { id: CategoryId; label: string }[] = [
+const CATEGORIES: { id: CategoryId; label: string }[] = [
   { id: 'produce', label: 'Fruit & veg' },
   { id: 'meat', label: 'Meat' },
   { id: 'dairy', label: 'Dairy & eggs' },
