@@ -43,6 +43,22 @@ function ScaledScreen({ width, height, className = '', children }: DemoScreen & 
   )
 }
 
+// Visitors should see the whole phone without scrolling, so the bezel is
+// never taller than the viewport less this: the floating nav at the bottom
+// (24px offset, 64px pill, a 24px gap above it) and 24px of room on top.
+const PHONE_CLEARANCE = 136
+// The bezel adds 10px of padding and a 1px border on each side.
+const BEZEL = 22
+
+/**
+ * How wide the phone bezel may get: its design width, or narrower when that
+ * would make it taller than the viewport allows. Its height follows its width
+ * through the screen's aspect ratio, so capping the width caps the height.
+ * svh, not dvh, so it doesn't rescale as mobile browser bars come and go.
+ */
+const phoneMaxWidth = ({ width, height }: DemoScreen) =>
+  `max(220px, min(${width + 20}px, calc((100svh - ${PHONE_CLEARANCE + BEZEL}px) * ${width / height} + ${BEZEL}px)))`
+
 interface DeviceFrameProps {
   device: DemoDevice
   screen: DemoScreen
@@ -63,8 +79,8 @@ export function DeviceFrame({ device, screen, url, children }: DeviceFrameProps)
       className={`w-full border border-glass-border bg-surface shadow-[0_8px_32px_var(--color-shadow-strong)] ${
         phone ? 'mx-auto rounded-[56px] p-2.5' : 'overflow-hidden rounded-glass'
       }`}
-      // The bezel hugs the screen: its design width plus 10px either side.
-      style={phone ? { maxWidth: screen.width + 20 } : undefined}
+      // The bezel hugs the screen, and the whole phone fits on screen.
+      style={phone ? { maxWidth: phoneMaxWidth(screen) } : undefined}
     >
       {!phone && (
         <div aria-hidden className="flex items-center gap-3 px-4 h-10 border-b border-glass-border">
