@@ -11,5 +11,6 @@ const loading = () => <div className="skeleton absolute inset-0" />
 
 export const DEMO_COMPONENTS: Record<DemoId, ComponentType<DemoProps>> = {
   'lean-onboarding': dynamic<DemoProps>(() => import('./lean-onboarding'), { ssr: false, loading }),
+  'bare-planner': dynamic<DemoProps>(() => import('./bare-planner'), { ssr: false, loading }),
   'myfridays-donor': dynamic<DemoProps>(() => import('./myfridays'), { ssr: false, loading }),
 }

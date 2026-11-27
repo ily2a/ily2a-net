@@ -1,0 +1,72 @@
+/* BARE design tokens, copied from the Figma variables (Semantics/*).
+   Scoped to .bare so nothing leaks into the portfolio or other demos.
+   Components use them through Tailwind, e.g. bg-(--bare-brand). */
+.bare {
+  /* Fonts/* */
+  --bare-text-primary:   #292929;
+  --bare-text-secondary: #7c7c7c;
+  --bare-text-muted:     #989898;
+  --bare-text-brand:     #005e4b;
+  --bare-text-inverse:   #fcfcfc;
+
+  /* Brand/* */
+  --bare-brand:           #005e4b;
+  --bare-brand-secondary: #b4f79f;
+
+  /* Backgrounds/* */
+  --bare-bg-screen:  #f8fcf8;
+  --bare-bg-surface: #ffffff;
+  --bare-bg-subtle:  #efefef;
+
+  /* Borders/* */
+  --bare-border-default: #bcdecc;
+  --bare-border-subtle:  #dcdcdc;
+
+  /* Components/Buttons/* */
+  --bare-button-primary:  #005e4b;
+  --bare-button-terciary: #dcefe4;
+  --bare-button-disabled: #dcdcdc;
+
+  /* The greyed-out week arrow's fill (arrow-right-02, inactive) */
+  --bare-icon-inactive: #bdbdbd;
+
+  /* Components/Tags/terciary (checkbox indeterminate fill) */
+  --bare-tag-terciary: #bcdecc;
+
+  /* Components/Navbar/* */
+  --bare-nav-bg:           #fcfcfc;
+  --bare-nav-icon-wrapper: #dcefe4;
+
+  /* Components/Tags/Macros/*: tag background and icon-and-text */
+  --bare-kcal-bg:  #dcefe4; --bare-kcal-fg:  #005e4b;
+  --bare-prot-bg:  #f4eef9; --bare-prot-fg:  #834ba5;
+  --bare-carbs-bg: #d5f8f7; --bare-carbs-fg: #1f757f;
+  --bare-fat-bg:   #eefde8; --bare-fat-fg:   #29a010;
+
+  /* Shadows: cards, and the skeuomorphic inner edge on buttons */
+  --bare-shadow-card: 0 1px 1px rgba(10, 13, 18, 0.05);
+  --bare-shadow-skeu: 0 1px 2px rgba(10, 13, 18, 0.05), inset 0 -2px 0 rgba(10, 13, 18, 0.05);
+
+  /* The portfolio's focus ring picks this up inside the demo */
+  --demo-accent: var(--bare-brand);
+
+  color: var(--bare-text-primary);
+  background: var(--bare-bg-screen);
+}
+
+.bare-shadow-card { box-shadow: var(--bare-shadow-card); }
+.bare-shadow-skeu { box-shadow: var(--bare-shadow-skeu); }
+
+/* Phones scroll with overlay scrollbars that take no room. Desktop browsers
+   (Windows especially) add a ~15px bar that squeezes the 375px screen, so
+   scrolling areas inside the demo hide theirs and still scroll. */
+.bare .overflow-y-auto {
+  scrollbar-width: none;
+}
+.bare .overflow-y-auto::-webkit-scrollbar {
+  display: none;
+}
+
+/* The screen headings take focus when a screen slides in, so keyboard users
+   aren't dropped back to the top of the page. That focus needs no ring. */
+.bare h2[tabindex="-1"]:focus { outline: none; }

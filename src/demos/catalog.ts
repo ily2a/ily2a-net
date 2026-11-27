@@ -36,6 +36,10 @@ export const DEMO_CATALOG = {
     title: 'Lean: onboarding flow',
     screens: { phone: { width: 375, height: 812 } },
   },
+  'bare-planner': {
+    title: 'BARE: planner and shopping list',
+    screens: { phone: { width: 375, height: 812 } },
+  },
   'myfridays-donor': {
     title: 'MyFridays: donor flow',
     screens: { browser: { width: 1440, height: 1024 }, phone: { width: 393, height: 852 } },
