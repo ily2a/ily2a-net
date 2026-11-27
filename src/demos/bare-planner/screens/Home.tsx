@@ -31,11 +31,14 @@ const PAGE = {
   center: { x: '0%' },
   exit: (dir: number) => ({ x: `${dir * -100}%` }),
 }
-const NUDGE = {
-  enter: (dir: number) => ({ x: dir * 56, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir * -56, opacity: 0 }),
+// The date range doesn't slide: it flips in place on its line, like turning a
+// calendar page. Next week rolls up from below, last week drops in from above.
+const FLIP = {
+  enter: (dir: number) => ({ y: `${dir * 100}%`, opacity: 0, filter: 'blur(2px)' }),
+  center: { y: '0%', opacity: 1, filter: 'blur(0px)' },
+  exit: (dir: number) => ({ y: `${dir * -100}%`, opacity: 0, filter: 'blur(2px)' }),
 }
+const FLIP_EASE = { duration: 0.3, ease: [0.23, 1, 0.32, 1] } as const
 const PAGE_SPRING = { type: 'spring', stiffness: 380, damping: 40 } as const
 
 
@@ -81,11 +84,11 @@ export function Home({ week, weekIndex, weekCount, dayIndex, onWeek, onDay, onSh
             <div className="flex items-end justify-between">
               <div className="flex flex-col">
                 <h3 id="bare-plan" className="text-[18px] leading-7 font-semibold">Your current plan</h3>
-                {/* The date range slides with the week, clipped to its line. */}
+                {/* The date range flips with the week, clipped to its line. */}
                 <div className="relative h-[18px] overflow-hidden">
                   <AnimatePresence mode="popLayout" initial={false} custom={dir}>
-                    <m.p key={week.range} custom={dir} variants={NUDGE} initial="enter" animate="center" exit="exit"
-                      transition={PAGE_SPRING} className="text-[12px] leading-[18px] whitespace-nowrap text-(--bare-text-brand)">
+                    <m.p key={week.range} custom={dir} variants={FLIP} initial="enter" animate="center" exit="exit"
+                      transition={FLIP_EASE} className="text-[12px] leading-[18px] whitespace-nowrap text-(--bare-text-brand)">
                       {week.range}
                     </m.p>
                   </AnimatePresence>
