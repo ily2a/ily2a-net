@@ -21,7 +21,7 @@ import { useCallback, useRef, type MouseEvent as ReactMouseEvent } from 'react'
 // re-attached — leaving rectRef null and the spotlight frozen at center. The
 // callback ref wires listeners exactly when the node attaches and tears them
 // down when it detaches.
-export interface SpotlightHandle {
+interface SpotlightHandle {
   ref: (el: HTMLElement | null) => void
   onMouseMove: (e: ReactMouseEvent) => void
 }

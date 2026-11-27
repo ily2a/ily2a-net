@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { m, AnimatePresence } from 'motion/react'
 import { useButtonState } from '@/hooks/useButtonState'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, INSTANT } from '@/constants/animations'
 import { ICON_LINK_BUTTON_STATES as states } from '@/components/buttons/LinkedInButton'
 
 const COPIED_MS = 2000
@@ -51,7 +51,7 @@ export default function CopyEmailButton({ email }: { email: string }) {
           boxShadow:       states[state].boxShadow,
         }}
         // Hover is instant (Craft hover restraint); only press keeps the snap spring.
-        transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
+        transition={state === 'pressed' ? SPRING_SNAP : INSTANT}
         className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-pill border border-transparent cursor-pointer"
       >
         <svg

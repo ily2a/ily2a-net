@@ -7,7 +7,7 @@ import BookingDialog from '@/components/booking/BookingDialog'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { isCalCloseAction, readCalEmbedMessage } from '@/lib/cal-embed-message'
 import { pushModalOpen, popModalOpen } from '@/lib/modal-store'
-import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
+import { SPRING_SNAP, SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT, INSTANT } from '@/constants/animations'
 import { BREAKPOINTS } from '@/constants/tokens'
 
 function releaseScrollLock() {
@@ -272,7 +272,7 @@ export default function BookingButton({ static: isStatic = false, className = ''
         whileHover={{
           ...HOVER_LIFT,
           // Instant hover — don't inherit the entrance spring (Craft hover restraint).
-          transition: { duration: 0 },
+          transition: INSTANT,
         }}
         whileTap={{
           y: 0,

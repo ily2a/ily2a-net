@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export type ButtonState = 'default' | 'hover' | 'pressed'
 
-export interface ButtonStateHandlers {
+interface ButtonStateHandlers {
   onHoverStart: () => void
   onHoverEnd: () => void
   onTapStart: () => void

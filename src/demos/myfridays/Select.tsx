@@ -9,7 +9,7 @@ import { useCanHover } from '../device'
 // colours come from the scope's variables, so the same control is dark on
 // the landing and light on Payment.
 
-export interface SelectOption { id: string; label: string; icon?: ReactNode }
+interface SelectOption { id: string; label: string; icon?: ReactNode }
 
 interface SelectProps {
   options: readonly SelectOption[]

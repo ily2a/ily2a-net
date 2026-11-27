@@ -83,9 +83,11 @@ Dark theme only. Amethyst is the single brand hue.
 | `glass-border` | `rgba(255,255,255,.08)` | Glass card edge |
 | `border-hover` | `rgba(255,255,255,.25)` | Hover edge |
 | `image-outline` | `rgba(255,255,255,.10)` | 1px inset edge ring on images (`.img-outline`) |
+| `scrollbar` / `scrollbar-hover` | `rgba(255,255,255,.10)` / `.15` | Scrollbar thumb |
+| `glass-highlight` / `glass-shade` | `rgba(255,255,255,.12)` / `rgba(0,0,0,.20)` | Inset edges of `--shadow-glass-card` |
 | `scrim` | `rgba(0,0,0,.7)` | Project-card bottom fade |
 | `clear` | `rgba(0,0,0,0)` | See-through value for Motion color animations (Motion can't animate `transparent`) |
-| `shadow` / `shadow-strong` | `rgba(0,0,0,.25)` / `.40` | Elevation |
+| `shadow` / `shadow-deep` / `shadow-strong` | `rgba(0,0,0,.25)` / `.30` / `.40` | Elevation (`shadow-deep` is the glass-card drop) |
 
 ---
 
@@ -93,7 +95,8 @@ Dark theme only. Amethyst is the single brand hue.
 
 Self-hosted **Satoshi** via `next/font/local` (weights 300/400/500/700), exposed
 as `--font-satoshi` → `--font-sans`. Inputs are pinned to `16px` to stop iOS
-zoom-on-focus.
+zoom-on-focus. Only those four weights exist: don't use `font-semibold` (600
+renders as Bold) and no italic face is loaded, so italics are browser-synthesized.
 
 Type is **not** ad-hoc per component. Use the semantic utility classes from
 `globals.css` — they bundle size, weight, tracking, leading, and responsive steps.
@@ -113,19 +116,20 @@ Not every class steps at every breakpoint — check `globals.css` for the exact 
 - `.text-intro` — 24 → 28 → 26 → 32px, medium (lead paragraphs; lg dips before xl)
 - `.text-md` — 16 → 20px
 - `.text-body` — 15 → 16px, generous `170%` leading
+- `.text-body-strong` — `.text-body` at medium weight (contact detail links)
 - `.text-body-card` — 14 → 15 (desk) → 16px, card copy
 - `.text-blockquote` — italic `text-base`, for pull quotes
 
 **Labels & captions**
 - `.text-caption` — 12 → 14px, medium
 - `.text-eyebrow` — 11px uppercase, `0.07em` tracking
-- `.text-overline` — 11px uppercase, semibold, `0.10em` tracking
+- `.text-overline` — 11px uppercase, bold, `0.10em` tracking
 - `.text-tag`, `.text-skill-label`, `.text-meta`, `.text-toc`, `.text-cursor`
 - `.text-inline-code` — mono, `0.85em`, glass chip (portable-text `<code>`)
 
 **UI / component**
 - `.btn-label` — 16 → 18px bold (primary button text)
-- `.btn-label-flat`, `.link-label`
+- `.link-label`
 - `.text-field-label`, `.text-field-input`, `.text-notice`
 - `.text-form-error` (12px) — inline field validation (password gate)
 - `.text-testimonial-name` / `.text-testimonial-role`
@@ -187,7 +191,7 @@ card and craft sidebar via the same tokens):
 - Contact info card + craft sidebar: fixed `backdrop-blur-[32px]` /
   `backdrop-saturate-[180%]` with `rounded-glass`
 - `--shadow-glass-card`: two inset highlights (1px top light, 1px bottom dark)
-  plus a deep `0 8px 32px rgba(0,0,0,.3)` drop
+  plus a deep `0 8px 32px var(--color-shadow-deep)` drop
 
 **Navbar `GlassSurface`** is a separate, denser recipe — not the card glass above:
 
@@ -225,6 +229,9 @@ reach for these before authoring a new transition.
 - `whileTap={{ scale: 0.97 }}` — default press feedback on filled CTAs; some
   buttons opt out (e.g. `BookingButton` inset shadow, `TestimonialsButton` on
   desktop, craft tag color taps).
+- `STAGGER_PARENT` / `STAGGER_CHILD` — card-grid entrance (Craft, Capabilities): 50ms stagger, children `y 12→0` over 0.3s `EASE_OUT`.
+- `INSTANT` — `{ duration: 0 }` for hover/default swaps that must not inherit a spring.
+- `textRevealSpring(scaled, delay)` — TextReveal word spring (stiffness 400).
 - `fadeUp(delay)` — scroll-triggered section entrance: `opacity 0→1`, `y 16→0`,
   `viewport once, margin -80px`, spring `{ stiffness: 260, damping: 24 }`.
 - **Never animate to `'transparent'`.** Motion can't interpolate the keyword, so

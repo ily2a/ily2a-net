@@ -3,7 +3,7 @@
 import { forwardRef } from 'react'
 import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, INSTANT } from '@/constants/animations'
 
 interface CloseButtonStyle {
   backgroundColor: string
@@ -47,7 +47,7 @@ const CloseButton = forwardRef<HTMLButtonElement, { onClick?: () => void }>(func
         boxShadow:       states[state].boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
-      transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
+      transition={state === 'pressed' ? SPRING_SNAP : INSTANT}
       aria-label="Close"
       className="flex items-center justify-center shrink-0 relative overflow-hidden w-11 h-11 min-w-11 min-h-11 rounded-pill p-[6px]"
       style={{ border: '2px solid' }}

@@ -1,22 +1,10 @@
 'use client'
 
 import { useState, useCallback, type ReactNode, type TouchEvent } from 'react'
-import { m, type Variants } from 'motion/react'
+import { m } from 'motion/react'
 import Image from 'next/image'
-import { EASE_OUT } from '@/constants/animations'
+import { EASE_OUT, STAGGER_PARENT, STAGGER_CHILD } from '@/constants/animations'
 import { useSpotlight } from '@/hooks/useSpotlight'
-
-// Section-level stagger — children enter 50ms apart so the grid feels alive
-// instead of dropping in as a single block. Whole grid finishes well under
-// the section's likely viewport dwell, so it never blocks interaction.
-const STAGGER_PARENT: Variants = {
-  hidden: { opacity: 1 },
-  show:   { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
-}
-const STAGGER_CHILD: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT } },
-}
 
 const CARDS = [
   {

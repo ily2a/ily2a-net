@@ -5,7 +5,7 @@
 
 const CLOSE_ACTIONS = new Set(['__closeIframe', 'cal:close', '__closeModal'])
 
-export interface CalEmbedMessage {
+interface CalEmbedMessage {
   action: string | null
   height: number | null
 }

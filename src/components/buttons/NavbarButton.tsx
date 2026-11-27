@@ -4,7 +4,7 @@ import type { AriaAttributes } from 'react'
 import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, INSTANT } from '@/constants/animations'
 import { BREAKPOINTS } from '@/constants/tokens'
 
 const CraftIcon = ({ color }: { color: string }) => (
@@ -65,7 +65,7 @@ export default function NavbarButton({ icon, label, onClick, 'aria-current': ari
         boxShadow:       s.boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
-      transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
+      transition={state === 'pressed' ? SPRING_SNAP : INSTANT}
       className={`inline-flex items-center justify-center shrink-0 rounded-pill h-11 border border-transparent ${isMobile ? 'w-11 p-0 gap-0' : 'w-[104px] gap-2 py-[15px] px-[19px]'}`}
     >
       <Icon color={s.color} />
@@ -73,7 +73,7 @@ export default function NavbarButton({ icon, label, onClick, 'aria-current': ari
         <m.span
           className="link-label"
           animate={{ color: s.color }}
-          transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
+          transition={state === 'pressed' ? SPRING_SNAP : INSTANT}
         >
           {label}
         </m.span>

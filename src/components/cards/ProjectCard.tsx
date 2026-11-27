@@ -94,7 +94,7 @@ const ProjectCard = memo(function ProjectCard({ project, priority = false }: { p
       whileTap={isTouch ? { scale: 0.97 } : undefined}
       transition={{ duration: 0.15, ease: EASE_OUT }}
       style={{ touchAction: 'manipulation' }}
-      className="project-card block no-underline"
+      className="block no-underline"
       data-cursor-label="View project"
     >
       {/* ── Image + overlay container ── */}

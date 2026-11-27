@@ -1,7 +1,7 @@
 'use client'
 
 import { m } from 'motion/react'
-import { SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT } from '@/constants/animations'
+import { SPRING_ENTRANCE, HERO_BUTTON_DELAY, HOVER_LIFT, INSTANT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { BREAKPOINTS } from '@/constants/tokens'
@@ -20,7 +20,7 @@ export default function TestimonialsButton({ instant = false }: { instant?: bool
         ...HOVER_LIFT,
         borderColor: 'var(--color-border-hover)',
         // Instant hover — don't inherit the entrance spring (Craft hover restraint).
-        transition: { duration: 0 },
+        transition: INSTANT,
       }}
       whileTap={isMobile ? { scale: 0.97 } : { y: 0 }}
       transition={{ ...SPRING_ENTRANCE, delay: instant ? 0 : HERO_BUTTON_DELAY }}

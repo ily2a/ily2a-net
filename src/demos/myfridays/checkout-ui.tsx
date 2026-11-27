@@ -366,7 +366,7 @@ export function Checkbox({ checked, onChange, label }: { checked: boolean; onCha
 }
 
 /** On / off, for "Split donation evenly". */
-export function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label: string }) {
+function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label: string }) {
   return (
     <label className="flex cursor-pointer items-center gap-2">
       <m.button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)}
@@ -468,7 +468,7 @@ export function SummaryRows({ pay }: { pay: Checkout }) {
 
 // ── Payment method ───────────────────────────────────────────────────
 
-export const METHODS: { id: PayMethod; label: string; logo: ReactNode }[] = [
+const METHODS: { id: PayMethod; label: string; logo: ReactNode }[] = [
   { id: 'card', label: 'Card', logo: <CardIcon /> },
   { id: 'apple', label: 'Apple Pay', logo: <ApplePayLogo /> },
   { id: 'google', label: 'Google Pay', logo: <GooglePayLogo /> },

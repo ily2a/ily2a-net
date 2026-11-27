@@ -28,7 +28,7 @@ export interface WebGLBackgroundContext {
 }
 
 // setup may return null/undefined to bail (e.g. the container is not ready).
-export type WebGLBackgroundSetup = (
+type WebGLBackgroundSetup = (
   container: HTMLElement,
 ) => WebGLBackgroundContext | null | undefined
 

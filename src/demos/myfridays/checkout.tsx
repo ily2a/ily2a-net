@@ -14,7 +14,7 @@ export type GiveTime = 'jummah' | 'sunset'
 
 /** The card form. address2 is the mobile frame's optional second line. */
 export type CardField = 'number' | 'expiry' | 'cvc' | 'first' | 'last' | 'address' | 'address2' | 'city' | 'postcode' | 'phone'
-export type Field = 'location' | 'time' | 'split' | 'method' | CardField
+type Field = 'location' | 'time' | 'split' | 'method' | CardField
 type CardDetails = Record<CardField, string>
 
 const CARD_FIELDS: CardField[] = ['number', 'expiry', 'cvc', 'first', 'last', 'address', 'address2', 'city', 'postcode', 'phone']
@@ -25,13 +25,13 @@ export const INFO_FIELDS: Field[] = ['location', 'time']
 const EMPTY_CARD: CardDetails = { number: '', expiry: '', cvc: '', first: '', last: '', address: '', address2: '', city: '', postcode: '', phone: '' }
 
 /** Tip choices, as a share of the weekly donation. The file defaults to 5%. */
-export const TIP_RATES = [0, 0.05, 0.1, 0.15] as const
+const TIP_RATES = [0, 0.05, 0.1, 0.15] as const
 /** Card processing: a flat 0.80 like the file, in the donor's currency. */
 const FEE = 0.8
 
 // ── Money ────────────────────────────────────────────────────────────
 
-export const round2 = (n: number) => Math.round(n * 100) / 100
+const round2 = (n: number) => Math.round(n * 100) / 100
 /** "£ 0.50", the summary's format. */
 export const money = (n: number, currency: string) => `${currency} ${n.toFixed(2)}`
 /** "£10", the donation line's: whole amounts without pence. */
@@ -40,7 +40,7 @@ export const moneyShort = (n: number, currency: string) => `${currency}${Number.
 const amountText = (cents: number) => (cents % 100 === 0 ? String(cents / 100) : (cents / 100).toFixed(2))
 
 /** Splits an amount evenly; the odd pence go to the first causes. */
-export function splitEvenly(amount: number, parts: number) {
+function splitEvenly(amount: number, parts: number) {
   const cents = Math.round(amount * 100)
   const base = Math.floor(cents / parts)
   return Array.from({ length: parts }, (_, i) => amountText(base + (i < cents % parts ? 1 : 0)))

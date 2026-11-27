@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, type MouseEvent } from 'react'
 import { m } from 'motion/react'
+import { INSTANT } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { scrollToElement } from '@/lib/scroll'
 
@@ -76,7 +77,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
                 borderColor: 'var(--color-border-hover)',
               } : undefined}
               // Instant hover / active swaps — frequent pointer sweeps shouldn't lag (Craft hover restraint).
-              transition={{ duration: 0 }}
+              transition={INSTANT}
             >
               {label}
             </m.a>

@@ -2,9 +2,9 @@
 
 import { m } from 'motion/react'
 import { useButtonState, type ButtonState } from '@/hooks/useButtonState'
-import { SPRING_SNAP } from '@/constants/animations'
+import { SPRING_SNAP, INSTANT } from '@/constants/animations'
 
-export interface IconLinkButtonStyle {
+interface IconLinkButtonStyle {
   borderColor: string
   backgroundColor: string
   iconColor: string
@@ -59,7 +59,7 @@ export default function LinkedInButton() {
         boxShadow:       states[state].boxShadow,
       }}
       // Hover is instant (Craft hover restraint); only press keeps the snap spring.
-      transition={state === 'pressed' ? SPRING_SNAP : { duration: 0 }}
+      transition={state === 'pressed' ? SPRING_SNAP : INSTANT}
       className="inline-flex items-center justify-center shrink-0 h-11 w-11 rounded-pill border border-transparent"
     >
       <LinkedInIcon color={states[state].iconColor} size={22} />

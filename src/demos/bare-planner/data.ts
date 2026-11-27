@@ -14,7 +14,7 @@ export interface Macros { p: number; c: number; f: number; kcal: number }
 /** Calories from macros: 4 kcal per gram of protein and carbs, 9 per gram of fat. */
 const kcalOf = ({ p, c, f }: Omit<Macros, 'kcal'>) => p * 4 + c * 4 + f * 9
 
-export type CategoryId = 'produce' | 'meat' | 'dairy' | 'bakery' | 'pantry'
+type CategoryId = 'produce' | 'meat' | 'dairy' | 'bakery' | 'pantry'
 const CATEGORIES: { id: CategoryId; label: string }[] = [
   { id: 'produce', label: 'Fruit & veg' },
   { id: 'meat', label: 'Meat' },
@@ -106,7 +106,7 @@ const INGREDIENTS = {
 
 type IngredientId = keyof typeof INGREDIENTS
 
-export type Diet = 'Vegan' | 'Vegetarian'
+type Diet = 'Vegan' | 'Vegetarian'
 
 export interface Dish {
   id: string
@@ -603,7 +603,7 @@ export const sumMacros = (dishes: Dish[]): Macros =>
 /** A dish picked in the shopping list picker: which day and meal it's in. */
 export const pickId = (mealId: string, dishIndex: number) => `${mealId}:${dishIndex}`
 
-export interface ListItem { id: IngredientId; name: string; qty: string }
+interface ListItem { id: IngredientId; name: string; qty: string }
 export interface ListSection { id: CategoryId; label: string; items: ListItem[] }
 
 /**

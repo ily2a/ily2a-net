@@ -38,11 +38,16 @@
   --color-success:        #4ade80;
   --color-spotlight:      rgba(255, 255, 255, 0.3);
   --color-shadow:         rgba(0, 0, 0, 0.25);
+  --color-shadow-deep:    rgba(0, 0, 0, 0.30);
   --color-shadow-strong:  rgba(0, 0, 0, 0.40);
+  --color-glass-highlight: rgba(255, 255, 255, 0.12);
+  --color-glass-shade:    rgba(0, 0, 0, 0.20);
   --color-glass-bg:       rgba(255, 255, 255, 0.04);
   --color-glass-border:   rgba(255, 255, 255, 0.08);
   --color-border-hover:   rgba(255, 255, 255, 0.25);
   --color-image-outline:  rgba(255, 255, 255, 0.10);
+  --color-scrollbar:      rgba(255, 255, 255, 0.10);
+  --color-scrollbar-hover: rgba(255, 255, 255, 0.15);
   --color-scrim:          rgba(0, 0, 0, 0.7);
   --color-clear:          rgba(0, 0, 0, 0); /* "transparent" in a form Motion can animate */
 
@@ -59,9 +64,9 @@
   /* Darker, more prominent glass card — used by the contact info card and
      craft sidebar. Two inset highlights + a deep drop shadow. */
   --shadow-glass-card:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-    0 8px 32px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 var(--color-glass-highlight),
+    inset 0 -1px 0 var(--color-glass-shade),
+    0 8px 32px var(--color-shadow-deep);
 
   /* ─── Breakpoints ─────────────────────────────────────────── */
   --breakpoint-sm:     390px;
@@ -85,8 +90,8 @@
 /* ─── Scrollbar ───────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; border-radius: 10px; }
 ::-webkit-scrollbar-track { background: none; }
-::-webkit-scrollbar-thumb { background: rgb(255 255 255 / 10%); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 15%); }
+::-webkit-scrollbar-thumb { background: var(--color-scrollbar); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-scrollbar-hover); }
 
 html {
   /* bg on html paints the document canvas (overscroll); body keeps the same token for the page. */
@@ -179,6 +184,7 @@ section:focus-visible {
 .text-md         { @apply font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-pretty; }
 .text-intro      { @apply font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-pretty; }
 .text-body       { @apply font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px]; }
+.text-body-strong { @apply font-medium tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px]; }
 .text-body-card  { @apply text-[14px] desk:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]; }
 .text-blockquote { @apply italic text-base leading-[160%] tracking-[0.04em]; }
 
@@ -186,13 +192,12 @@ section:focus-visible {
 .text-caption    { @apply font-medium leading-[150%] text-[12px] md:text-[13px] xl:text-[14px] text-balance tracking-[0.04em]; }
 .text-meta       { @apply text-[15px] font-medium tracking-[-0.01em] leading-[1.3]; }
 .text-eyebrow    { @apply font-medium tracking-[0.07em] leading-[150%] text-[11px] uppercase; }
-.text-overline   { @apply text-[11px] font-semibold tracking-[0.10em] uppercase; }
+.text-overline   { @apply text-[11px] font-bold tracking-[0.10em] uppercase; }
 .text-tag        { @apply text-[13px] font-medium tracking-[-0.01em] leading-[1.4]; }
-.text-skill-label { @apply text-[12px] font-semibold tracking-[0.08em] leading-[1.4] whitespace-nowrap; }
+.text-skill-label { @apply text-[12px] font-bold tracking-[0.08em] leading-[1.4] whitespace-nowrap; }
 
 /* UI components */
 .btn-label       { @apply font-bold tracking-[-0.01em] leading-[120%] text-[16px] lg:text-[18px] text-balance whitespace-nowrap; }
-.btn-label-flat  { @apply font-bold text-base leading-none; }
 .link-label      { @apply font-medium tracking-[-0.01em] leading-[120%] text-[16px] text-balance whitespace-nowrap; }
 .text-toc        { @apply text-[13px] xl:text-[14px] font-medium leading-[1.4] tracking-[-0.01em]; }
 .text-cursor     { @apply text-[14px] font-medium whitespace-nowrap tracking-[0.02em]; }
@@ -206,7 +211,7 @@ section:focus-visible {
 .text-form-error { @apply text-[12px]; }
 
 /* Testimonials */
-.text-testimonial-name  { @apply font-semibold text-[15px] tracking-[-0.01em] leading-[1.2]; }
+.text-testimonial-name  { @apply font-bold text-[15px] tracking-[-0.01em] leading-[1.2]; }
 .text-testimonial-role  { @apply text-[13px] tracking-[0.02em] leading-[1.3]; }
 
 /* ─── Booking Modal Spinner ───────────────────────────────────── */
@@ -236,7 +241,6 @@ section:focus-visible {
    PROJECT CARD
    ══════════════════════════════════════════════════════════════ */
 
-/* .project-card — selector used by SmoothCursor for hover detection */
 
 
 .project-card__img {

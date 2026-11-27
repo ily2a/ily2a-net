@@ -37,7 +37,7 @@ function Icon24({ file, inset, flip, bleed, size = 24 }: IconSpec & { size?: Ico
   )
 }
 
-export const CAUSE_ICONS = {
+const CAUSE_ICONS = {
   community: { file: 'cause-community.svg', inset: '8.33%', flip: 'y', bleed: '-3.75%' },
   disaster: { file: 'cause-disaster.svg', inset: '8.33% 20.83%', flip: 'none', bleed: '-3.75% -5.36%' },
   education: { file: 'cause-education.svg', inset: '8.33% 12.5%', flip: 'none', bleed: '-3.75% -4.17%' },

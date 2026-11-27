@@ -2,6 +2,7 @@
 
 import { memo, useMemo } from 'react'
 import { m } from 'motion/react'
+import { textRevealSpring } from '@/constants/animations'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 interface TextRevealProps {
@@ -35,13 +36,7 @@ const TextReveal = memo(function TextReveal({ text, className, scale = 1, initia
           className="inline-block mr-[0.25em]"
           initial={skip ? false : { opacity: 0, filter: 'blur(6px)', y: 8, scale }}
           animate={{ opacity: 1, filter: 'blur(0px)', y: 0, scale: 1 }}
-          transition={{
-            type: 'spring',
-            stiffness: 400,
-            damping: scale === 1 ? 40 : 30,
-            mass: 1,
-            delay: skip ? 0 : initialDelay + wi * 0.06,
-          }}
+          transition={textRevealSpring(scale !== 1, skip ? 0 : initialDelay + wi * 0.06)}
         >
           {word}
         </m.span>

@@ -4,12 +4,19 @@
 // SPRING_ENTRANCE — hero element entrance (slow, weighted)
 // SPRING_NAV    — navbar slide-up entrance
 
-import type { Transition, MotionProps } from 'motion/react'
+import type { Transition, MotionProps, Variants } from 'motion/react'
 
 export const SPRING_SNAP: Transition     = { type: 'spring', duration: 0.18, bounce: 0 }
 export const SPRING_CURSOR               = { damping: 45, stiffness: 1000, mass: 0.35, restDelta: 0.001 }
 export const SPRING_ENTRANCE: Transition = { type: 'spring', stiffness: 120,  damping: 30,  mass: 1 }
 export const SPRING_NAV: Transition      = { type: 'spring', stiffness: 120,  damping: 20,  mass: 1.5 }
+
+// Instant state change — hover/default swaps that shouldn't inherit a spring.
+export const INSTANT: Transition = { duration: 0 }
+
+// TextReveal word spring. Damping is looser when the word also scales in.
+export const textRevealSpring = (scaled: boolean, delay: number): Transition =>
+  ({ type: 'spring', stiffness: 400, damping: scaled ? 30 : 40, mass: 1, delay })
 
 // Custom easing curve — stronger than the built-in CSS/Framer easings.
 // EASE_OUT is the canonical UI-entrance curve (starts fast, settles smoothly).
@@ -28,6 +35,17 @@ export const HOVER_LIFT = { y: -1 }
 export const HERO_SUBTITLE_DELAY = 1.2  // second TextReveal line starts right after first settles
 export const HERO_BUTTON_DELAY   = 2.0  // CTA buttons appear as second text line settles
 export const HERO_NAV_DELAY      = 2.4  // navbar slides up just after buttons
+
+// Grid stagger for card lists entering on scroll (Craft + Capabilities).
+// Parent goes on the grid, child on each card.
+export const STAGGER_PARENT: Variants = {
+  hidden: { opacity: 1 },
+  show:   { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+}
+export const STAGGER_CHILD: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE_OUT } },
+}
 
 // Scroll-triggered section entrance — pass a delay (seconds) for staggered children.
 export const fadeUp = (delay = 0): MotionProps => ({

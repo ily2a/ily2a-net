@@ -95,7 +95,7 @@ export function OptionButton({ selected, children, className = '', ...rest }: Bu
   )
 }
 
-export const errorId = (inputId: string) => `${inputId}-error`
+const errorId = (inputId: string) => `${inputId}-error`
 
 /**
  * The Figma "Input" component with all four of its states:
@@ -124,7 +124,7 @@ export function TextInput({ trailing, invalid = false, className = '', ...rest }
 }
 
 /** Error support message: red, 3px under the input, eased in and out. */
-export function ErrorMessage({ inputId, message }: { inputId: string; message?: string }) {
+function ErrorMessage({ inputId, message }: { inputId: string; message?: string }) {
   return (
     <AnimatePresence initial={false}>
       {message && (

@@ -79,13 +79,13 @@ export default function ContactSection() {
           {/* Details */}
           <div className="relative flex flex-col gap-4 w-full desk:w-[320px] desk:shrink-0">
             <DetailRow label="Email" action={<CopyEmailButton email={EMAIL} />}>
-              <a href={`mailto:${EMAIL}`} className="flex-1 min-w-0 self-stretch flex items-center text-body font-medium text-text-primary">
+              <a href={`mailto:${EMAIL}`} className="flex-1 min-w-0 self-stretch flex items-center text-body-strong text-text-primary">
                 <span className="truncate">
                 {EMAIL}</span>
               </a>
             </DetailRow>
             <DetailRow label="LinkedIn" action={<LinkedInButton />}>
-              <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex-1 self-stretch flex items-center text-body font-medium text-text-primary">
+              <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex-1 self-stretch flex items-center text-body-strong text-text-primary">
                 @ily2a
               </a>
             </DetailRow>

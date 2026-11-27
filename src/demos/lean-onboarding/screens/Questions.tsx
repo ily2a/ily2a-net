@@ -9,9 +9,9 @@ import WheelPicker from '../WheelPicker'
 // the footer stay mounted; only the question in the middle swaps. That's
 // what lets the bar grow and the number roll from step to step.
 
-export interface UnitOption { id: string; label: string; min: number; max: number; format?: (v: number) => string }
+interface UnitOption { id: string; label: string; min: number; max: number; format?: (v: number) => string }
 
-export interface ChoiceQuestion {
+interface ChoiceQuestion {
   kind: 'choice'
   title: string
   subtitle?: ReactNode
@@ -22,7 +22,7 @@ export interface ChoiceQuestion {
   cta?: string
 }
 
-export interface MeasureQuestion {
+interface MeasureQuestion {
   kind: 'measure'
   title: string
   subtitle?: ReactNode

@@ -10,7 +10,7 @@ import { COUNTRIES, type Country } from './CountrySelect'
 // keeps your tab, search, country, pick and amount, plus the controls both
 // frames draw the same way. Home.tsx and HomeMobile.tsx only arrange them.
 
-export type Tab = 'causes' | 'charities'
+type Tab = 'causes' | 'charities'
 
 /** What you picked on the landing. */
 export type Pick = { kind: 'cause'; cause: Cause } | { kind: 'charity'; charity: Charity }
