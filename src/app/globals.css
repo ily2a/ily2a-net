@@ -146,6 +146,12 @@ section:focus-visible {
   border-radius: 0;
 }
 
+/* Inside a live demo, the focus ring uses that project's accent colour
+   (each demo's tokens.css sets --demo-accent), not amethyst. */
+.demo-scope :focus-visible {
+  outline-color: var(--demo-accent);
+}
+
 /* ─── Typography Utilities ────────────────────────────────────── */
 
 /* Headings */

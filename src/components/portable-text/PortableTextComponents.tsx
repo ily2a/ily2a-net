@@ -12,6 +12,7 @@ import type { SanityImageObject } from '@sanity/image-url'
 import { urlFor, displayHeightFor, type SanityImageDimensions } from '@/sanity/lib/image'
 import { toId } from '@/lib/portable-text'
 import PortableTextLink from '@/components/portable-text/PortableTextLink'
+import LiveDemo from '@/components/demos/LiveDemo'
 import { BREAKPOINTS } from '@/constants/tokens'
 
 const BODY_IMAGE_SIZES = `(max-width: ${BREAKPOINTS.MOBILE}px) 100vw, (max-width: ${BREAKPOINTS.DESK}px) 90vw, 900px`
@@ -36,6 +37,11 @@ interface CaseStudyImageValue extends SanityImageObject {
   caption?: string
   lqip?: string
   dimensions?: SanityImageDimensions
+}
+
+interface LiveDemoValue extends TypedObject {
+  demo?: string
+  caption?: string
 }
 
 interface LinkMark extends TypedObject {
@@ -130,6 +136,9 @@ export function makePtBody(headingIdMap: Record<string, string> = {}): PortableT
           </figure>
         )
       },
+      liveDemo: ({ value }: PortableTextTypeComponentProps<LiveDemoValue>) => (
+        <LiveDemo demo={value.demo} caption={value.caption} />
+      ),
     },
     marks: {
       strong: ({ children }: { children?: ReactNode }) => <strong>{children}</strong>,

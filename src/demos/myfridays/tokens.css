@@ -1,0 +1,94 @@
+/* MyFridays colours exactly as used in the Figma frames (names follow the
+   file's Untitled UI variables). Scoped to .mf so nothing leaks out.
+   Components use them through Tailwind, e.g. bg-(--mf-gray-900). */
+.mf {
+  /* Dark landing */
+  --mf-gray-900: #101828;      /* page            · utility-gray-900 */
+  --mf-gray-800: #182230;      /* nav bar         · utility-gray-800 */
+  --mf-bg-primary: #0c111d;    /* cards, inputs, countdown bar · bg-primary / bg-overlay */
+  --mf-bg-secondary: #161b26;  /* selected card   · bg-secondary */
+  --mf-bg-tertiary: #1f242f;   /* amount field, tab track border, text on active tab */
+  --mf-border: #333741;        /* border-primary */
+  --mf-text: #f5f5f6;          /* text-primary (900) */
+  --mf-text-secondary: #cecfd2;/* text-secondary (700) */
+  --mf-text-subtle: #d0d5dd;   /* text-placeholder_subtle */
+  --mf-text-placeholder: #85888e;
+  --mf-white: #ffffff;
+
+  /* Accents */
+  --mf-amber: #fdb022;         /* Causes tab      · utility-warning-600 */
+  --mf-coral: #f97066;         /* Charities tab   · utility-error-600 */
+  --mf-yellow-200: #feee95;    /* countdown       · Yellow/200 */
+  --mf-warning-200: #fedf89;   /* tagline         · utility-warning-200 */
+  --mf-indigo: #3538cd;        /* Donate          · Indigo/700 */
+  --mf-logo-orange: #b9624d;   /* card hover / selected border · the logo's sun gradient */
+
+  /* Icons the dropdowns recolour: chevron (fg-quaternary) and the picked option's check */
+  --mf-fg-quaternary: #94969c;
+  --mf-check: #ffffff;
+
+  /* The portfolio's focus ring picks this up inside the demo */
+  --demo-accent: var(--mf-amber);
+
+  background: var(--mf-gray-900);
+  color: var(--mf-text);
+}
+
+/* Payment and the receipt are light in the file: the same variables in
+   their light mode, so the shared controls (dropdowns, inputs) follow. */
+.mf-light {
+  --mf-bg-primary: #ffffff;        /* page, cards, inputs · bg-primary / fg-white */
+  --mf-bg-secondary: #f9fafb;      /* picked option, Cancel hover */
+  --mf-bg-tertiary: #f2f4f7;       /* highlighted option, toggle off */
+  --mf-bg-secondary-alt: #fafafa;  /* time tabs track · bg-secondary_alt */
+  --mf-border: #d0d5dd;            /* border-primary */
+  --mf-border-secondary: #e9eaeb;  /* time tabs track · border-secondary */
+  --mf-text: #101828;              /* text-primary (900) */
+  --mf-text-secondary: #344054;    /* text-secondary (700) · button-secondary-fg */
+  --mf-text-tertiary: #475467;     /* Remove · text-tertiary (600) */
+  --mf-text-quaternary: #717680;   /* idle time tab · text-quaternary (500) */
+  --mf-text-placeholder: #667085;  /* text-placeholder */
+  --mf-fg-quaternary: #667085;     /* chevrons */
+  --mf-check: #182230;
+
+  --mf-pay-idle: #f9f5ff;          /* payment method · button-secondary-color-bg_hover */
+  --mf-pay-picked: #e4e7ec;        /* picked payment method · Gray (light mode)/200 */
+  --mf-yellow-400: #fac515;        /* Friday jummah time · Yellow/400 */
+  --mf-error-300: #fda29b;         /* Last hour before sunset · utility-error-300 */
+  --mf-error-600: #d92d20;         /* error text · utility-error-600 */
+  --mf-error-100: #fee4e2;         /* error focus ring */
+  --mf-blue-light-500: #0ba5ec;    /* (Quran 2:272) · utility-blue-light-500 */
+  --mf-focus-ring: rgba(152, 162, 179, 0.14);
+
+  --demo-accent: var(--mf-gray-800);
+
+  background: var(--mf-bg-primary);
+  color: var(--mf-text);
+}
+
+/* Work Sans alternates, as set on the text layers in the file */
+.mf-ff { font-feature-settings: "salt" 1, "ss05" 1, "ss01" 1; }
+.mf-ff-body { font-feature-settings: "salt" 1, "ss05" 1; }
+
+/* Figma trims text boxes to cap height / baseline ("text-box-trim") */
+.mf-trim { text-box: trim-both cap alphabetic; }
+
+/* Shadows/shadow-xs-skeuomorphic */
+.mf-skeuo { box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), inset 0 0 0 1px rgba(16, 24, 40, 0.18), inset 0 -2px 0 rgba(16, 24, 40, 0.05); }
+.mf-card-shadow { box-shadow: 0 1px 1px rgba(16, 24, 40, 0.05), inset 0 -2px 0 rgba(16, 24, 40, 0.05); }
+/* Shadows/shadow-sm (the picked time tab, the toggle knob) */
+.mf-shadow-sm { box-shadow: 0 1px 3px rgba(10, 13, 18, 0.1), 0 1px 2px -1px rgba(10, 13, 18, 0.1); }
+
+/* Light inputs: shadow-xs, then a focus ring (gray, or error) while focused */
+.mf-field { box-shadow: 0 1px 1px rgba(16, 24, 40, 0.05); }
+.mf-field:focus-within { box-shadow: 0 1px 1px rgba(16, 24, 40, 0.05), 0 0 0 4px var(--mf-focus-ring); }
+.mf-field[data-invalid]:focus-within { box-shadow: 0 1px 1px rgba(16, 24, 40, 0.05), 0 0 0 4px var(--mf-error-100); }
+
+/* Bottom glow bar on the landing */
+.mf-glow {
+  background-image: linear-gradient(270deg, rgba(6, 16, 26, 0) 0%, rgba(15, 29, 40, 0.7) 16.297%, rgba(50, 65, 78, 0.6) 36.684%, rgba(98, 104, 115, 0.4) 48.713%, rgb(140, 139, 139) 59.315%, rgb(197, 163, 154) 73.178%, rgb(221, 136, 112) 85.819%, rgb(207, 71, 76) 100%);
+  filter: blur(4px);
+  opacity: 0.66;
+}
+
+.mf input::placeholder { color: var(--mf-text-placeholder); }

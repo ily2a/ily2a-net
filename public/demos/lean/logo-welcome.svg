@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="249" height="96" viewBox="0 0 249 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="-40" y="-40" width="329" height="176"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(20px);clip-path:url(#bgblur_0_0_114_clip_path);height:100%;width:100%"></div></foreignObject><g id="Logo Container" data-figma-bg-blur-radius="40">
+<g id="Vector">
+<path d="M23.3516 16H16V80H58.1452V75.84H23.3516V16Z" fill="#61554B"/>
+<path d="M229.134 16V65.664L184.961 16H180.968V80H184.771V26.112L232.937 80H233V16H229.134Z" fill="#61554B"/>
+<path d="M65.1165 16V80H109.67V75.84H72.4048V49.216H100.924V45.312H72.4048V20.16H109.67V16H65.1165Z" fill="#61554B"/>
+<path d="M144.464 16L116.641 80H121.141L143.766 27.904L166.138 80H173.743L146.048 16H144.464Z" fill="#61554B"/>
+</g>
+</g>
+<defs>
+<clipPath id="bgblur_0_0_114_clip_path" transform="translate(40 40)"><rect width="249" height="96"/>
+</clipPath></defs>
+</svg>

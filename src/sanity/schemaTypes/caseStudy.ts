@@ -175,7 +175,7 @@ const caseStudy = defineType({
     defineField({
       name: 'body',
       title: 'Case Study Body',
-      description: 'Build freely — mix text sections and images in any order',
+      description: 'Build freely — mix text sections, images and live demos in any order',
       type: 'array',
       group: 'content',
       of: [
@@ -197,6 +197,7 @@ const caseStudy = defineType({
             },
           ],
         },
+        { type: 'liveDemo' },
       ],
     }),
     defineField({
