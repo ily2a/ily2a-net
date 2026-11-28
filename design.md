@@ -115,8 +115,7 @@ Not every class steps at every breakpoint — check `globals.css` for the exact 
 **Body**
 - `.text-intro` — 24 → 28 → 26 → 32px, medium (lead paragraphs; lg dips before xl)
 - `.text-md` — 16 → 20px
-- `.text-body` — 15 → 16px, generous `170%` leading
-- `.text-body-strong` — `.text-body` at medium weight (contact detail links)
+- `.text-body-strong` — 15 → 16px, medium, generous `170%` leading (contact detail links)
 - `.text-body-card` — 14 → 15 (desk) → 16px, card copy
 - `.text-blockquote` — italic `text-base`, for pull quotes
 

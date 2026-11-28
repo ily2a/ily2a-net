@@ -183,7 +183,6 @@ section:focus-visible {
 /* Body */
 .text-md         { @apply font-normal tracking-[0.07em] leading-[150%] text-[16px] lg:text-[18px] xl:text-[20px] text-pretty; }
 .text-intro      { @apply font-medium tracking-[0.06em] leading-[140%] text-[24px] md:text-[28px] lg:text-[26px] xl:text-[32px] text-pretty; }
-.text-body       { @apply font-normal tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px]; }
 .text-body-strong { @apply font-medium tracking-[0.04em] leading-[170%] text-[15px] lg:text-[16px]; }
 .text-body-card  { @apply text-[14px] desk:text-[15px] xl:text-base leading-[160%] tracking-[0.02em]; }
 .text-blockquote { @apply italic text-base leading-[160%] tracking-[0.04em]; }
