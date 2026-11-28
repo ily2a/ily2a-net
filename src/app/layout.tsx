@@ -31,7 +31,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       "name": SITE_BRAND,
-      "alternateName": [SITE_NAME, "ily2a"],
+      "alternateName": [SITE_NAME, "ily2a.net"],
       "url": SITE_URL,
       "description": SITE_DESCRIPTION,
       "inLanguage": "en-GB",
@@ -46,7 +46,7 @@ const jsonLd = {
       "image": `${SITE_URL}/og-image.jpg`,
       "description": SITE_DESCRIPTION,
       "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
-      "sameAs": ["https://linkedin.com/in/ily2a"],
+      "sameAs": ["https://linkedin.com/in/ily2a", "https://x.com/Ily_2A"],
     },
   ],
 }
@@ -85,6 +85,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    creator: "@Ily_2A",
     title: `${SITE_NAME} : Design Engineer`,
     description: SITE_DESCRIPTION,
     images: [{ url: '/og-image.jpg', alt: `${SITE_NAME} — Design Engineer` }],
