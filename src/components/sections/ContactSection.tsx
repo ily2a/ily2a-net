@@ -4,14 +4,14 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { m } from 'motion/react'
 import dynamic from 'next/dynamic'
 import BookingButton from '@/components/booking/BookingButton'
-import LinkedInButton from '@/components/buttons/LinkedInButton'
+import SocialLinkButton from '@/components/buttons/SocialLinkButton'
 import CopyEmailButton from '@/components/buttons/CopyEmailButton'
 import TestimonialsBg from '@/components/backgrounds/TestimonialsBg'
 import { fadeUp } from '@/constants/animations'
 import { AMETHYST } from '@/constants/tokens'
+import { LINKEDIN_URL, X_URL } from '@/constants/site'
 
 const EMAIL = 'ily.a.ameur@gmail.com'
-const LINKEDIN_URL = 'https://linkedin.com/in/ily2a'
 
 const ContactBg = dynamic(() => import('@/components/backgrounds/ContactBg'), { ssr: false })
 
@@ -20,7 +20,7 @@ const AURORA_STOPS = [AMETHYST[950], AMETHYST[600], AMETHYST[400]]
 
 function DetailRow({ label, children, action }: { label: string; children: ReactNode; action: ReactNode }) {
   return (
-    <div className="flex flex-col pb-2 border-b border-glass-border last:border-b-0">
+    <div className="flex flex-col pb-1 border-b border-glass-border last:border-b-0">
       <span className="text-caption text-text-secondary">{label}</span>
       <div className="flex items-center justify-between gap-3">
         {children}
@@ -60,7 +60,7 @@ export default function ContactSection() {
 
         {/* ── Contact card ── */}
         <m.div
-          className="relative flex flex-col gap-10 rounded-glass p-6 tab:p-10 desk:flex-row desk:items-end desk:justify-between desk:p-14 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
+          className="relative flex flex-col gap-10 rounded-glass p-6 tab:p-10 desk:flex-row desk:items-center desk:justify-between desk:p-14 overflow-hidden bg-glass-bg backdrop-blur-[32px] backdrop-saturate-[180%] border border-glass-border"
           style={{ boxShadow: 'var(--shadow-glass-card)' }}
           {...fadeUp(0.1)}
         >
@@ -77,16 +77,21 @@ export default function ContactSection() {
           </div>
 
           {/* Details */}
-          <div className="relative flex flex-col gap-4 w-full desk:w-[320px] desk:shrink-0">
+          <div className="relative flex flex-col gap-3 w-full desk:w-[320px] desk:shrink-0">
             <DetailRow label="Email" action={<CopyEmailButton email={EMAIL} />}>
               <a href={`mailto:${EMAIL}`} className="flex-1 min-w-0 self-stretch flex items-center text-body-strong text-text-primary">
                 <span className="truncate">
                 {EMAIL}</span>
               </a>
             </DetailRow>
-            <DetailRow label="LinkedIn" action={<LinkedInButton />}>
+            <DetailRow label="LinkedIn" action={<SocialLinkButton network="linkedin" />}>
               <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex-1 self-stretch flex items-center text-body-strong text-text-primary">
                 @ily2a
+              </a>
+            </DetailRow>
+            <DetailRow label="X" action={<SocialLinkButton network="x" />}>
+              <a href={X_URL} target="_blank" rel="noopener noreferrer" className="flex-1 self-stretch flex items-center text-body-strong text-text-primary">
+                @Ily_2A
               </a>
             </DetailRow>
           </div>

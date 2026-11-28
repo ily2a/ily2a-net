@@ -7,7 +7,7 @@
 //     for an action, build an m.button from useSpotlight + SpotlightLayer as
 //     BackToTop does.
 //   • Icon / nav toggle with discrete default/hover/pressed states → useButtonState
-//     + a `states` style map (e.g. NavbarButton, CloseButton, LinkedInButton).
+//     + a `states` style map (e.g. NavbarButton, CloseButton, SocialLinkButton).
 //   • One-off visual treatment that none of the above expresses (conic gradient,
 //     ripple) → bespoke component (e.g. ContactButton, MobileContactButton).
 //     The Cal.com booking trigger + modal lives in src/components/booking/.

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { m, AnimatePresence } from 'motion/react'
 import { useButtonState } from '@/hooks/useButtonState'
 import { SPRING_SNAP, INSTANT } from '@/constants/animations'
-import { ICON_LINK_BUTTON_STATES as states } from '@/components/buttons/LinkedInButton'
+import { ICON_LINK_BUTTON_STATES as states } from '@/components/buttons/SocialLinkButton'
 
 const COPIED_MS = 2000
 const ICON_MOTION = {

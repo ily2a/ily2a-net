@@ -2,7 +2,7 @@ import "./globals.css"
 import { Suspense, type ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
-import { SITE_URL, SITE_NAME, SITE_BRAND, SITE_DESCRIPTION } from "@/constants/site"
+import { SITE_URL, SITE_NAME, SITE_BRAND, SITE_DESCRIPTION, LINKEDIN_URL, X_URL } from "@/constants/site"
 import { BACKGROUND } from "@/constants/tokens"
 import { safeJsonLd } from "@/lib/json-ld"
 import SmoothCursor from "@/components/effects/SmoothCursor"
@@ -46,7 +46,7 @@ const jsonLd = {
       "image": `${SITE_URL}/og-image.jpg`,
       "description": SITE_DESCRIPTION,
       "knowsAbout": ["Product Design", "Design Systems", "Frontend Engineering", "UX Design"],
-      "sameAs": ["https://linkedin.com/in/ily2a", "https://x.com/Ily_2A"],
+      "sameAs": [LINKEDIN_URL, X_URL],
     },
   ],
 }
