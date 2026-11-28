@@ -231,12 +231,15 @@ reach for these before authoring a new transition.
 - `STAGGER_PARENT` / `STAGGER_CHILD` — card-grid entrance (Craft, Capabilities): 50ms stagger, children `y 12→0` over 0.3s `EASE_OUT`.
 - `INSTANT` — `{ duration: 0 }` for hover/default swaps that must not inherit a spring.
 - `textRevealSpring(scaled, delay)` — TextReveal word spring (stiffness 400).
+  Split words are separated by real space characters, never by margin alone:
+  Google, copy-paste and screen readers read margin-spaced spans as one
+  run-together string (it showed up unspaced in search snippets).
 - `fadeUp(delay)` — scroll-triggered section entrance: `opacity 0→1`, `y 16→0`,
   `viewport once, margin -80px`, spring `{ stiffness: 260, damping: 24 }`.
 - **Never animate to `'transparent'`.** Motion can't interpolate the keyword, so
   the change snaps and logs a warning on every page. Use `var(--color-clear)` for
   see-through states, and animate `backgroundColor`, not the `background`
-  shorthand (`NavbarButton`, `LinkedInButton`).
+  shorthand (`NavbarButton`, `SocialLinkButton`).
 - **Interaction feedback ceiling: ~300ms.** Hover/press/tap stays snappy.
   Longer Motion tweens are fine for section entrances/exits (hero crossfade,
   password-gate leave ~0.4–0.5s).
@@ -255,7 +258,7 @@ reach for these before authoring a new transition.
   site (`HomeButton`, `ViewAllProjectsButton` — these thin wrappers are
   intentional, keep them).
 - **Icon / nav toggle** with discrete default/hover/pressed → `useButtonState` +
-  a `states` style map (`NavbarButton`, `CloseButton`, `LinkedInButton`).
+  a `states` style map (`NavbarButton`, `CloseButton`, `SocialLinkButton`).
 - **One-off treatment** none of the above expresses (conic gradient, ripple) →
   bespoke component (`ContactButton`, `MobileContactButton`). The Cal.com
   booking trigger + modal (`BookingButton`, `BookingDialog`) is its own feature

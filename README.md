@@ -161,7 +161,7 @@ GROQ queries live in [src/sanity/lib/queries.ts](src/sanity/lib/queries.ts). Con
 - **CraftSection** — featured projects grid on the home page
 - **CapabilitiesSection** — services / capabilities list
 - **TestimonialsSection** — client testimonials carousel
-- **ContactSection** — contact card: Book a call CTA, email (copy-to-clipboard) and LinkedIn
+- **ContactSection** — contact card: Book a call CTA, email (copy-to-clipboard), LinkedIn and X
 
 **Project Cards**
 - **ProjectCard** — hover card with blur overlay and image swap; handles both desktop and touch layouts
@@ -174,8 +174,8 @@ GROQ queries live in [src/sanity/lib/queries.ts](src/sanity/lib/queries.ts). Con
 - **HomeButton** — hero "home" CTA, extracted from SpotlightButton
 - **ViewAllProjectsButton** — "view all projects" CTA, extracted from SpotlightButton
 - **ContactButton** / **MobileContactButton** — navbar triggers that scroll to the contact section
-- **CopyEmailButton** — copies the contact email, swaps to a check for 2 s; shares `LinkedInButton`'s state styles
-- **LinkedInButton** — LinkedIn profile link
+- **CopyEmailButton** — copies the contact email, swaps to a check for 2 s; shares `SocialLinkButton`'s state styles
+- **SocialLinkButton** — icon link to a social profile (`network="linkedin" | "x"`)
 - **TestimonialsButton** — hero CTA that smooth-scrolls to the testimonials section
 - **NavbarButton** — navbar-specific button variant
 
@@ -219,7 +219,7 @@ Styling uses Tailwind v4 with a custom `@theme` block in `globals.css`. Typograp
 
 - **animations.ts** — shared Motion animation configs (`SPRING_SNAP`, `SPRING_CURSOR`, `SPRING_ENTRANCE`, `SPRING_NAV`, …)
 - **tokens.ts** — JS mirrors of the `globals.css` tokens, for contexts where CSS variables can't be used: palette hex (`BACKGROUND`, `AMETHYST`, `MASK_BLACK`) for WebGL shaders, Next.js metadata strings and CSS mask stops; every `--radius-*` token (`RADII`) for SVG / inline geometry; every `--breakpoint-*` token (`BREAKPOINTS`) for layout decisions made in JS
-- **site.ts** — `SITE_URL`, `SITE_NAME`, `SITE_BRAND` (Google site-name / `applicationName`), `SITE_DESCRIPTION`, `CRAFT_DESCRIPTION`
+- **site.ts** — `SITE_URL`, `SITE_NAME`, `SITE_BRAND` (Google site name `ily2a` / `applicationName`), `LINKEDIN_URL`, `X_URL`, `SITE_DESCRIPTION`, `CRAFT_DESCRIPTION`
 
 ## Data
 
@@ -298,5 +298,5 @@ Components/hooks that need a DOM should add `// @vitest-environment jsdom` at th
 
 - **Sitemap** — App Router [src/app/sitemap.ts](src/app/sitemap.ts); pulls case study slugs from Sanity via `fetchSanityListStatic`
 - **robots.txt** — static, lives at [public/robots.txt](public/robots.txt) (sitemap URL hardcoded to production `ily2a.net`)
-- **JSON-LD** — root `WebSite` + `Person` from [src/app/layout.tsx](src/app/layout.tsx) (`SITE_BRAND` / `SITE_NAME`); case studies also emit `CreativeWork` on [craft/[slug]](src/app/craft/[slug]/page.tsx)
+- **JSON-LD** — root `WebSite` + `Person` from [src/app/layout.tsx](src/app/layout.tsx) (`SITE_BRAND` / `SITE_NAME`, `sameAs` LinkedIn + X); case studies also emit `CreativeWork` on [craft/[slug]](src/app/craft/[slug]/page.tsx)
 - **OG image** — site default [public/og-image.jpg](public/og-image.jpg); case studies prefer the Sanity cover (1200×630) with that file as fallback
