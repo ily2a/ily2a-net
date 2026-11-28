@@ -20,7 +20,7 @@ interface HomeProps {
   onDay: (index: number) => void
   onShoppingList: () => void
   onOpenDish: (dish: Dish) => void
-  /** Where the Planner was scrolled to, so coming back from a meal lands in the same place. */
+  /** Where the meal list was scrolled to, so coming back from a meal lands in the same place. */
   savedScrollRef: RefObject<number>
 }
 
@@ -58,11 +58,7 @@ export function Home({ week, weekIndex, weekCount, dayIndex, onWeek, onDay, onSh
 
   return (
     <div className="absolute inset-0 flex flex-col bg-(--bare-bg-screen) pt-11">
-      <div
-        ref={scrollRef}
-        onScroll={e => { savedScrollRef.current = e.currentTarget.scrollTop }}
-        className="flex flex-1 flex-col items-center gap-5 overflow-y-auto overscroll-contain px-4 py-5"
-      >
+      <div className="flex min-h-0 flex-1 flex-col items-center gap-5 px-4 pt-5">
         <h2 tabIndex={-1} className="sr-only">Planner</h2>
         <Svg src="logo.svg" width={90.67} height={24.03} />
 
@@ -153,7 +149,7 @@ export function Home({ week, weekIndex, weekCount, dayIndex, onWeek, onDay, onSh
           <DayTargets macros={day.targets} />
         </section>
 
-        <section aria-labelledby="bare-meals" className="flex w-full flex-col gap-3">
+        <section aria-labelledby="bare-meals" className="flex min-h-0 w-full flex-1 flex-col gap-3">
           <div className="flex items-center justify-between">
             <h3 id="bare-meals" className="text-[18px] leading-7 font-semibold">Meals</h3>
             <TerciaryButton onClick={onShoppingList}>
@@ -161,12 +157,17 @@ export function Home({ week, weekIndex, weekCount, dayIndex, onWeek, onDay, onSh
               Shopping list
             </TerciaryButton>
           </div>
-          {/* The day's meals follow the calendar: a later day slides in from the right. */}
-          <div className="relative -mx-4 overflow-x-clip">
+          {/* Only the meals scroll; everything above stays put. They follow the
+              calendar: a later day slides in from the right. */}
+          <div
+            ref={scrollRef}
+            onScroll={e => { savedScrollRef.current = e.currentTarget.scrollTop }}
+            className="relative -mx-4 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain"
+          >
             <AnimatePresence mode="popLayout" initial={false} custom={dir}>
               <m.div
                 key={day.id}
-                className="flex flex-col gap-3 px-4 pb-px"
+                className="flex flex-col gap-3 px-4 pb-5"
                 custom={dir}
                 variants={PAGE}
                 initial="enter"
